@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="复盘册子">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
+<title>复盘册子 2.0</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --primary: #1a1a2e;
+  --accent: #e94560;
+  --accent2: #7c3aed;
+  --bg: #0f0f1a;
+  --card: #1a1a2e;
+  --text: #e0e0e0;
+  --muted: #888;
+  --border: #2a2a4a;
+  --success: #22c55e;
+  --warning: #f59e0b;
+}
+body {
+  font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: var(--bg); color: var(--text);
+  min-height: 100vh; padding-bottom: 80px;
+}
+
+/* ===== 顶栏 ===== */
+.header {
+  background: var(--primary); padding: 14px 18px;
+  display: flex; justify-content: space-between; align-items: center;
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 100;
+}
+.header h1 { font-size: 17px; font-weight: 700; color: #fff; }
+.header h1 span { color: var(--accent); font-size: 12px; font-weight: 400; margin-left: 6px; }
+.header-right { display: flex; align-items: center; gap: 10px; }
+.icon-btn {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--border); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; transition: all 0.2s;
+}
+.icon-btn:hover { background: #3a3a5a; transform: scale(1.08); }
+.date-display {
+  font-size: 12px; color: var(--accent); font-weight: 600;
+  cursor: pointer; padding: 6px 12px; border-radius: 18px;
+  border: 1px solid var(--accent); white-space: nowrap;
+}
+.date-display:hover { background: var(--accent); color: #fff; }
+
+/* ===== 录音状态条 ===== */
+.recording-bar {
+  display: none; position: fixed; top: 0; left: 0; right: 0;
+  background: linear-gradient(90deg, #e94560, #7c3aed);
+  padding: 10px 18px; z-index: 200;
+  align-items: center; justify-content: space-between;
+  color: #fff; font-size: 14px; font-weight: 600;
+  animation: slideDown 0.3s ease;
+}
+.recording-bar.show { display: flex; }
+@keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+.rec-bar-left { display: flex; align-items: center; gap: 10px; }
+.rec-dot { width: 10px; height: 10px; border-radius: 50%; background: #fff; animation: blink 1s infinite; }
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+.rec-stop-btn {
+  padding: 5px 16px; border-radius: 20px;
+  background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.5);
+  color: #fff; font-size: 13px; font-weight: 600;
+  cursor: pointer; font-family: inherit;
+}
+.rec-stop-btn:hover { background: rgba(255,255,255,0.35); }
+
+/* ===== 主内容 ===== */
+.main { max-width: 640px; margin: 0 auto; padding: 14px 12px 100px; }
+.section-label {
+  font-size: 11px; color: var(--muted); font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase;
+  margin-bottom: 10px; padding-left: 4px;
+}
+
+/* ===== 问题块 ===== */
+.q-block {
+  background: var(--card); border-radius: 14px;
+  margin-bottom: 14px; border: 1px solid var(--border);
+  overflow: hidden; transition: border-color 0.3s;
+}
+.q-block:focus-within { border-color: rgba(233,69,96,0.4); }
+.q-block.recording-active { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(233,69,96,0.2); }
+
+.q-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 14px 10px; border-bottom: 1px solid var(--border);
+}
+.q-header-left { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+.q-number {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--accent); color: #fff;
+  font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.q-label { font-size: 14px; font-weight: 600; color: #fff; }
+.q-hint { font-size: 11px; color: var(--muted); font-weight: 400; margin-left: 4px; }
+.q-header-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+
+/* 语音按钮 */
+.voice-btn {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--accent); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all 0.2s; position: relative;
+}
+.voice-btn:hover { transform: scale(1.1); background: #ff5a75; }
+.voice-btn.recording { background: #ff3d5a; animation: pulse 1s infinite; }
+.voice-btn svg { width: 15px; height: 15px; fill: #fff; }
+@keyframes pulse {
+  0%,100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(233,69,96,0.4); }
+  50% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(233,69,96,0); }
+}
+
+/* ===== 双Tab区域 ===== */
+.tab-bar {
+  display: flex; gap: 0; padding: 0 14px;
+  border-bottom: 1px solid var(--border);
+}
+.tab-btn {
+  flex: 1; padding: 10px 8px;
+  border: none; background: transparent;
+  color: var(--muted); font-size: 13px; font-weight: 600;
+  cursor: pointer; font-family: inherit;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab-btn:hover { color: var(--text); }
+.tab-btn .badge {
+  display: inline-block; font-size: 9px; padding: 1px 5px;
+  border-radius: 8px; margin-left: 4px; vertical-align: middle;
+}
+.tab-btn .badge.ai-done { background: var(--success); color: #fff; }
+.tab-btn .badge.ai-loading { background: var(--warning); color: #000; animation: blink 1s infinite; }
+
+/* 文本区域 */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+.answer-area {
+  width: 100%; min-height: 120px;
+  background: transparent; border: none;
+  color: var(--text); font-size: 14px; line-height: 1.9;
+  padding: 12px 14px 8px; resize: none; outline: none;
+  font-family: inherit;
+}
+.answer-area::placeholder { color: #444; }
+.answer-area:focus { background: rgba(233,69,96,0.03); }
+
+/* AI工具栏 */
+.ai-toolbar {
+  display: flex; align-items: center;
+  padding: 8px 12px; gap: 6px;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+  border-top: 1px solid var(--border);
+}
+.ai-toolbar::-webkit-scrollbar { display: none; }
+.ai-action-btn {
+  flex-shrink: 0; padding: 6px 12px;
+  border-radius: 16px; border: 1px solid var(--border);
+  background: transparent; color: var(--text);
+  font-size: 12px; font-weight: 600;
+  cursor: pointer; display: flex; align-items: center; gap: 4px;
+  transition: all 0.2s; font-family: inherit; white-space: nowrap;
+}
+.ai-action-btn:hover { border-color: var(--accent2); color: var(--accent2); background: rgba(124,58,237,0.08); }
+.ai-action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.ai-action-btn .spinner {
+  width: 10px; height: 10px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff; border-radius: 50%;
+  animation: spin 0.7s linear infinite; display: none;
+}
+.ai-action-btn.loading .spinner { display: inline-block; }
+.ai-action-btn.loading .btn-label { opacity: 0.7; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.save-hint {
+  text-align: right; padding: 2px 14px 8px;
+  font-size: 10px; color: #333; min-height: 16px;
+}
+.save-hint.show { color: var(--success); }
+
+/* ===== 底部栏 ===== */
+.bottom-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--primary); border-top: 1px solid var(--border);
+  padding: 10px 20px; padding-bottom: max(10px, env(safe-area-inset-bottom));
+  display: flex; gap: 10px; justify-content: center;
+  max-width: 640px; margin: 0 auto; z-index: 90;
+}
+.bottom-btn {
+  flex: 1; max-width: 160px; padding: 10px;
+  border-radius: 10px; border: none;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer; text-align: center;
+  transition: all 0.2s; font-family: inherit;
+}
+.btn-history { background: var(--border); color: var(--text); }
+.btn-history:hover { background: #3a3a5a; }
+.btn-today { background: var(--accent); color: #fff; }
+.btn-today:hover { background: #ff5a75; }
+
+/* ===== 弹窗通用 ===== */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.75); z-index: 200;
+  padding: 20px; overflow-y: auto;
+  align-items: flex-start; justify-content: center;
+}
+.modal-overlay.show { display: flex; }
+.modal {
+  background: var(--card); border-radius: 18px;
+  width: 100%; max-width: 480px; margin-top: 50px;
+  border: 1px solid var(--border); overflow: hidden;
+}
+.modal-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 18px 18px 14px; border-bottom: 1px solid var(--border);
+}
+.modal-header h2 { font-size: 16px; color: #fff; }
+.close-btn {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--border); border: none;
+  color: var(--text); font-size: 18px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.modal-body { padding: 18px; }
+
+/* 设置弹窗 */
+.settings-group { margin-bottom: 18px; }
+.settings-group label { display: block; font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+.settings-group .desc { font-size: 12px; color: var(--muted); margin-bottom: 8px; line-height: 1.5; }
+.api-key-input {
+  width: 100%; padding: 11px 12px;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 10px; color: var(--text);
+  font-size: 14px; font-family: monospace; outline: none;
+}
+.api-key-input:focus { border-color: var(--accent); }
+.api-key-input::placeholder { color: #555; font-family: inherit; }
+.api-key-status { margin-top: 6px; font-size: 11px; display: flex; align-items: center; gap: 5px; }
+.api-key-status.ok { color: var(--success); }
+.api-key-status.err { color: #ef4444; }
+.save-settings-btn {
+  width: 100%; padding: 12px;
+  background: var(--accent); border: none;
+  border-radius: 10px; color: #fff;
+  font-size: 14px; font-weight: 700;
+  cursor: pointer; font-family: inherit;
+}
+.save-settings-btn:hover { background: #ff5a75; }
+.settings-divider { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+.api-link { font-size: 12px; color: var(--accent); text-decoration: none; }
+.api-link:hover { text-decoration: underline; }
+.usage-tips {
+  background: rgba(124,58,237,0.08); border: 1px solid rgba(124,58,237,0.2);
+  border-radius: 10px; padding: 12px; margin-top: 14px;
+}
+.usage-tips h4 { font-size: 12px; color: #a78bfa; margin-bottom: 6px; }
+.usage-tips ul { font-size: 11px; color: var(--muted); padding-left: 14px; line-height: 1.8; }
+
+/* 历史弹窗 */
+.history-list { padding: 14px 18px 36px; }
+.history-item {
+  padding: 12px; border-radius: 10px; margin-bottom: 6px;
+  background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+  cursor: pointer; transition: all 0.2s;
+}
+.history-item:hover { background: rgba(233,69,96,0.08); border-color: var(--accent); }
+.history-item-date { font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+.history-item-preview { font-size: 11px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.history-empty { text-align: center; padding: 36px 20px; color: var(--muted); font-size: 13px; }
+
+/* 日期选择器 */
+.date-picker-modal {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7); z-index: 300;
+  align-items: center; justify-content: center;
+}
+.date-picker-modal.show { display: flex; }
+.date-picker-box {
+  background: var(--card); border-radius: 14px;
+  padding: 18px; width: 90%; max-width: 280px;
+  border: 1px solid var(--border);
+}
+.date-picker-box h3 { color: #fff; font-size: 15px; margin-bottom: 12px; text-align: center; }
+.date-input {
+  width: 100%; padding: 10px; background: var(--bg);
+  border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text); font-size: 14px; font-family: inherit;
+  text-align: center; margin-bottom: 12px;
+}
+.date-picker-btns { display: flex; gap: 8px; }
+.date-picker-btns button {
+  flex: 1; padding: 9px; border-radius: 8px; border: none;
+  font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;
+}
+.btn-cancel { background: var(--border); color: var(--text); }
+.btn-confirm { background: var(--accent); color: #fff; }
+
+/* 历史详情 */
+.detail-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 250; overflow-y: auto; }
+.detail-modal.show { display: block; }
+.detail-content { max-width: 640px; margin: 0 auto; padding: 18px 12px 60px; }
+.detail-back {
+  display: flex; align-items: center; gap: 6px;
+  color: var(--accent); font-size: 13px;
+  cursor: pointer; margin-bottom: 14px;
+  background: none; border: none; font-family: inherit; padding: 0;
+}
+.detail-header {
+  background: var(--card); border-radius: 14px;
+  padding: 12px 16px; margin-bottom: 12px;
+  border: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.detail-header h2 { font-size: 15px; color: #fff; }
+.detail-header span { font-size: 11px; color: var(--accent); }
+.detail-section {
+  background: var(--card); border-radius: 12px;
+  padding: 12px 14px; margin-bottom: 8px;
+  border: 1px solid var(--border);
+}
+.detail-q { font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+.detail-tab-row { display: flex; gap: 4px; margin-bottom: 6px; }
+.detail-tab {
+  padding: 3px 10px; border-radius: 10px;
+  font-size: 10px; font-weight: 600;
+  border: 1px solid var(--border); background: transparent;
+  color: var(--muted); cursor: pointer; font-family: inherit;
+}
+.detail-tab.active { border-color: var(--accent); color: var(--accent); }
+.detail-text { font-size: 12px; line-height: 1.8; color: var(--text); white-space: pre-wrap; }
+.empty-text { color: #444; font-style: italic; }
+
+/* Toast */
+.toast {
+  position: fixed; top: 70px; left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: var(--card); border: 1px solid var(--border);
+  color: var(--text); padding: 8px 18px;
+  border-radius: 24px; font-size: 13px; font-weight: 500;
+  z-index: 9999; opacity: 0; transition: all 0.3s;
+  pointer-events: none; white-space: nowrap;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.success { border-color: var(--success); }
+.toast.error { border-color: #ef4444; }
+
+/* 选择应用弹窗 */
+.apply-modal {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7); z-index: 280;
+  align-items: center; justify-content: center;
+}
+.apply-modal.show { display: flex; }
+.apply-box {
+  background: var(--card); border-radius: 14px;
+  padding: 18px; width: 90%; max-width: 320px;
+  border: 1px solid var(--border);
+}
+.apply-box h3 { color: #fff; font-size: 15px; margin-bottom: 14px; text-align: center; }
+.apply-btns { display: flex; flex-direction: column; gap: 8px; }
+.apply-btn {
+  padding: 11px; border-radius: 10px; border: 1px solid var(--border);
+  background: transparent; color: var(--text);
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  font-family: inherit; text-align: center; transition: all 0.2s;
+}
+.apply-btn:hover { border-color: var(--accent); color: var(--accent); }
+.apply-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.apply-btn.primary:hover { background: #ff5a75; }
+</style>
+</head>
+<body>
+
+<!-- 录音状态条 -->
+<div class="recording-bar" id="recordingBar">
+  <div class="rec-bar-left">
+    <div class="rec-dot"></div>
+    <span>正在录音</span>
+    <span id="recTimer">00:00</span>
+    <span style="font-size:11px;opacity:0.7;" id="recQuestion"></span>
+  </div>
+  <button class="rec-stop-btn" onclick="stopVoice()">⏹ 停止</button>
+</div>
+
+<!-- 顶栏 -->
+<div class="header">
+  <h1>📖 复盘册子 <span>v2.0</span></h1>
+  <div class="header-right">
+    <button class="icon-btn" onclick="showSettings()">⚙️</button>
+    <div class="date-display" id="dateDisplay" onclick="showDatePicker()"></div>
+  </div>
+</div>
+
+<!-- 主内容 -->
+<div class="main">
+  <div class="section-label">📋 每日复盘 · 长按语音可持续录音1小时+</div>
+  <div id="questionsContainer"></div>
+</div>
+
+<!-- 底部栏 -->
+<div class="bottom-bar">
+  <button class="bottom-btn btn-history" onclick="showHistory()">📋 历史</button>
+  <button class="bottom-btn btn-today" onclick="goToday()">📅 今天</button>
+</div>
+
+<!-- 设置弹窗 -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>⚙️ 设置</h2>
+      <button class="close-btn" onclick="closeSettings()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="settings-group">
+        <label>🔑 SiliconFlow API Key</label>
+        <div class="desc">
+          AI 功能需要 SiliconFlow API（国内可用，¥1≈10万字）。<br>
+          <a class="api-link" href="https://cloud.siliconflow.cn" target="_blank">👉 点击获取 API Key →</a>
+        </div>
+        <input type="password" class="api-key-input" id="apiKeyInput" placeholder="sk-xxxxxxxx" autocomplete="off">
+        <div class="api-key-status" id="apiKeyStatus"></div>
+      </div>
+      <button class="save-settings-btn" onclick="saveSettings()">保存设置</button>
+      <hr class="settings-divider">
+      <div class="settings-group" style="margin-bottom:0">
+        <label>💡 功能说明</label>
+        <div class="usage-tips">
+          <h4>🎙️ 语音输入</h4>
+          <ul>
+            <li>点击🎤开始录音，可连续说1小时+</li>
+            <li>实时显示转写文字</li>
+            <li>停止后自动AI润色，双栏对比</li>
+          </ul>
+          <h4 style="margin-top:10px">🤖 AI功能</h4>
+          <ul>
+            <li>✂️ 精简 — 去除语气词口头禅</li>
+            <li>✍️ 润色 — 口语变书面</li>
+            <li>🧠 总结 — 一句话核心观点</li>
+            <li>💎 金句 — 提取最有价值的话</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 历史弹窗 -->
+<div class="modal-overlay" id="historyModal">
+  <div class="modal" style="margin-top:40px">
+    <div class="modal-header">
+      <h2>📚 复盘历史</h2>
+      <button class="close-btn" onclick="closeHistory()">×</button>
+    </div>
+    <div class="history-list" id="historyList"></div>
+  </div>
+</div>
+
+<!-- 日期选择器 -->
+<div class="date-picker-modal" id="datePicker">
+  <div class="date-picker-box">
+    <h3>选择日期</h3>
+    <input type="date" class="date-input" id="dateInput">
+    <div class="date-picker-btns">
+      <button class="btn-cancel" onclick="closeDatePicker()">取消</button>
+      <button class="btn-confirm" onclick="confirmDate()">确定</button>
+    </div>
+  </div>
+</div>
+
+<!-- 历史详情 -->
+<div class="detail-modal" id="detailModal">
+  <div class="detail-content" id="detailContent"></div>
+</div>
+
+<!-- AI结果应用弹窗 -->
+<div class="apply-modal" id="applyModal">
+  <div class="apply-box">
+    <h3>应用到</h3>
+    <div class="apply-btns" id="applyBtns"></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// 常量 & 状态
+// ============================================================
+const QUESTIONS = [
+  { text: '我做对了什么？', hint: '沉淀' },
+  { text: '我做错了什么？', hint: '问题' },
+  { text: '当时怎么想的？为什么会这样？', hint: '原因' },
+  { text: '重新来怎么做？', hint: '改进' },
+  { text: '下次具体怎么做？', hint: '行动' }
+];
+
+const STORAGE_KEY = 'fanpan_records_v3';
+const API_KEY_STORAGE = 'fanpan_api_key';
+const API_URL = 'https://api.siliconflow.cn/v1/chat/completions';
+const MODEL = 'deepseek-ai/DeepSeek-V4-Flash';
+
+let currentDate = getTodayStr();
+let currentRecording = null;     // 当前录音的问题编号
+let recognition = null;
+let recordingTimer = null;
+let recordingSeconds = 0;
+let isRecording = false;
+let fullTranscript = '';          // 累积的完整转写文本
+let interimText = '';             // 当前中间结果
+
+// AI处理状态
+let aiProcessing = {};           // { 1: 'loading'|'done'|null, ... }
+
+// ============================================================
+// 工具函数
+// ============================================================
+function getTodayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+}
+function pad(n) { return String(n).padStart(2,'0'); }
+
+function formatDateCN(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00');
+  const weekdays = ['周日','周一','周二','周三','周四','周五','周六'];
+  return `${d.getMonth()+1}月${d.getDate()}日 ${weekdays[d.getDay()]}`;
+}
+
+function showToast(msg, type='default') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function formatTime(sec) {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${pad(m)}:${pad(s)}`;
+}
+
+// ============================================================
+// 动态生成问题块
+// ============================================================
+function renderQuestions() {
+  const container = document.getElementById('questionsContainer');
+  container.innerHTML = QUESTIONS.map((q, i) => {
+    const num = i + 1;
+    return `
+    <div class="q-block" id="qblock${num}">
+      <div class="q-header">
+        <div class="q-header-left">
+          <div class="q-number">${num}</div>
+          <div class="q-label">${q.text}<span class="q-hint">(${q.hint})</span></div>
+        </div>
+        <div class="q-header-right">
+          <button class="voice-btn" id="voiceBtn${num}" onclick="toggleVoice(${num})" title="点击开始/停止录音">
+            <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="tab-bar">
+        <button class="tab-btn active" id="tabOriginal${num}" onclick="switchTab(${num},'original')">📝 原文</button>
+        <button class="tab-btn" id="tabPolished${num}" onclick="switchTab(${num},'polished')">✨ AI润色版</button>
+      </div>
+      <div class="tab-panel active" id="panelOriginal${num}">
+        <textarea class="answer-area" id="original${num}" placeholder="点击🎤录音，或直接输入…" oninput="saveField(${num},'original')"></textarea>
+      </div>
+      <div class="tab-panel" id="panelPolished${num}">
+        <textarea class="answer-area" id="polished${num}" placeholder="AI润色结果将显示在这里…" oninput="saveField(${num},'polished')" style="color:#c4b5fd;"></textarea>
+      </div>
+      <div class="ai-toolbar">
+        <button class="ai-action-btn" id="btnClean${num}" onclick="runAI(${num},'clean')">
+          <span class="spinner"></span><span class="btn-label">✂️ 精简</span>
+        </button>
+        <button class="ai-action-btn" id="btnPolish${num}" onclick="runAI(${num},'polish')">
+          <span class="spinner"></span><span class="btn-label">✍️ 润色</span>
+        </button>
+        <button class="ai-action-btn" id="btnSummary${num}" onclick="runAI(${num},'summary')">
+          <span class="spinner"></span><span class="btn-label">🧠 总结</span>
+        </button>
+        <button class="ai-action-btn" id="btnGolden${num}" onclick="runAI(${num},'golden')">
+          <span class="spinner"></span><span class="btn-label">💎 金句</span>
+        </button>
+        <button class="ai-action-btn" id="btnAll${num}" onclick="runAI(${num},'all')" style="border-color:var(--accent2);color:var(--accent2);">
+          <span class="spinner"></span><span class="btn-label">✨ 全优化</span>
+        </button>
+      </div>
+      <div class="save-hint" id="save${num}"></div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// Tab 切换
+// ============================================================
+function switchTab(num, tab) {
+  document.getElementById('tabOriginal'+num).classList.toggle('active', tab==='original');
+  document.getElementById('tabPolished'+num).classList.toggle('active', tab==='polished');
+  document.getElementById('panelOriginal'+num).classList.toggle('active', tab==='original');
+  document.getElementById('panelPolished'+num).classList.toggle('active', tab==='polished');
+}
+
+// ============================================================
+// 存储
+// ============================================================
+function getRecords() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+  catch(e) { return {}; }
+}
+function saveRecords(records) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+}
+
+function getQuestionData(num) {
+  const records = getRecords();
+  const rec = records[currentDate] || {};
+  return rec['q'+num] || { original: '', polished: '' };
+}
+
+function saveField(num, field) {
+  const val = document.getElementById(field+num).value;
+  const records = getRecords();
+  if (!records[currentDate]) records[currentDate] = {};
+  if (!records[currentDate]['q'+num]) records[currentDate]['q'+num] = { original: '', polished: '' };
+  records[currentDate]['q'+num][field] = val;
+  records[currentDate].savedAt = new Date().toISOString();
+  saveRecords(records);
+  showSaveHint(num);
+}
+
+function saveAnswer(num) {
+  // 保存当前两个字段
+  const orig = document.getElementById('original'+num).value;
+  const pol = document.getElementById('polished'+num).value;
+  const records = getRecords();
+  if (!records[currentDate]) records[currentDate] = {};
+  records[currentDate]['q'+num] = { original: orig, polished: pol };
+  records[currentDate].savedAt = new Date().toISOString();
+  saveRecords(records);
+}
+
+function showSaveHint(num) {
+  const el = document.getElementById('save'+num);
+  el.textContent = '✓ 已保存'; el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+function loadRecord(dateStr) {
+  currentDate = dateStr;
+  const records = getRecords();
+  const rec = records[dateStr] || {};
+  for (let i = 1; i <= 5; i++) {
+    const qd = rec['q'+i] || { original: '', polished: '' };
+    document.getElementById('original'+i).value = qd.original || '';
+    document.getElementById('polished'+i).value = qd.polished || '';
+    // 重置tab到原文
+    switchTab(i, 'original');
+    // 清除AI状态标记
+    updateAITabBadge(i, null);
+  }
+  document.getElementById('dateDisplay').textContent = formatDateCN(dateStr);
+}
+
+function saveCurrentAndLoad(dateStr) {
+  for (let i = 1; i <= 5; i++) saveAnswer(i);
+  loadRecord(dateStr);
+}
+
+function goToday() { saveCurrentAndLoad(getTodayStr()); }
+
+// ============================================================
+// AI Tab Badge 状态
+// ============================================================
+function updateAITabBadge(num, status) {
+  const tabBtn = document.getElementById('tabPolished'+num);
+  // 移除旧badge
+  const old = tabBtn.querySelector('.badge');
+  if (old) old.remove();
+  if (status === 'loading') {
+    tabBtn.insertAdjacentHTML('beforeend', '<span class="badge ai-loading">⏳</span>');
+  } else if (status === 'done') {
+    tabBtn.insertAdjacentHTML('beforeend', '<span class="badge ai-done">✓</span>');
+  }
+}
+
+// ============================================================
+// 语音输入（长时间连续录音）
+// ============================================================
+function toggleVoice(num) {
+  if (isRecording && currentRecording === num) {
+    stopVoice();
+  } else if (isRecording && currentRecording !== num) {
+    // 切换到新问题
+    stopVoice();
+    setTimeout(() => startVoice(num), 300);
+  } else {
+    startVoice(num);
+  }
+}
+
+function startVoice(num) {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    showToast('请使用 Chrome 浏览器支持语音输入', 'error');
+    return;
+  }
+
+  // 初始化
+  isRecording = true;
+  currentRecording = num;
+  fullTranscript = document.getElementById('original'+num).value || '';
+  interimText = '';
+  recordingSeconds = 0;
+
+  // UI 更新
+  document.getElementById('voiceBtn'+num).classList.add('recording');
+  document.getElementById('qblock'+num).classList.add('recording-active');
+  document.getElementById('recordingBar').classList.add('show');
+  document.getElementById('recQuestion').textContent = '第'+num+'题';
+  switchTab(num, 'original');
+
+  // 计时器
+  updateTimerDisplay();
+  recordingTimer = setInterval(() => {
+    recordingSeconds++;
+    updateTimerDisplay();
+  }, 1000);
+
+  // 开始识别
+  startRecognition();
+}
+
+function startRecognition() {
+  if (recognition) {
+    try { recognition.stop(); } catch(e) {}
+    recognition = null;
+  }
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SpeechRecognition();
+  recognition.lang = 'zh-CN';
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.maxAlternatives = 1;
+
+  recognition.onresult = function(event) {
+    let newFinal = '';
+    let currentInterim = '';
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      if (event.results[i].isFinal) {
+        newFinal += event.results[i][0].transcript;
+      } else {
+        currentInterim += event.results[i][0].transcript;
+      }
+    }
+    if (newFinal) {
+      fullTranscript += newFinal;
+      // 自动保存
+      const ta = document.getElementById('original'+currentRecording);
+      ta.value = fullTranscript;
+      saveField(currentRecording, 'original');
+    }
+    // 显示中间结果（原文textarea中追加临时文字）
+    interimText = currentInterim;
+    if (currentRecording) {
+      const ta = document.getElementById('original'+currentRecording);
+      ta.value = fullTranscript + (interimText ? '｜' + interimText : '');
+    }
+  };
+
+  recognition.onend = function() {
+    // 如果还在录音状态，自动重启（处理Chrome 60秒限制）
+    if (isRecording && currentRecording) {
+      setTimeout(() => {
+        if (isRecording && currentRecording) {
+          startRecognition();
+        }
+      }, 100);
+    }
+  };
+
+  recognition.onerror = function(event) {
+    console.warn('Speech recognition error:', event.error);
+    if (event.error === 'not-allowed') {
+      showToast('请允许麦克风权限', 'error');
+      stopVoice();
+    } else if (event.error === 'no-speech') {
+      // 静默，自动重启
+      if (isRecording && currentRecording) {
+        setTimeout(() => {
+          if (isRecording && currentRecording) startRecognition();
+        }, 300);
+      }
+    }
+    // 其他错误也尝试重启
+    else if (isRecording && currentRecording) {
+      setTimeout(() => {
+        if (isRecording && currentRecording) startRecognition();
+      }, 500);
+    }
+  };
+
+  try {
+    recognition.start();
+  } catch(e) {
+    console.warn('Recognition start error:', e);
+    if (isRecording && currentRecording) {
+      setTimeout(() => startRecognition(), 500);
+    }
+  }
+}
+
+function stopVoice() {
+  isRecording = false;
+  const num = currentRecording;
+
+  // 停止识别
+  if (recognition) {
+    try { recognition.stop(); } catch(e) {}
+    recognition = null;
+  }
+
+  // 停止计时器
+  clearInterval(recordingTimer);
+  recordingTimer = null;
+
+  // UI恢复
+  document.getElementById('recordingBar').classList.remove('show');
+  if (num) {
+    document.getElementById('voiceBtn'+num).classList.remove('recording');
+    document.getElementById('qblock'+num).classList.remove('recording-active');
+
+    // 最终保存（去掉中间结果）
+    const ta = document.getElementById('original'+num);
+    ta.value = fullTranscript;
+    saveField(num, 'original');
+
+    // 自动触发AI润色
+    if (fullTranscript.trim()) {
+      autoPolish(num, fullTranscript);
+    }
+  }
+
+  currentRecording = null;
+  fullTranscript = '';
+  interimText = '';
+}
+
+function updateTimerDisplay() {
+  document.getElementById('recTimer').textContent = formatTime(recordingSeconds);
+}
+
+// ============================================================
+// 自动AI润色（录音结束后触发）
+// ============================================================
+async function autoPolish(num, text) {
+  const apiKey = getApiKey();
+  if (!apiKey) {
+    showToast('请先配置 API Key，录音内容已保存为原文', 'error');
+    return;
+  }
+
+  updateAITabBadge(num, 'loading');
+  aiProcessing[num] = 'loading';
+
+  try {
+    const prompt = `请润色以下复盘文字，使其更流畅、清晰、有条理，但保持原意不变。直接输出润色后的文字，不要任何解释：
+
+"""
+${text}
+---`;
+    const result = await callAI(prompt, apiKey);
+    document.getElementById('polished'+num).value = result;
+    saveField(num, 'polished');
+    updateAITabBadge(num, 'done');
+    aiProcessing[num] = 'done';
+    // 自动切换到润色版
+    switchTab(num, 'polished');
+    showToast(`第${num}题 AI润色完成 ✓`, 'success');
+  } catch(e) {
+    updateAITabBadge(num, null);
+    aiProcessing[num] = null;
+    showToast('AI润色失败：' + e.message, 'error');
+  }
+}
+
+// ============================================================
+// AI API 调用
+// ============================================================
+async function callAI(prompt, apiKey) {
+  const response = await fetch(API_URL, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: MODEL,
+      messages: [{ role: 'user', content: prompt }],
+      stream: false
+    })
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.error?.message || `请求失败 ${response.status}`);
+  }
+  const data = await response.json();
+  return data.choices[0].message.content.trim();
+}
+
+function getApiKey() {
+  return localStorage.getItem(API_KEY_STORAGE) || '';
+}
+
+function setLoading(btnId, loading) {
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  if (loading) { btn.classList.add('loading'); btn.disabled = true; }
+  else { btn.classList.remove('loading'); btn.disabled = false; }
+}
+
+// ============================================================
+// AI 功能（工具栏按钮）
+// ============================================================
+const AI_PROMPTS = {
+  clean: (text) => `请帮我精简以下文字中的语气词、重复词和无意义的口头禅（如"嗯、啊、这个、那个、就是、的话、然后、其实"等），保持原意不变，直接输出处理后的文字，不要解释：
+
+"""
+${text}
+---`,
+
+  polish: (text) => `请帮我润色优化以下复盘文字，提升表达质量，使其更流畅、清晰、有条理。直接输出结果，不要解释：
+
+"""
+${text}
+---`,
+
+  summary: (text) => `请帮我提炼以下文字的核心观点，用简洁的一句话概括。直接输出结果，不要"概括如下"等前缀：
+
+"""
+${text}
+---`,
+
+  golden: (text) => `请从以下文字中提取1-3句最有价值的金句。要求简短有力、有洞察力。每句一行，只输出金句，不要解释：
+
+"""
+${text}
+---`,
+
+  all: (text) => `请对以下复盘文字同时进行4种处理，用 |----| 分隔每个部分：
+
+"""
+${text}
+----
+
+##精简##：去除语气词口头禅后的文字
+##润色##：润色后的文字
+##总结##：一句话概括核心观点
+##金句##：1-3句最有价值的金句（每句一行）
+
+格式要求：严格按 |----| 分隔，四部分依次输出，不要其他解释文字`
+};
+
+async function runAI(num, action) {
+  // 获取当前可见tab的文本
+  const originalText = document.getElementById('original'+num).value.trim();
+  const polishedText = document.getElementById('polished'+num).value.trim();
+  // 优先用原文作为AI处理输入
+  const text = originalText || polishedText;
+  if (!text) { showToast('请先填写内容', 'error'); return; }
+
+  const apiKey = getApiKey();
+  if (!apiKey) { showToast('请先配置 API Key', 'error'); return; }
+
+  const btnId = `btn${action.charAt(0).toUpperCase()+action.slice(1)}${num}`;
+  setLoading(btnId, true);
+
+  try {
+    const prompt = AI_PROMPTS[action](text);
+    const result = await callAI(prompt, apiKey);
+
+    if (action === 'all') {
+      // 全优化：拆分结果
+      const parts = result.split('|----|').map(s => s.trim()).filter(Boolean);
+      if (parts.length >= 4) {
+        // 组合显示到润色版
+        const combined = `【精简语气词】\n${parts[0]}\n\n【润色文本】\n${parts[1]}\n\n【智能总结】\n${parts[2]}\n\n【提取金句】\n${parts[3]}`;
+        document.getElementById('polished'+num).value = combined;
+        saveField(num, 'polished');
+        switchTab(num, 'polished');
+        updateAITabBadge(num, 'done');
+        showToast(`第${num}题 全优化完成 ✨`, 'success');
+      } else {
+        // fallback: 直接显示
+        document.getElementById('polished'+num).value = result;
+        saveField(num, 'polished');
+        switchTab(num, 'polished');
+      }
+    } else {
+      // 单项：结果显示到润色版
+      const labels = { clean: '【精简】', polish: '【润色】', summary: '【总结】', golden: '【金句】' };
+      const existing = document.getElementById('polished'+num).value;
+      const newText = existing ? `${existing}\n\n${labels[action]}\n${result}` : `${labels[action]}\n${result}`;
+      document.getElementById('polished'+num).value = newText;
+      saveField(num, 'polished');
+      switchTab(num, 'polished');
+      updateAITabBadge(num, 'done');
+      showToast(`第${num}题 ${labels[action]} 完成 ✓`, 'success');
+    }
+  } catch(e) {
+    showToast('AI处理失败：' + e.message, 'error');
+  } finally {
+    setLoading(btnId, false);
+  }
+}
+
+// ============================================================
+// 日期 & 历史
+// ============================================================
+function showDatePicker() {
+  document.getElementById('datePicker').classList.add('show');
+  document.getElementById('dateInput').value = currentDate;
+  document.getElementById('dateInput').max = getTodayStr();
+}
+function closeDatePicker() { document.getElementById('datePicker').classList.remove('show'); }
+function confirmDate() {
+  const val = document.getElementById('dateInput').value;
+  if (val) saveCurrentAndLoad(val);
+  closeDatePicker();
+}
+
+function showHistory() {
+  for (let i=1; i<=5; i++) saveAnswer(i);
+  const records = getRecords();
+  const dates = Object.keys(records).sort().reverse();
+  const listEl = document.getElementById('historyList');
+  if (dates.length === 0) {
+    listEl.innerHTML = '<div class="history-empty">还没有复盘记录<br>从今天开始吧！</div>';
+  } else {
+    listEl.innerHTML = dates.map(d => {
+      const rec = records[d];
+      const preview = QUESTIONS.map((q,i) => {
+        const qd = rec['q'+(i+1)] || {};
+        return (qd.original || qd.polished || '').substring(0,20);
+      }).filter(Boolean).join(' | ');
+      const savedTime = rec.savedAt ? new Date(rec.savedAt).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}) : '';
+      return `<div class="history-item" onclick="showDetail('${d}')">
+        <div class="history-item-date">${formatDateCN(d)} ${savedTime ? '⏰'+savedTime : ''}</div>
+        <div class="history-item-preview">${preview || '（空白）'}</div>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('historyModal').classList.add('show');
+}
+function closeHistory() { document.getElementById('historyModal').classList.remove('show'); }
+
+function showDetail(dateStr) {
+  closeHistory();
+  const records = getRecords();
+  const rec = records[dateStr] || {};
+  const content = document.getElementById('detailContent');
+  content.innerHTML = `
+    <button class="detail-back" onclick="closeDetail()">← 返回</button>
+    <div class="detail-header">
+      <h2>📖 ${formatDateCN(dateStr)}</h2>
+      <span>${dateStr}</span>
+    </div>
+    ${QUESTIONS.map((q,i) => {
+      const num = i+1;
+      const qd = rec['q'+num] || {};
+      const hasOriginal = qd.original && qd.original.trim();
+      const hasPolished = qd.polished && qd.polished.trim();
+      return `
+      <div class="detail-section" id="detailQ${num}">
+        <div class="detail-q">${num}. ${q.text}</div>
+        <div class="detail-tab-row">
+          <button class="detail-tab ${hasOriginal ? 'active' : ''}" onclick="detailTab(${num},'original',this)">📝 原文</button>
+          <button class="detail-tab ${!hasOriginal && hasPolished ? 'active' : ''}" onclick="detailTab(${num},'polished',this)">✨ AI润色版</button>
+        </div>
+        <div class="detail-text" id="detailText${num}">${hasOriginal ? escapeHtml(qd.original) : (hasPolished ? escapeHtml(qd.polished) : '<span class="empty-text">（未填写）</span>')}</div>
+      </div>`;
+    }).join('')}
+  `;
+  // 存储详情数据供tab切换
+  content._detailData = rec;
+  document.getElementById('detailModal').classList.add('show');
+}
+
+function detailTab(num, tab, btn) {
+  const rec = document.getElementById('detailContent')._detailData || {};
+  const qd = rec['q'+num] || {};
+  const el = document.getElementById('detailText'+num);
+  // 更新tab样式
+  btn.parentElement.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  // 更新内容
+  const text = qd[tab] || '';
+  el.innerHTML = text.trim() ? escapeHtml(text) : '<span class="empty-text">（未填写）</span>';
+}
+
+function escapeHtml(text) {
+  return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+function closeDetail() {
+  document.getElementById('detailModal').classList.remove('show');
+}
+
+// ============================================================
+// 设置
+// ============================================================
+function showSettings() {
+  document.getElementById('apiKeyInput').value = localStorage.getItem(API_KEY_STORAGE) || '';
+  updateApiStatus(document.getElementById('apiKeyInput').value);
+  document.getElementById('settingsModal').classList.add('show');
+}
+function closeSettings() { document.getElementById('settingsModal').classList.remove('show'); }
+
+function updateApiStatus(key) {
+  const el = document.getElementById('apiKeyStatus');
+  if (!key || key.length < 10) {
+    el.className = 'api-key-status err';
+    el.innerHTML = '⚠️ 未配置，AI功能不可用';
+  } else {
+    el.className = 'api-key-status ok';
+    el.innerHTML = '✅ 已配置';
+  }
+}
+
+document.getElementById('apiKeyInput').addEventListener('input', function() {
+  updateApiStatus(this.value);
+});
+
+function saveSettings() {
+  const key = document.getElementById('apiKeyInput').value.trim();
+  localStorage.setItem(API_KEY_STORAGE, key);
+  updateApiStatus(key);
+  closeSettings();
+  if (key.length > 10) showToast('API Key 已保存 ✨', 'success');
+}
+
+// ============================================================
+// 初始化
+// ============================================================
+window.onload = function() {
+  renderQuestions();
+  loadRecord(getTodayStr());
+  // 自动聚焦第一个问题
+  setTimeout(() => document.getElementById('original1').focus(), 300);
+};
+
+// 快捷键
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeHistory(); closeDatePicker(); closeDetail(); closeSettings();
+    document.getElementById('applyModal').classList.remove('show');
+  }
+});
+
+// 点击背景关闭弹窗
+['settingsModal','historyModal','datePicker','applyModal'].forEach(id => {
+  document.getElementById(id).addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('show');
+  });
+});
+
+// ============================================================
+// PWA Service Worker
+// ============================================================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

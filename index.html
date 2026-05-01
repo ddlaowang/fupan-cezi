@@ -910,6 +910,40 @@ let voiceLastStartTime = 0;
 const MAX_VOICE_RESTARTS = 5;
 const MIN_RESTART_INTERVAL = 2000;
 
+function stopVoice() {
+  console.log('[Voice] Stopping recording...');
+  isRecording = false;
+  
+  // 停止语音识别
+  if (recognition) {
+    try { recognition.stop(); } catch(e) {}
+    recognition = null;
+  }
+  
+  // 清除计时器
+  if (recordingTimer) {
+    clearInterval(recordingTimer);
+    recordingTimer = null;
+  }
+  
+  // 重置UI状态
+  if (currentRecording) {
+    document.getElementById('voiceBtn' + currentRecording).classList.remove('recording');
+    document.getElementById('qblock' + currentRecording).classList.remove('recording-active');
+  }
+  document.getElementById('recordingBar').classList.remove('show');
+  
+  // 保存当前结果
+  if (currentRecording) {
+    saveField(currentRecording, 'original');
+  }
+  
+  currentRecording = null;
+  recordingSeconds = 0;
+  voiceRestartCount = 0;
+  console.log('[Voice] Recording stopped');
+}
+
 function toggleVoice(num) {
   if (isRecording && currentRecording === num) {
     stopVoice();
@@ -1004,7 +1038,7 @@ function startRecognition() {
     if (isRecording && currentRecording) {
       var delay = 800 + Math.random() * 500;
       setTimeout(function() {
-        if (isRecording && currentRecognition) startRecognition();
+        if (isRecording && currentRecording) startRecognition();
       }, delay);
     }
   };

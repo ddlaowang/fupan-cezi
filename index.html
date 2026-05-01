@@ -538,7 +538,7 @@ body {
 
 <!-- 顶栏 -->
 <div class="header">
-  <h1>📖 复盘册子 <span>v2.0</span></h1>
+  <h1>📖 复盘册子 <span>v2.2.5</span></h1>
   <div class="header-right">
     <button class="bg-settings-btn" onclick="showBgSettings()">🎨</button>
     <button class="icon-btn" onclick="showSettings()">⚙️</button>
@@ -961,8 +961,10 @@ function startVoice(num) {
   }, 1000);
 
   if (mode === 'webspeech') {
+    showToast('⚠️ 使用WebSpeech模式', 'default');
     startWebSpeech();
   } else {
+    showToast('🎙️ 录音模式启动...', 'default');
     startMediaRecorder();
   }
 }
@@ -1180,6 +1182,7 @@ async function startMediaRecorder() {
     // 每5秒产生一个数据块
     mediaRecorder.start(5000);
     console.log('MediaRecorder started, mimeType:', mimeType);
+    showToast('🎤 录音已开始 (格式:' + (mimeType || '默认') + ')', 'default');
 
   } catch(e) {
     console.error('MediaRecorder error:', e.name, e.message);
@@ -1243,6 +1246,7 @@ function stopVoiceUI() {
 function stopVoice() {
   const num = currentRecording;
   const mode = voiceMode === 'auto' ? detectVoiceMode() : voiceMode;
+  showToast('⏹ 停止录音 (mode=' + mode + ', recorder=' + (mediaRecorder ? mediaRecorder.state : 'null') + ')', 'default');
 
   // 停止WebSpeech
   if (recognition) {

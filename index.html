@@ -585,6 +585,8 @@ body {
         <div class="api-key-status" id="apiKeyStatus"></div>
       </div>
       <button class="save-settings-btn" onclick="saveSettings()">保存设置</button>
+      <button class="save-settings-btn" style="background:var(--border);margin-top:8px;" onclick="testMic()">🎤 测试录音功能</button>
+      <div id="micTestResult" style="font-size:12px;padding:8px 0;display:none;white-space:pre-line;"></div>
       <hr class="settings-divider">
       <div class="settings-group" style="margin-bottom:0">
         <label>💡 功能说明</label>
@@ -1050,6 +1052,35 @@ function startRecognition() {
   }
 }
 
+// --- 录音能力检测 ---
+let _micSupported = null; // null=未检测, true=支持, false=不支持, string=错误原因
+async function checkMicSupport() {
+  if (_micSupported !== null) return _micSupported;
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    _micSupported = '浏览器不支持getUserMedia，请用系统浏览器打开';
+    return _micSupported;
+  }
+  if (typeof MediaRecorder === 'undefined') {
+    _micSupported = '浏览器不支持MediaRecorder，请用系统浏览器打开';
+    return _micSupported;
+  }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    stream.getTracks().forEach(t => t.stop()); // 立即释放
+    _micSupported = true;
+    return true;
+  } catch(e) {
+    if (e.name === 'NotAllowedError') {
+      _micSupported = '麦克风权限被拒绝，请在浏览器设置中允许';
+    } else if (e.name === 'NotFoundError') {
+      _micSupported = '未找到麦克风设备';
+    } else {
+      _micSupported = '录音不可用：' + (e.message || e.name);
+    }
+    return _micSupported;
+  }
+}
+
 // --- MediaRecorder + 云ASR（手机/所有浏览器通用）---
 async function startMediaRecorder() {
   const apiKey = getApiKey();
@@ -1061,19 +1092,10 @@ async function startMediaRecorder() {
     return;
   }
 
-  // 检查浏览器是否支持录音
-  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-    // 微信内置浏览器可能不支持
-    showToast('当前浏览器不支持录音，请用系统浏览器打开此页面', 'error');
-    stopVoiceUI();
-    isRecording = false;
-    currentRecording = null;
-    return;
-  }
-
-  // 检查是否支持MediaRecorder
-  if (typeof MediaRecorder === 'undefined') {
-    showToast('当前浏览器不支持录音功能', 'error');
+  // 先检测录音能力
+  const micCheck = await checkMicSupport();
+  if (micCheck !== true) {
+    showToast(micCheck, 'error');
     stopVoiceUI();
     isRecording = false;
     currentRecording = null;
@@ -1097,7 +1119,13 @@ async function startMediaRecorder() {
     // 其他格式让浏览器自己选
 
     const options = mimeType ? { mimeType } : {};
-    mediaRecorder = new MediaRecorder(stream, options);
+    try {
+      mediaRecorder = new MediaRecorder(stream, options);
+    } catch(recErr) {
+      // 如果指定mimeType失败，让浏览器自己选
+      console.warn('MediaRecorder with mimeType failed, trying default:', recErr);
+      mediaRecorder = new MediaRecorder(stream);
+    }
 
     mediaRecorder.ondataavailable = function(e) {
       if (e.data && e.data.size > 0) {
@@ -1157,13 +1185,15 @@ async function startMediaRecorder() {
     console.log('MediaRecorder started, mimeType:', mimeType);
 
   } catch(e) {
-    console.error('MediaRecorder error:', e);
+    console.error('MediaRecorder error:', e.name, e.message);
     if (e.name === 'NotAllowedError') {
-      showToast('请允许麦克风权限', 'error');
+      showToast('麦克风权限被拒绝，请在浏览器设置中允许', 'error');
     } else if (e.name === 'NotFoundError') {
       showToast('未找到麦克风设备', 'error');
+    } else if (e.name === 'NotReadableError') {
+      showToast('麦克风被其他程序占用', 'error');
     } else {
-      showToast('录音启动失败：' + e.message, 'error');
+      showToast('录音启动失败：' + (e.name || '') + ' ' + (e.message || '未知错误'), 'error');
     }
     stopVoiceUI();
     isRecording = false;
@@ -1318,6 +1348,62 @@ async function callAI(prompt, apiKey) {
 
 function getApiKey() {
   return localStorage.getItem(API_KEY_STORAGE) || '';
+}
+
+// 测试录音功能
+async function testMic() {
+  const el = document.getElementById('micTestResult');
+  el.style.display = 'block';
+  el.style.color = 'var(--warning)';
+  el.textContent = '🔍 正在检测...';
+
+  // 1. 检查HTTPS
+  const isHTTPS = location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+  if (!isHTTPS) {
+    el.style.color = 'var(--accent)';
+    el.textContent = '❌ 必须用HTTPS才能录音（当前是' + location.protocol + '）';
+    return;
+  }
+  el.textContent = '✅ HTTPS ✓\n';
+
+  // 2. 检查getUserMedia
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    el.style.color = 'var(--accent)';
+    el.textContent = '❌ 浏览器不支持getUserMedia\n请用系统浏览器（Safari/Chrome）打开此页面';
+    return;
+  }
+  el.textContent += '✅ getUserMedia ✓\n';
+
+  // 3. 检查MediaRecorder
+  if (typeof MediaRecorder === 'undefined') {
+    el.style.color = 'var(--accent)';
+    el.textContent = '❌ 浏览器不支持MediaRecorder\n请用系统浏览器打开';
+    return;
+  }
+  el.textContent += '✅ MediaRecorder ✓\n';
+
+  // 4. 检查麦克风权限
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    stream.getTracks().forEach(t => t.stop());
+    el.textContent += '✅ 麦克风权限 ✓\n';
+  } catch(e) {
+    el.style.color = 'var(--accent)';
+    el.textContent = '❌ 麦克风不可用：' + e.name + ' - ' + e.message;
+    return;
+  }
+
+  // 5. 检查API Key
+  const key = getApiKey();
+  if (!key) {
+    el.style.color = 'var(--warning)';
+    el.textContent += '⚠️ 未配置API Key（语音识别需要）\n';
+  } else {
+    el.textContent += '✅ API Key ✓\n';
+  }
+
+  el.style.color = 'var(--success)';
+  el.textContent += '\n🎉 录音功能正常！';
 }
 
 function setLoading(btnId, loading) {

@@ -538,7 +538,7 @@ body {
 
 <!-- 顶栏 -->
 <div class="header">
-  <h1>📖 复盘册子 <span>v2.2.6</span></h1>
+  <h1>📖 复盘册子 <span>v2.2.7</span></h1>
   <div class="header-right">
     <button class="bg-settings-btn" onclick="showBgSettings()">🎨</button>
     <button class="icon-btn" onclick="showSettings()">⚙️</button>
@@ -1085,19 +1085,21 @@ async function checkMicSupport() {
 
 // --- MediaRecorder + 云ASR（手机/所有浏览器通用）---
 async function startMediaRecorder() {
+  showToast('[1] 检查API Key...', 'default');
   const apiKey = getApiKey();
   if (!apiKey) {
-    showToast('语音识别需要API Key，请先在设置中配置', 'error');
+    showToast('❌ 需要API Key才能识别语音', 'error');
     stopVoiceUI();
     isRecording = false;
     currentRecording = null;
     return;
   }
+  showToast('[2] API Key存在 ✓', 'default');
 
   try {
-    showToast('1/4 请求麦克风...', 'default');
+    showToast('[3] 请求麦克风...', 'default');
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    showToast('2/4 麦克风已获取', 'default');
+    showToast('[4] 麦克风已获取 ✓', 'default');
     audioChunks = [];
 
     // 选择最佳音频格式（SiliconFlow ASR 支持 mp3/wav/mp4/webm 等）
@@ -1114,15 +1116,19 @@ async function startMediaRecorder() {
 
     const options = mimeType ? { mimeType } : {};
     try {
+      showToast('[5] 创建MediaRecorder (格式:' + (mimeType||'默认') + ')...', 'default');
       mediaRecorder = new MediaRecorder(stream, options);
+      showToast('[6] MediaRecorder创建成功 ✓', 'default');
     } catch(recErr) {
       // 如果指定mimeType失败，让浏览器自己选
       console.warn('MediaRecorder with mimeType failed, trying default:', recErr);
-      showToast('3/4 格式不兼容，换默认格式', 'default');
+      showToast('[5b] 格式不兼容，换默认格式', 'default');
       mediaRecorder = new MediaRecorder(stream);
+      showToast('[6b] MediaRecorder默认格式创建成功 ✓', 'default');
     }
 
     mediaRecorder.ondataavailable = function(e) {
+      console.log('[ondataavailable] chunk size:', e.data ? e.data.size : 0);
       if (e.data && e.data.size > 0) {
         audioChunks.push(e.data);
       }
@@ -1136,7 +1142,7 @@ async function startMediaRecorder() {
       // 停止所有音频轨道
       stream.getTracks().forEach(t => t.stop());
 
-      showToast('录音已停止，正在处理...', 'default');
+      showToast('录音已停止(' + recordNum + ')，正在处理...', 'default');
       console.log('MediaRecorder onstop, recordNum:', recordNum, 'chunks:', audioChunks.length);
 
       if (audioChunks.length === 0) {
@@ -1184,19 +1190,18 @@ async function startMediaRecorder() {
 
     // 每5秒产生一个数据块
     mediaRecorder.start(5000);
-    showToast('4/4 录音已开始 ✓', 'success');
+    showToast('🎤 录音已开始 ✓', 'success');
     console.log('MediaRecorder started, mimeType:', mimeType);
 
   } catch(e) {
     console.error('MediaRecorder error:', e.name, e.message);
+    showToast('❌ 录音失败：' + (e.name || '') + ' ' + (e.message || '未知错误'), 'error');
     if (e.name === 'NotAllowedError') {
       showToast('麦克风权限被拒绝，请在浏览器设置中允许', 'error');
     } else if (e.name === 'NotFoundError') {
       showToast('未找到麦克风设备', 'error');
     } else if (e.name === 'NotReadableError') {
       showToast('麦克风被其他程序占用', 'error');
-    } else {
-      showToast('录音启动失败：' + (e.name || '') + ' ' + (e.message || '未知错误'), 'error');
     }
     stopVoiceUI();
     isRecording = false;

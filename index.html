@@ -903,398 +903,148 @@ function updateAITabBadge(num, status) {
 }
 
 // ============================================================
-// 语音输入 — 双模式：Web Speech API（桌面Chrome）+ MediaRecorder+云ASR（手机/所有浏览器）
+// 语音输入（长时间连续录音）v2.1 — 修复死循环
 // ============================================================
-const ASR_URL = 'https://api.siliconflow.cn/v1/audio/transcriptions';
-const ASR_MODEL = 'FunAudioLLM/SenseVoice';
-const hasWebSpeech = ('webkitSpeechRecognition' in window) || ('SpeechRecognition' in window);
-let mediaRecorder = null;
-let audioChunks = [];
-let voiceMode = 'auto'; // 'auto' | 'webspeech' | 'mediaRecorder'
-
-function detectVoiceMode() {
-  // 统一使用MediaRecorder+云ASR（最可靠，手机电脑都支持）
-  // WebSpeech在手机上虽然对象存在但不工作，在桌面Chrome上也不如云端ASR稳定
-  return 'mediaRecorder';
-}
+let voiceRestartCount = 0;
+let voiceLastStartTime = 0;
+const MAX_VOICE_RESTARTS = 5;
+const MIN_RESTART_INTERVAL = 2000;
 
 function toggleVoice(num) {
   if (isRecording && currentRecording === num) {
     stopVoice();
   } else if (isRecording && currentRecording !== num) {
     stopVoice();
-    setTimeout(() => startVoice(num), 300);
+    setTimeout(function() { startVoice(num); }, 500);
   } else {
     startVoice(num);
   }
 }
 
 function startVoice(num) {
-  const mode = voiceMode === 'auto' ? detectVoiceMode() : voiceMode;
-
-  // 初始化
-  isRecording = true;
-  currentRecording = num;
-  fullTranscript = document.getElementById('original'+num).value || '';
-  interimText = '';
-  recordingSeconds = 0;
-
-  // UI 更新
-  document.getElementById('voiceBtn'+num).classList.add('recording');
-  document.getElementById('qblock'+num).classList.add('recording-active');
-  document.getElementById('recordingBar').classList.add('show');
-  document.getElementById('recQuestion').textContent = '第'+num+'题';
-  // 显示语音模式
-  const modeLabel = document.getElementById('recModeLabel');
-  if (mode === 'webspeech') {
-    modeLabel.textContent = '🎙️ 实时录音';
-  } else {
-    modeLabel.textContent = '🎙️ 录音中（停止后识别）';
-  }
-  switchTab(num, 'original');
-
-  // 计时器
-  updateTimerDisplay();
-  recordingTimer = setInterval(() => {
-    recordingSeconds++;
-    updateTimerDisplay();
-  }, 1000);
-
-  if (mode === 'webspeech') {
-    showToast('⚠️ 使用WebSpeech模式', 'default');
-    startWebSpeech();
-  } else {
-    showToast('🎙️ 录音模式启动...', 'default');
-    startMediaRecorder();
-  }
-}
-
-// --- Web Speech API（桌面Chrome，实时转写）---
-function startWebSpeech() {
-  if (!hasWebSpeech) {
-    showToast('浏览器不支持语音识别，切换到录音模式', 'error');
-    startMediaRecorder();
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    showToast('你的浏览器不支持语音输入，请用 Chrome 打开', 'error');
     return;
   }
-  startRecognition();
+  var ua = navigator.userAgent.toLowerCase();
+  if (ua.indexOf('micromessenger') !== -1) {
+    showToast('微信内置浏览器不支持语音，请点右上角"..."用浏览器打开', 'error');
+    return;
+  }
+
+  isRecording = true;
+  currentRecording = num;
+  fullTranscript = document.getElementById('original' + num).value || '';
+  interimText = '';
+  recordingSeconds = 0;
+  voiceRestartCount = 0;
+
+  document.getElementById('voiceBtn' + num).classList.add('recording');
+  document.getElementById('qblock' + num).classList.add('recording-active');
+  document.getElementById('recordingBar').classList.add('show');
+  document.getElementById('recQuestion').textContent = '第' + num + '题';
+  switchTab(num, 'original');
+
+  updateTimerDisplay();
+  recordingTimer = setInterval(function() { recordingSeconds++; updateTimerDisplay(); }, 1000);
+
+  setTimeout(function() { startRecognition(); }, 500);
 }
 
 function startRecognition() {
-  if (recognition) {
-    try { recognition.stop(); } catch(e) {}
-    recognition = null;
+  var now = Date.now();
+  if (now - voiceLastStartTime < MIN_RESTART_INTERVAL) {
+    voiceRestartCount++;
+    if (voiceRestartCount >= MAX_VOICE_RESTARTS) {
+      console.warn('[Voice] Max restarts reached, stopping.');
+      showToast('语音识别启动失败（已重试5次），请确认使用Chrome浏览器后刷新页面重试', 'error');
+      stopVoice();
+      return;
+    }
+  } else {
+    voiceRestartCount = 0;
   }
+  voiceLastStartTime = now;
 
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  recognition = new SpeechRecognition();
+  if (recognition) { try { recognition.stop(); } catch(e) {} recognition = null; }
+
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SR();
   recognition.lang = 'zh-CN';
   recognition.continuous = true;
   recognition.interimResults = true;
   recognition.maxAlternatives = 1;
 
   recognition.onresult = function(event) {
-    let newFinal = '';
-    let currentInterim = '';
-    for (let i = event.resultIndex; i < event.results.length; i++) {
+    voiceRestartCount = 0;
+    var newFinal = '', curInterim = '';
+    for (var i = event.resultIndex; i < event.results.length; i++) {
       if (event.results[i].isFinal) {
         newFinal += event.results[i][0].transcript;
       } else {
-        currentInterim += event.results[i][0].transcript;
+        curInterim += event.results[i][0].transcript;
       }
     }
     if (newFinal) {
       fullTranscript += newFinal;
-      const ta = document.getElementById('original'+currentRecording);
+      var ta = document.getElementById('original' + currentRecording);
       ta.value = fullTranscript;
       saveField(currentRecording, 'original');
     }
-    interimText = currentInterim;
+    interimText = curInterim;
     if (currentRecording) {
-      const ta = document.getElementById('original'+currentRecording);
-      ta.value = fullTranscript + (interimText ? '｜' + interimText : '');
+      var ta2 = document.getElementById('original' + currentRecording);
+      ta2.value = fullTranscript + (interimText ? '|' + interimText : '');
     }
   };
 
   recognition.onend = function() {
+    console.log('[Voice] onend fired, isRecording=' + isRecording);
     if (isRecording && currentRecording) {
-      setTimeout(() => {
-        if (isRecording && currentRecording) startRecognition();
-      }, 100);
+      var delay = 800 + Math.random() * 500;
+      setTimeout(function() {
+        if (isRecording && currentRecognition) startRecognition();
+      }, delay);
     }
   };
 
   recognition.onerror = function(event) {
-    console.warn('Speech recognition error:', event.error);
-    if (event.error === 'not-allowed') {
-      showToast('请允许麦克风权限', 'error');
+    console.warn('[Voice] error: ' + event.error);
+    var fatal = ['not-allowed', 'service-not-allowed', 'audio-capture', 'network'];
+    if (fatal.indexOf(event.error) !== -1) {
+      var msgs = {
+        'not-allowed': '请允许麦克风权限后重试',
+        'service-not-allowed': '语音服务不可用，请用Chrome浏览器打开',
+        'audio-capture': '未检测到麦克风，请检查设备',
+        'network': '网络错误，请检查网络连接'
+      };
+      showToast(msgs[event.error] || '语音识别出错', 'error');
       stopVoice();
-    } else if (event.error === 'not-supported') {
-      // 浏览器不支持WebSpeech，切换到MediaRecorder
-      showToast('切换到录音模式...', 'default');
-      if (recognition) { try { recognition.stop(); } catch(e) {} recognition = null; }
-      startMediaRecorder();
-    } else if (event.error === 'no-speech') {
+      return;
+    }
+    if (event.error === 'no-speech') {
       if (isRecording && currentRecording) {
-        setTimeout(() => { if (isRecording && currentRecording) startRecognition(); }, 300);
+        setTimeout(function() { if (isRecording && currentRecording) startRecognition(); }, 1500);
       }
-    } else if (isRecording && currentRecording) {
-      // 未知错误，尝试重连或切换模式
-      console.warn('Unknown speech error, retrying...');
-      setTimeout(() => { if (isRecording && currentRecording) startRecognition(); }, 500);
+      return;
+    }
+    if (event.error === 'aborted') return;
+    if (isRecording && currentRecording) {
+      setTimeout(function() { if (isRecording && currentRecording) startRecognition(); }, 2000);
     }
   };
 
   try {
     recognition.start();
+    console.log('[Voice] Recognition started OK');
   } catch(e) {
-    console.warn('Recognition start error:', e);
+    console.warn('[Voice] start() error:', e);
     if (isRecording && currentRecording) {
-      setTimeout(() => startRecognition(), 500);
+      setTimeout(function() { startRecognition(); }, 2000);
     }
   }
 }
-
-// --- 录音能力检测 ---
-let _micSupported = null; // null=未检测, true=支持, false=不支持, string=错误原因
-async function checkMicSupport() {
-  if (_micSupported !== null) return _micSupported;
-  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-    _micSupported = '浏览器不支持getUserMedia，请用系统浏览器打开';
-    return _micSupported;
-  }
-  if (typeof MediaRecorder === 'undefined') {
-    _micSupported = '浏览器不支持MediaRecorder，请用系统浏览器打开';
-    return _micSupported;
-  }
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    stream.getTracks().forEach(t => t.stop()); // 立即释放
-    _micSupported = true;
-    return true;
-  } catch(e) {
-    if (e.name === 'NotAllowedError') {
-      _micSupported = '麦克风权限被拒绝，请在浏览器设置中允许';
-    } else if (e.name === 'NotFoundError') {
-      _micSupported = '未找到麦克风设备';
-    } else {
-      _micSupported = '录音不可用：' + (e.message || e.name);
-    }
-    return _micSupported;
-  }
-}
-
-// --- MediaRecorder + 云ASR（手机/所有浏览器通用）---
-async function startMediaRecorder() {
-  showToast('[1] 检查API Key...', 'default');
-  const apiKey = getApiKey();
-  if (!apiKey) {
-    showToast('❌ 需要API Key才能识别语音', 'error');
-    stopVoiceUI();
-    isRecording = false;
-    currentRecording = null;
-    return;
-  }
-  showToast('[2] API Key存在 ✓', 'default');
-
-  try {
-    showToast('[3] 请求麦克风...', 'default');
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    showToast('[4] 麦克风已获取 ✓', 'default');
-    audioChunks = [];
-
-    // 选择最佳音频格式（SiliconFlow ASR 支持 mp3/wav/mp4/webm 等）
-    let mimeType = '';
-    // 优先mp4（兼容性最好，几乎所有手机都支持）
-    if (MediaRecorder.isTypeSupported('audio/mp4')) {
-      mimeType = 'audio/mp4';
-    } else if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
-      mimeType = 'audio/webm;codecs=opus';
-    } else if (MediaRecorder.isTypeSupported('audio/webm')) {
-      mimeType = 'audio/webm';
-    }
-    // 其他格式让浏览器自己选
-
-    const options = mimeType ? { mimeType } : {};
-    try {
-      showToast('[5] 创建MediaRecorder (格式:' + (mimeType||'默认') + ')...', 'default');
-      mediaRecorder = new MediaRecorder(stream, options);
-      showToast('[6] MediaRecorder创建成功 ✓', 'default');
-    } catch(recErr) {
-      // 如果指定mimeType失败，让浏览器自己选
-      console.warn('MediaRecorder with mimeType failed, trying default:', recErr);
-      showToast('[5b] 格式不兼容，换默认格式', 'default');
-      mediaRecorder = new MediaRecorder(stream);
-      showToast('[6b] MediaRecorder默认格式创建成功 ✓', 'default');
-    }
-
-    mediaRecorder.ondataavailable = function(e) {
-      console.log('[ondataavailable] chunk size:', e.data ? e.data.size : 0);
-      if (e.data && e.data.size > 0) {
-        audioChunks.push(e.data);
-      }
-    };
-
-    mediaRecorder.onstop = async function() {
-      // 保存当前录音的问题编号（因为stopVoice可能已经清空currentRecording）
-      const recordNum = currentRecording || mediaRecorder._recordNum;
-      const savedFullTranscript = fullTranscript;
-
-      // 停止所有音频轨道
-      stream.getTracks().forEach(t => t.stop());
-
-      showToast('录音已停止(' + recordNum + ')，正在处理...', 'default');
-      console.log('MediaRecorder onstop, recordNum:', recordNum, 'chunks:', audioChunks.length);
-
-      if (audioChunks.length === 0) {
-        showToast('未录到声音（0数据块），请检查麦克风权限', 'error');
-        return;
-      }
-
-      // 合并音频
-      const blob = new Blob(audioChunks, { type: mimeType || 'audio/webm' });
-      console.log('Audio blob size:', blob.size, 'type:', blob.type);
-
-      if (blob.size < 1000) {
-        showToast('录音太小（' + blob.size + '字节），请重试', 'error');
-        return;
-      }
-
-      showToast('正在上传识别（' + Math.round(blob.size/1024) + 'KB）...', 'default');
-
-      try {
-        const text = await transcribeAudio(blob, getApiKey());
-        console.log('ASR result:', text);
-        if (text && recordNum) {
-          const ta = document.getElementById('original'+recordNum);
-          if (ta) {
-            const existing = ta.value || '';
-            ta.value = existing + text;
-            saveField(recordNum, 'original');
-            showToast('语音识别完成 ✓', 'success');
-          } else {
-            showToast('找不到输入框#' + recordNum + '，请重试', 'error');
-          }
-        } else if (!text) {
-          showToast('ASR返回空结果，请重试', 'error');
-        } else if (!recordNum) {
-          showToast('内部错误：丢失问题编号', 'error');
-        }
-      } catch(e) {
-        console.error('ASR error:', e);
-        showToast('识别失败：' + e.message, 'error');
-      }
-    };
-
-    // 记录当前问题编号到recorder实例（stopVoice可能清空currentRecording）
-    mediaRecorder._recordNum = num;
-
-    // 每5秒产生一个数据块
-    mediaRecorder.start(5000);
-    showToast('🎤 录音已开始 ✓', 'success');
-    console.log('MediaRecorder started, mimeType:', mimeType);
-
-  } catch(e) {
-    console.error('MediaRecorder error:', e.name, e.message);
-    showToast('❌ 录音失败：' + (e.name || '') + ' ' + (e.message || '未知错误'), 'error');
-    if (e.name === 'NotAllowedError') {
-      showToast('麦克风权限被拒绝，请在浏览器设置中允许', 'error');
-    } else if (e.name === 'NotFoundError') {
-      showToast('未找到麦克风设备', 'error');
-    } else if (e.name === 'NotReadableError') {
-      showToast('麦克风被其他程序占用', 'error');
-    }
-    stopVoiceUI();
-    isRecording = false;
-    currentRecording = null;
-  }
-}
-
-// 调用SiliconFlow ASR API
-async function transcribeAudio(audioBlob, apiKey) {
-  const formData = new FormData();
-  // 根据音频类型设置文件扩展名
-  const mimeType = audioBlob.type || 'audio/webm';
-  let ext = 'webm';
-  if (mimeType.includes('mp4')) ext = 'mp4';
-  else if (mimeType.includes('wav')) ext = 'wav';
-  else if (mimeType.includes('ogg')) ext = 'ogg';
-  else if (mimeType.includes('mp3') || mimeType.includes('mpeg')) ext = 'mp3';
-  formData.append('file', audioBlob, `recording.${ext}`);
-  formData.append('model', ASR_MODEL);
-
-  const response = await fetch(ASR_URL, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${apiKey}`
-    },
-    body: formData
-  });
-
-  if (!response.ok) {
-    const err = await response.json().catch(() => ({}));
-    throw new Error(err.error?.message || `识别失败 ${response.status}`);
-  }
-
-  const data = await response.json();
-  return data.text || '';
-}
-
-// 统一的停止UI函数
-function stopVoiceUI() {
-  document.getElementById('recordingBar').classList.remove('show');
-  clearInterval(recordingTimer);
-  recordingTimer = null;
-  if (currentRecording) {
-    const num = currentRecording;
-    document.getElementById('voiceBtn'+num).classList.remove('recording');
-    document.getElementById('qblock'+num).classList.remove('recording-active');
-  }
-}
-
-function stopVoice() {
-  const num = currentRecording;
-  const mode = voiceMode === 'auto' ? detectVoiceMode() : voiceMode;
-  showToast('⏹ 停止录音 (mode=' + mode + ', recorder=' + (mediaRecorder ? mediaRecorder.state : 'null') + ')', 'default');
-
-  // 停止WebSpeech
-  if (recognition) {
-    try { recognition.stop(); } catch(e) {}
-    recognition = null;
-  }
-
-  // 停止MediaRecorder
-  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-    console.log('stopVoice: calling mediaRecorder.stop(), state=', mediaRecorder.state, 'chunks=', audioChunks.length, 'recordNum=', num);
-    mediaRecorder._recordNum = num; // 再次确保编号正确
-    mediaRecorder.stop(); // onstop回调会处理ASR
-    stopVoiceUI();
-    isRecording = false;
-    currentRecording = null;
-    fullTranscript = '';
-    interimText = '';
-    return; // MediaRecorder的onstop会异步处理后续
-  }
-
-  // WebSpeech模式的后续处理
-  stopVoiceUI();
-  isRecording = false;
-
-  if (num) {
-    // 最终保存（去掉中间结果）
-    const ta = document.getElementById('original'+num);
-    ta.value = fullTranscript;
-    saveField(num, 'original');
-  }
-
-  currentRecording = null;
-  fullTranscript = '';
-  interimText = '';
-}
-
-function updateTimerDisplay() {
-  document.getElementById('recTimer').textContent = formatTime(recordingSeconds);
-}
-
 // ============================================================
 // 自动AI润色（录音结束后触发）
 // ============================================================

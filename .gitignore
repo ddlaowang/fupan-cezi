@@ -1,0 +1,17 @@
+﻿cert.pem
+key.pem
+openssl.cnf
+cloudflared.exe
+_deploy/
+_deploy.zip
+cf_log.txt
+cf_err.txt
+tunnel_log.txt
+tunnel_err.txt
+tunnel_url.txt
+__pycache__/
+*.pyc
+server.py
+start_tunnel.js
+node_modules/
+.git

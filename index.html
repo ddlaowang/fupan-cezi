@@ -538,7 +538,7 @@ body {
 
 <!-- 顶栏 -->
 <div class="header">
-  <h1>📖 复盘册子 <span>v2.2.5</span></h1>
+  <h1>📖 复盘册子 <span>v2.2.6</span></h1>
   <div class="header-right">
     <button class="bg-settings-btn" onclick="showBgSettings()">🎨</button>
     <button class="icon-btn" onclick="showSettings()">⚙️</button>
@@ -1095,7 +1095,9 @@ async function startMediaRecorder() {
   }
 
   try {
+    showToast('1/4 请求麦克风...', 'default');
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    showToast('2/4 麦克风已获取', 'default');
     audioChunks = [];
 
     // 选择最佳音频格式（SiliconFlow ASR 支持 mp3/wav/mp4/webm 等）
@@ -1116,6 +1118,7 @@ async function startMediaRecorder() {
     } catch(recErr) {
       // 如果指定mimeType失败，让浏览器自己选
       console.warn('MediaRecorder with mimeType failed, trying default:', recErr);
+      showToast('3/4 格式不兼容，换默认格式', 'default');
       mediaRecorder = new MediaRecorder(stream);
     }
 
@@ -1181,8 +1184,8 @@ async function startMediaRecorder() {
 
     // 每5秒产生一个数据块
     mediaRecorder.start(5000);
+    showToast('4/4 录音已开始 ✓', 'success');
     console.log('MediaRecorder started, mimeType:', mimeType);
-    showToast('🎤 录音已开始 (格式:' + (mimeType || '默认') + ')', 'default');
 
   } catch(e) {
     console.error('MediaRecorder error:', e.name, e.message);

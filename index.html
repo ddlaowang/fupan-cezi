@@ -1092,16 +1092,6 @@ async function startMediaRecorder() {
     return;
   }
 
-  // 先检测录音能力
-  const micCheck = await checkMicSupport();
-  if (micCheck !== true) {
-    showToast(micCheck, 'error');
-    stopVoiceUI();
-    isRecording = false;
-    currentRecording = null;
-    return;
-  }
-
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     audioChunks = [];

@@ -913,9 +913,9 @@ let audioChunks = [];
 let voiceMode = 'auto'; // 'auto' | 'webspeech' | 'mediaRecorder'
 
 function detectVoiceMode() {
-  // 自动检测：桌面Chrome用WebSpeech（实时转写体验好），其他用MediaRecorder+云ASR
-  const isChromeDesktop = hasWebSpeech && /Chrome\//.test(navigator.userAgent) && !/Mobile/.test(navigator.userAgent);
-  return isChromeDesktop ? 'webspeech' : 'mediaRecorder';
+  // 统一使用MediaRecorder+云ASR（最可靠，手机电脑都支持）
+  // WebSpeech在手机上虽然对象存在但不工作，在桌面Chrome上也不如云端ASR稳定
+  return 'mediaRecorder';
 }
 
 function toggleVoice(num) {

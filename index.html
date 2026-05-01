@@ -1131,10 +1131,11 @@ async function startMediaRecorder() {
       // 停止所有音频轨道
       stream.getTracks().forEach(t => t.stop());
 
+      showToast('录音已停止，正在处理...', 'default');
       console.log('MediaRecorder onstop, recordNum:', recordNum, 'chunks:', audioChunks.length);
 
       if (audioChunks.length === 0) {
-        showToast('未录到声音，请检查麦克风权限', 'error');
+        showToast('未录到声音（0数据块），请检查麦克风权限', 'error');
         return;
       }
 
@@ -1143,27 +1144,33 @@ async function startMediaRecorder() {
       console.log('Audio blob size:', blob.size, 'type:', blob.type);
 
       if (blob.size < 1000) {
-        showToast('录音时间太短，请重试', 'error');
+        showToast('录音太小（' + blob.size + '字节），请重试', 'error');
         return;
       }
 
-      showToast('正在识别语音...', 'default');
+      showToast('正在上传识别（' + Math.round(blob.size/1024) + 'KB）...', 'default');
 
       try {
         const text = await transcribeAudio(blob, getApiKey());
         console.log('ASR result:', text);
         if (text && recordNum) {
           const ta = document.getElementById('original'+recordNum);
-          const existing = ta.value || '';
-          ta.value = existing + text;
-          saveField(recordNum, 'original');
-          showToast('语音识别完成 ✓', 'success');
+          if (ta) {
+            const existing = ta.value || '';
+            ta.value = existing + text;
+            saveField(recordNum, 'original');
+            showToast('语音识别完成 ✓', 'success');
+          } else {
+            showToast('找不到输入框#' + recordNum + '，请重试', 'error');
+          }
         } else if (!text) {
-          showToast('未识别到语音内容，请重试', 'error');
+          showToast('ASR返回空结果，请重试', 'error');
+        } else if (!recordNum) {
+          showToast('内部错误：丢失问题编号', 'error');
         }
       } catch(e) {
         console.error('ASR error:', e);
-        showToast('语音识别失败：' + e.message, 'error');
+        showToast('识别失败：' + e.message, 'error');
       }
     };
 
@@ -1245,7 +1252,8 @@ function stopVoice() {
 
   // 停止MediaRecorder
   if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-    // _recordNum已经在onstop中保存了，可以安全清空currentRecording
+    console.log('stopVoice: calling mediaRecorder.stop(), state=', mediaRecorder.state, 'chunks=', audioChunks.length, 'recordNum=', num);
+    mediaRecorder._recordNum = num; // 再次确保编号正确
     mediaRecorder.stop(); // onstop回调会处理ASR
     stopVoiceUI();
     isRecording = false;

@@ -575,8 +575,10 @@ body {
       <div class="settings-group">
         <label>🔑 SiliconFlow API Key</label>
         <div class="desc">
-          AI功能 + 手机语音识别都需要此Key（国内可用，新用户送¥14额度）。<br>
-          <a class="api-link" href="https://cloud.siliconflow.cn" target="_blank">👉 点击注册获取 API Key →</a>
+          AI功能 + 手机语音识别都需要此Key。<br>
+          硅基流动国内可用，新用户<strong>免费送2000万Tokens</strong>（够用好几个月）！<br>
+          <a class="api-link" href="https://cloud.siliconflow.cn" target="_blank">👉 1分钟注册获取 API Key →</a><br>
+          <span style="font-size:11px;color:#888;">注册→实名认证→左侧API密钥→新建密钥→复制sk-开头的key</span>
         </div>
         <input type="password" class="api-key-input" id="apiKeyInput" placeholder="sk-xxxxxxxx" autocomplete="off">
         <div class="api-key-status" id="apiKeyStatus"></div>
@@ -1055,17 +1057,17 @@ async function startMediaRecorder() {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     audioChunks = [];
 
-    // 选择最佳音频格式
-    let mimeType = 'audio/webm;codecs=opus';
-    if (!MediaRecorder.isTypeSupported(mimeType)) {
+    // 选择最佳音频格式（SiliconFlow ASR 支持 mp3/wav/mp4/webm 等）
+    let mimeType = '';
+    // 优先mp4（兼容性最好，几乎所有手机都支持）
+    if (MediaRecorder.isTypeSupported('audio/mp4')) {
+      mimeType = 'audio/mp4';
+    } else if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
+      mimeType = 'audio/webm;codecs=opus';
+    } else if (MediaRecorder.isTypeSupported('audio/webm')) {
       mimeType = 'audio/webm';
     }
-    if (!MediaRecorder.isTypeSupported(mimeType)) {
-      mimeType = 'audio/mp4';
-    }
-    if (!MediaRecorder.isTypeSupported(mimeType)) {
-      mimeType = ''; // 让浏览器自己选
-    }
+    // 其他格式让浏览器自己选
 
     const options = mimeType ? { mimeType } : {};
     mediaRecorder = new MediaRecorder(stream, options);
@@ -1132,7 +1134,14 @@ async function startMediaRecorder() {
 // 调用SiliconFlow ASR API
 async function transcribeAudio(audioBlob, apiKey) {
   const formData = new FormData();
-  formData.append('file', audioBlob, 'recording.webm');
+  // 根据音频类型设置文件扩展名
+  const mimeType = audioBlob.type || 'audio/webm';
+  let ext = 'webm';
+  if (mimeType.includes('mp4')) ext = 'mp4';
+  else if (mimeType.includes('wav')) ext = 'wav';
+  else if (mimeType.includes('ogg')) ext = 'ogg';
+  else if (mimeType.includes('mp3') || mimeType.includes('mpeg')) ext = 'mp3';
+  formData.append('file', audioBlob, `recording.${ext}`);
   formData.append('model', ASR_MODEL);
 
   const response = await fetch(ASR_URL, {
@@ -1504,8 +1513,14 @@ window.onload = function() {
   renderQuestions();
   loadRecord(getTodayStr());
   applyBgSettings(); // 应用保存的背景设置
-  // 自动聚焦第一个问题
-  setTimeout(() => document.getElementById('original1').focus(), 300);
+
+  // 首次使用引导：如果没有API Key，延迟提示
+  setTimeout(() => {
+    const apiKey = getApiKey();
+    if (!apiKey) {
+      showToast('点击 ⚙️ 配置 API Key 启用语音+AI功能', 'default');
+    }
+  }, 1500);
 };
 
 // 快捷键

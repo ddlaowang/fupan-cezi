@@ -579,6 +579,7 @@ body {
           硅基流动国内可用，新用户<strong>免费送2000万Tokens</strong>（够用好几个月）！<br>
           <a class="api-link" href="https://cloud.siliconflow.cn" target="_blank">👉 1分钟注册获取 API Key →</a><br>
           <span style="font-size:11px;color:#888;">注册→实名认证→左侧API密钥→新建密钥→复制sk-开头的key</span>
+          <span style="font-size:11px;color:#e94560;display:block;margin-top:6px;">⚠️ 微信内打开无法录音，请点右上角「…」→用浏览器打开</span>
         </div>
         <input type="password" class="api-key-input" id="apiKeyInput" placeholder="sk-xxxxxxxx" autocomplete="off">
         <div class="api-key-status" id="apiKeyStatus"></div>
@@ -710,7 +711,7 @@ const QUESTIONS = [
 const STORAGE_KEY = 'fanpan_records_v3';
 const API_KEY_STORAGE = 'fanpan_api_key';
 const API_URL = 'https://api.siliconflow.cn/v1/chat/completions';
-const MODEL = 'deepseek-ai/DeepSeek-V4-Flash';
+const MODEL = 'Qwen/Qwen3-8B'; // 免费模型，不扣token
 
 let currentDate = getTodayStr();
 let currentRecording = null;     // 当前录音的问题编号
@@ -1023,11 +1024,18 @@ function startRecognition() {
     if (event.error === 'not-allowed') {
       showToast('请允许麦克风权限', 'error');
       stopVoice();
+    } else if (event.error === 'not-supported') {
+      // 浏览器不支持WebSpeech，切换到MediaRecorder
+      showToast('切换到录音模式...', 'default');
+      if (recognition) { try { recognition.stop(); } catch(e) {} recognition = null; }
+      startMediaRecorder();
     } else if (event.error === 'no-speech') {
       if (isRecording && currentRecording) {
         setTimeout(() => { if (isRecording && currentRecording) startRecognition(); }, 300);
       }
     } else if (isRecording && currentRecording) {
+      // 未知错误，尝试重连或切换模式
+      console.warn('Unknown speech error, retrying...');
       setTimeout(() => { if (isRecording && currentRecording) startRecognition(); }, 500);
     }
   };
@@ -1047,6 +1055,25 @@ async function startMediaRecorder() {
   const apiKey = getApiKey();
   if (!apiKey) {
     showToast('语音识别需要API Key，请先在设置中配置', 'error');
+    stopVoiceUI();
+    isRecording = false;
+    currentRecording = null;
+    return;
+  }
+
+  // 检查浏览器是否支持录音
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    // 微信内置浏览器可能不支持
+    showToast('当前浏览器不支持录音，请用系统浏览器打开此页面', 'error');
+    stopVoiceUI();
+    isRecording = false;
+    currentRecording = null;
+    return;
+  }
+
+  // 检查是否支持MediaRecorder
+  if (typeof MediaRecorder === 'undefined') {
+    showToast('当前浏览器不支持录音功能', 'error');
     stopVoiceUI();
     isRecording = false;
     currentRecording = null;
@@ -1079,40 +1106,53 @@ async function startMediaRecorder() {
     };
 
     mediaRecorder.onstop = async function() {
+      // 保存当前录音的问题编号（因为stopVoice可能已经清空currentRecording）
+      const recordNum = currentRecording || mediaRecorder._recordNum;
+      const savedFullTranscript = fullTranscript;
+
       // 停止所有音频轨道
       stream.getTracks().forEach(t => t.stop());
 
+      console.log('MediaRecorder onstop, recordNum:', recordNum, 'chunks:', audioChunks.length);
+
       if (audioChunks.length === 0) {
-        showToast('未录到声音', 'error');
+        showToast('未录到声音，请检查麦克风权限', 'error');
         return;
       }
 
       // 合并音频
       const blob = new Blob(audioChunks, { type: mimeType || 'audio/webm' });
+      console.log('Audio blob size:', blob.size, 'type:', blob.type);
+
+      if (blob.size < 1000) {
+        showToast('录音时间太短，请重试', 'error');
+        return;
+      }
+
       showToast('正在识别语音...', 'default');
 
       try {
         const text = await transcribeAudio(blob, getApiKey());
-        if (text && currentRecording) {
-          const ta = document.getElementById('original'+currentRecording);
-          fullTranscript = (ta.value || '') + text;
-          ta.value = fullTranscript;
-          saveField(currentRecording, 'original');
+        console.log('ASR result:', text);
+        if (text && recordNum) {
+          const ta = document.getElementById('original'+recordNum);
+          const existing = ta.value || '';
+          ta.value = existing + text;
+          saveField(recordNum, 'original');
           showToast('语音识别完成 ✓', 'success');
-
-          // 自动触发AI润色
-          if (fullTranscript.trim()) {
-            autoPolish(currentRecording, fullTranscript);
-          }
         } else if (!text) {
-          showToast('未识别到语音内容', 'error');
+          showToast('未识别到语音内容，请重试', 'error');
         }
       } catch(e) {
+        console.error('ASR error:', e);
         showToast('语音识别失败：' + e.message, 'error');
       }
     };
 
-    // 每5秒产生一个数据块（避免一次性太多）
+    // 记录当前问题编号到recorder实例（stopVoice可能清空currentRecording）
+    mediaRecorder._recordNum = num;
+
+    // 每5秒产生一个数据块
     mediaRecorder.start(5000);
     console.log('MediaRecorder started, mimeType:', mimeType);
 
@@ -1185,10 +1225,13 @@ function stopVoice() {
 
   // 停止MediaRecorder
   if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+    // _recordNum已经在onstop中保存了，可以安全清空currentRecording
     mediaRecorder.stop(); // onstop回调会处理ASR
     stopVoiceUI();
     isRecording = false;
     currentRecording = null;
+    fullTranscript = '';
+    interimText = '';
     return; // MediaRecorder的onstop会异步处理后续
   }
 
@@ -1201,11 +1244,6 @@ function stopVoice() {
     const ta = document.getElementById('original'+num);
     ta.value = fullTranscript;
     saveField(num, 'original');
-
-    // 自动触发AI润色
-    if (fullTranscript.trim()) {
-      autoPolish(num, fullTranscript);
-    }
   }
 
   currentRecording = null;
@@ -1231,7 +1269,7 @@ async function autoPolish(num, text) {
   aiProcessing[num] = 'loading';
 
   try {
-    const prompt = `请润色以下复盘文字，使其更流畅、清晰、有条理，但保持原意不变。直接输出润色后的文字，不要任何解释：
+    const prompt = `请润色以下复盘文字，使其更流畅、清晰、有条理，但保持原意不变。直接输出润色后的文字，不要任何解释 /no_think：
 
 """
 ${text}
@@ -1264,7 +1302,10 @@ async function callAI(prompt, apiKey) {
     body: JSON.stringify({
       model: MODEL,
       messages: [{ role: 'user', content: prompt }],
-      stream: false
+      stream: false,
+      max_tokens: 2048,
+      // 关闭thinking模式，省token+输出更干净
+      thinking_budget: 0
     })
   });
   if (!response.ok) {
@@ -1290,31 +1331,31 @@ function setLoading(btnId, loading) {
 // AI 功能（工具栏按钮）
 // ============================================================
 const AI_PROMPTS = {
-  clean: (text) => `请帮我精简以下文字中的语气词、重复词和无意义的口头禅（如"嗯、啊、这个、那个、就是、的话、然后、其实"等），保持原意不变，直接输出处理后的文字，不要解释：
+  clean: (text) => `请帮我精简以下文字中的语气词、重复词和无意义的口头禅（如"嗯、啊、这个、那个、就是、的话、然后、其实"等），保持原意不变，直接输出处理后的文字，不要解释 /no_think：
 
 """
 ${text}
 ---`,
 
-  polish: (text) => `请帮我润色优化以下复盘文字，提升表达质量，使其更流畅、清晰、有条理。直接输出结果，不要解释：
+  polish: (text) => `请帮我润色优化以下复盘文字，提升表达质量，使其更流畅、清晰、有条理。直接输出结果，不要解释 /no_think：
 
 """
 ${text}
 ---`,
 
-  summary: (text) => `请帮我提炼以下文字的核心观点，用简洁的一句话概括。直接输出结果，不要"概括如下"等前缀：
+  summary: (text) => `请帮我提炼以下文字的核心观点，用简洁的一句话概括。直接输出结果，不要"概括如下"等前缀 /no_think：
 
 """
 ${text}
 ---`,
 
-  golden: (text) => `请从以下文字中提取1-3句最有价值的金句。要求简短有力、有洞察力。每句一行，只输出金句，不要解释：
+  golden: (text) => `请从以下文字中提取1-3句最有价值的金句。要求简短有力、有洞察力。每句一行，只输出金句，不要解释 /no_think：
 
 """
 ${text}
 ---`,
 
-  all: (text) => `请对以下复盘文字同时进行4种处理，用 |----| 分隔每个部分：
+  all: (text) => `请对以下复盘文字同时进行4种处理，用 |----| 分隔每个部分 /no_think：
 
 """
 ${text}

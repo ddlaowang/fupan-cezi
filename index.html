@@ -581,7 +581,7 @@ body {
           <span style="font-size:11px;color:#888;">注册→实名认证→左侧API密钥→新建密钥→复制sk-开头的key</span>
           <span style="font-size:11px;color:#e94560;display:block;margin-top:6px;">⚠️ 微信内打开无法录音，请点右上角「…」→用浏览器打开</span>
         </div>
-        <input type="password" class="api-key-input" id="apiKeyInput" placeholder="sk-xxxxxxxx" autocomplete="off">
+        <input type="password" class="api-key-input" id="apiKeyInput" placeholder="留空使用内置免费Key" autocomplete="off">
         <div class="api-key-status" id="apiKeyStatus"></div>
       </div>
       <button class="save-settings-btn" onclick="saveSettings()">保存设置</button>
@@ -715,6 +715,8 @@ const API_KEY_STORAGE = 'fanpan_api_key';
 const API_URL = 'https://api.siliconflow.cn/v1/chat/completions';
 const WHISPER_URL = 'https://api.siliconflow.cn/v1/audio/transcriptions';
 const MODEL = 'Qwen/Qwen3-8B'; // 免费模型，不扣token
+const WHISPER_MODEL = 'FunAudioLLM/SenseVoiceSmall'; // 免费语音转写模型
+const DEFAULT_API_KEY = 'sk-bmpjwdksyuqvqtdullaehtxwnfvclpffkjvlpglkqhuphtig'; // 内置免费Key，开箱即用
 
 // 手机检测
 function isMobile() {
@@ -1020,10 +1022,6 @@ function startVoice(num) {
 // 手机录音开始
 async function startMobileRecording(num) {
   var apiKey = getApiKey();
-  if (!apiKey) {
-    showToast('请先设置API Key，才能使用手机录音', 'error');
-    return;
-  }
   
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -1037,7 +1035,7 @@ async function startMobileRecording(num) {
     mediaRecorder.onstop = async function() {
       const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
       try {
-        const text = await transcribeAudio(audioBlob, apiKey);
+        const text = await transcribeAudio(audioBlob);
         var ta = document.getElementById('original' + num);
         ta.value = (ta.value || '') + text;
         saveField(num, 'original');
@@ -1166,10 +1164,6 @@ function startRecognition() {
 // ============================================================
 async function autoPolish(num, text) {
   const apiKey = getApiKey();
-  if (!apiKey) {
-    showToast('请先配置 API Key，录音内容已保存为原文', 'error');
-    return;
-  }
 
   updateAITabBadge(num, 'loading');
   aiProcessing[num] = 'loading';
@@ -1199,6 +1193,7 @@ ${text}
 // AI API 调用
 // ============================================================
 async function callAI(prompt, apiKey) {
+  if (!apiKey) apiKey = getApiKey();
   const response = await fetch(API_URL, {
     method: 'POST',
     headers: {
@@ -1223,15 +1218,16 @@ async function callAI(prompt, apiKey) {
 }
 
 function getApiKey() {
-  return localStorage.getItem(API_KEY_STORAGE) || '';
+  return localStorage.getItem(API_KEY_STORAGE) || DEFAULT_API_KEY;
 }
 
 // 手机云端录音转写
 async function transcribeAudio(audioBlob, apiKey) {
+  if (!apiKey) apiKey = getApiKey();
   showToast('🔄 正在上传录音并转写...', 'info');
   const formData = new FormData();
   formData.append('file', audioBlob, 'recording.webm');
-  formData.append('model', 'parrot-twhisper-large');
+  formData.append('model', WHISPER_MODEL);
   
   const response = await fetch(WHISPER_URL, {
     method: 'POST',
@@ -1303,10 +1299,7 @@ async function testMic() {
 
   // 5. 检查API Key
   const key = getApiKey();
-  if (!key) {
-    el.style.color = 'var(--warning)';
-    el.textContent += '⚠️ 未配置API Key（语音识别需要）\n';
-  } else {
+  if (key) {
     el.textContent += '✅ API Key ✓\n';
   }
 
@@ -1372,7 +1365,6 @@ async function runAI(num, action) {
   if (!text) { showToast('请先填写内容', 'error'); return; }
 
   const apiKey = getApiKey();
-  if (!apiKey) { showToast('请先配置 API Key', 'error'); return; }
 
   const btnId = `btn${action.charAt(0).toUpperCase()+action.slice(1)}${num}`;
   setLoading(btnId, true);
@@ -1512,8 +1504,9 @@ function closeDetail() {
 // 设置
 // ============================================================
 function showSettings() {
-  document.getElementById('apiKeyInput').value = localStorage.getItem(API_KEY_STORAGE) || '';
-  updateApiStatus(document.getElementById('apiKeyInput').value);
+  const savedKey = localStorage.getItem(API_KEY_STORAGE);
+  document.getElementById('apiKeyInput').value = savedKey || '';
+  updateApiStatus(savedKey || '');
   document.getElementById('settingsModal').classList.add('show');
 }
 function closeSettings() { document.getElementById('settingsModal').classList.remove('show'); }
@@ -1521,11 +1514,14 @@ function closeSettings() { document.getElementById('settingsModal').classList.re
 function updateApiStatus(key) {
   const el = document.getElementById('apiKeyStatus');
   if (!key || key.length < 10) {
-    el.className = 'api-key-status err';
-    el.innerHTML = '⚠️ 未配置，AI功能不可用';
+    el.className = 'api-key-status ok';
+    el.innerHTML = '✅ 使用内置Key（开箱即用）';
+  } else if (key === DEFAULT_API_KEY) {
+    el.className = 'api-key-status ok';
+    el.innerHTML = '✅ 使用内置Key';
   } else {
     el.className = 'api-key-status ok';
-    el.innerHTML = '✅ 已配置';
+    el.innerHTML = '✅ 自定义Key已配置';
   }
 }
 
@@ -1535,10 +1531,15 @@ document.getElementById('apiKeyInput').addEventListener('input', function() {
 
 function saveSettings() {
   const key = document.getElementById('apiKeyInput').value.trim();
-  localStorage.setItem(API_KEY_STORAGE, key);
+  if (key) {
+    localStorage.setItem(API_KEY_STORAGE, key);
+    showToast('自定义 API Key 已保存 ✨', 'success');
+  } else {
+    localStorage.removeItem(API_KEY_STORAGE); // 清除自定义Key，回退到内置Key
+    showToast('已恢复使用内置免费Key', 'success');
+  }
   updateApiStatus(key);
   closeSettings();
-  if (key.length > 10) showToast('API Key 已保存 ✨', 'success');
 }
 
 // ============================================================
@@ -1549,12 +1550,12 @@ window.onload = function() {
   loadRecord(getTodayStr());
   applyBgSettings(); // 应用保存的背景设置
 
-  // 首次使用引导：如果没有API Key，延迟提示
+  // 首次使用：自动保存内置Key
+  if (!localStorage.getItem(API_KEY_STORAGE)) {
+    localStorage.setItem(API_KEY_STORAGE, DEFAULT_API_KEY);
+  }
   setTimeout(() => {
-    const apiKey = getApiKey();
-    if (!apiKey) {
-      showToast('点击 ⚙️ 配置 API Key 启用语音+AI功能', 'default');
-    }
+    showToast('🎉 语音+AI功能已就绪，点击🎤开始录音', 'success');
   }, 1500);
 };
 

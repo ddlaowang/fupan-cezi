@@ -713,7 +713,17 @@ const QUESTIONS = [
 const STORAGE_KEY = 'fanpan_records_v3';
 const API_KEY_STORAGE = 'fanpan_api_key';
 const API_URL = 'https://api.siliconflow.cn/v1/chat/completions';
+const WHISPER_URL = 'https://api.siliconflow.cn/v1/audio/transcriptions';
 const MODEL = 'Qwen/Qwen3-8B'; // 免费模型，不扣token
+
+// 手机检测
+function isMobile() {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
+// MediaRecorder变量（手机录音用）
+let mediaRecorder = null;
+let audioChunks = [];
 
 let currentDate = getTodayStr();
 let currentRecording = null;     // 当前录音的问题编号
@@ -914,7 +924,14 @@ function stopVoice() {
   console.log('[Voice] Stopping recording...');
   isRecording = false;
   
-  // 停止语音识别
+  // 手机：停止MediaRecorder
+  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+    mediaRecorder.stop();
+    mediaRecorder = null;
+    return; // 等onstop回调处理
+  }
+  
+  // 电脑：停止语音识别
   if (recognition) {
     try { recognition.stop(); } catch(e) {}
     recognition = null;
@@ -956,6 +973,13 @@ function toggleVoice(num) {
 }
 
 function startVoice(num) {
+  // 手机用MediaRecorder录音 + 云端转写
+  if (isMobile()) {
+    startMobileRecording(num);
+    return;
+  }
+  
+  // 电脑用SpeechRecognition
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SR) {
     showToast('你的浏览器不支持语音输入，请用 Chrome 打开', 'error');
@@ -984,6 +1008,57 @@ function startVoice(num) {
   recordingTimer = setInterval(function() { recordingSeconds++; updateTimerDisplay(); }, 1000);
 
   setTimeout(function() { startRecognition(); }, 500);
+}
+
+// 手机录音开始
+async function startMobileRecording(num) {
+  var apiKey = getApiKey();
+  if (!apiKey) {
+    showToast('请先设置API Key，才能使用手机录音', 'error');
+    return;
+  }
+  
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+    audioChunks = [];
+    
+    mediaRecorder.ondataavailable = function(e) {
+      if (e.data.size > 0) audioChunks.push(e.data);
+    };
+    
+    mediaRecorder.onstop = async function() {
+      const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+      try {
+        const text = await transcribeAudio(audioBlob, apiKey);
+        var ta = document.getElementById('original' + num);
+        ta.value = (ta.value || '') + text;
+        saveField(num, 'original');
+        showToast('✅ 录音转写完成', 'success');
+      } catch(e) {
+        showToast('转写失败: ' + e.message, 'error');
+      }
+      stream.getTracks().forEach(t => t.stop());
+    };
+    
+    mediaRecorder.start(1000); // 每1秒收集一次数据
+    
+    isRecording = true;
+    currentRecording = num;
+    recordingSeconds = 0;
+    
+    document.getElementById('voiceBtn' + num).classList.add('recording');
+    document.getElementById('qblock' + num).classList.add('recording-active');
+    document.getElementById('recordingBar').classList.add('show');
+    document.getElementById('recQuestion').textContent = '第' + num + '题 📱手机云录音';
+    switchTab(num, 'original');
+    updateTimerDisplay();
+    recordingTimer = setInterval(function() { recordingSeconds++; updateTimerDisplay(); }, 1000);
+    
+    showToast('📱 手机录音中...点击停止按钮完成', 'info');
+  } catch(e) {
+    showToast('录音失败: ' + e.message, 'error');
+  }
 }
 
 function startRecognition() {
@@ -1144,6 +1219,28 @@ function getApiKey() {
   return localStorage.getItem(API_KEY_STORAGE) || '';
 }
 
+// 手机云端录音转写
+async function transcribeAudio(audioBlob, apiKey) {
+  showToast('🔄 正在上传录音并转写...', 'info');
+  const formData = new FormData();
+  formData.append('file', audioBlob, 'recording.webm');
+  formData.append('model', 'parrot-twhisper-large');
+  
+  const response = await fetch(WHISPER_URL, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${apiKey}` },
+    body: formData
+  });
+  
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.error?.message || `转写失败 ${response.status}`);
+  }
+  
+  const data = await response.json();
+  return data.text || '';
+}
+
 // 测试录音功能
 async function testMic() {
   const el = document.getElementById('micTestResult');
@@ -1151,30 +1248,40 @@ async function testMic() {
   el.style.color = 'var(--warning)';
   el.textContent = '🔍 正在检测...';
 
+  // 显示设备类型
+  if (isMobile()) {
+    el.textContent = '📱 检测到手机\n';
+  } else {
+    el.textContent = '🖥️ 检测到电脑\n';
+  }
+
   // 1. 检查HTTPS
   const isHTTPS = location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
   if (!isHTTPS) {
     el.style.color = 'var(--accent)';
-    el.textContent = '❌ 必须用HTTPS才能录音（当前是' + location.protocol + '）';
+    el.textContent += '❌ 必须用HTTPS才能录音（当前是' + location.protocol + '）';
     return;
   }
-  el.textContent = '✅ HTTPS ✓\n';
+  el.textContent += '✅ HTTPS ✓\n';
 
   // 2. 检查getUserMedia
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
     el.style.color = 'var(--accent)';
-    el.textContent = '❌ 浏览器不支持getUserMedia\n请用系统浏览器（Safari/Chrome）打开此页面';
+    el.textContent += '❌ 浏览器不支持getUserMedia\n请用系统浏览器（Safari/Chrome）打开此页面';
     return;
   }
   el.textContent += '✅ getUserMedia ✓\n';
 
-  // 3. 检查MediaRecorder
+  // 手机用MediaRecorder检测
   if (typeof MediaRecorder === 'undefined') {
-    el.style.color = 'var(--accent)';
-    el.textContent = '❌ 浏览器不支持MediaRecorder\n请用系统浏览器打开';
-    return;
+    if (isMobile()) {
+      el.style.color = 'var(--accent)';
+      el.textContent += '❌ MediaRecorder不支持\n';
+      return;
+    }
+  } else {
+    el.textContent += '✅ MediaRecorder ✓\n';
   }
-  el.textContent += '✅ MediaRecorder ✓\n';
 
   // 4. 检查麦克风权限
   try {

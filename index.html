@@ -766,6 +766,13 @@ function formatTime(sec) {
   return `${pad(m)}:${pad(s)}`;
 }
 
+function updateTimerDisplay() {
+  const timerEl = document.getElementById('recTimer');
+  if (timerEl) {
+    timerEl.textContent = formatTime(recordingSeconds);
+  }
+}
+
 // ============================================================
 // 动态生成问题块
 // ============================================================

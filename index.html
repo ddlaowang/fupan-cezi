@@ -714,7 +714,7 @@ const STORAGE_KEY = 'fanpan_records_v3';
 const API_KEY_STORAGE = 'fanpan_api_key';
 const API_URL = 'https://api.siliconflow.cn/v1/chat/completions';
 const WHISPER_URL = 'https://api.siliconflow.cn/v1/audio/transcriptions';
-const MODEL = 'Qwen/Qwen3-8B'; // 免费模型，不扣token
+const MODEL = 'Qwen/Qwen2.5-7B-Instruct'; // 免费模型，正确名称
 const WHISPER_MODEL = 'FunAudioLLM/SenseVoiceSmall'; // 免费语音转写模型
 const DEFAULT_API_KEY = 'sk-bmpjwdksyuqvqtdullaehtxwnfvclpffkjvlpglkqhuphtig'; // 内置免费Key，开箱即用
 
@@ -1046,7 +1046,7 @@ async function startMobileRecording(num) {
       stream.getTracks().forEach(t => t.stop());
     };
     
-    mediaRecorder.start(1000); // 每1秒收集一次数据
+    mediaRecorder.start(250); // 每250ms收集一次数据，停止响应更快
     
     isRecording = true;
     currentRecording = num;
@@ -1204,9 +1204,7 @@ async function callAI(prompt, apiKey) {
       model: MODEL,
       messages: [{ role: 'user', content: prompt }],
       stream: false,
-      max_tokens: 2048,
-      // 关闭thinking模式，省token+输出更干净
-      thinking_budget: 0
+      max_tokens: 2048
     })
   });
   if (!response.ok) {

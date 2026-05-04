@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="复盘册子">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
-<title>复盘册子 2.6</title>
+<title>复盘册子 2.7</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
@@ -215,24 +215,27 @@ body {
 .q-header-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
 
 /* 分享按钮 */
-.share-btn {
-  width: 34px; height: 34px; border-radius: 50%;
+.share-btn-text {
+  padding: 6px 10px; border-radius: 18px;
   background: var(--border); border: none; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; transition: all 0.2s; font-size: 13px;
+  flex-shrink: 0; transition: all 0.2s;
+  color: var(--text); font-size: 12px; font-weight: 600;
+  font-family: inherit; white-space: nowrap;
 }
-.share-btn:hover { transform: scale(1.1); background: var(--accent); }
+.share-btn-text:hover { transform: scale(1.05); background: var(--accent); color: #fff; }
 
 /* 语音按钮 */
-.voice-btn {
-  width: 34px; height: 34px; border-radius: 50%;
+.voice-btn-text {
+  padding: 6px 12px; border-radius: 18px;
   background: var(--accent); border: none; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; transition: all 0.2s; position: relative;
+  flex-shrink: 0; transition: all 0.2s;
+  color: #fff; font-size: 12px; font-weight: 600;
+  font-family: inherit; white-space: nowrap;
 }
-.voice-btn:hover { transform: scale(1.1); background: #ff5a75; }
-.voice-btn.recording { background: #ff3d5a; animation: pulse 1s infinite; }
-.voice-btn svg { width: 15px; height: 15px; fill: #fff; }
+.voice-btn-text:hover { transform: scale(1.05); background: #ff5a75; }
+.voice-btn-text.recording { background: #ff3d5a; animation: pulse 1s infinite; }
 @keyframes pulse {
   0%,100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(233,69,96,0.4); }
   50% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(233,69,96,0); }
@@ -281,6 +284,52 @@ body {
   border-top: 1px solid var(--border);
 }
 .ai-toolbar::-webkit-scrollbar { display: none; }
+.ai-main-btn {
+  flex: 1; justify-content: center;
+  padding: 8px 16px; font-size: 13px;
+  border-color: var(--accent2); color: var(--accent2);
+  background: rgba(124,58,237,0.08);
+}
+.ai-main-btn:hover { background: rgba(124,58,237,0.18); }
+.ai-fix-btn {
+  border-color: var(--success); color: var(--success);
+}
+/* AI菜单弹窗 */
+.ai-menu-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5); z-index: 300;
+  align-items: flex-end; justify-content: center;
+}
+.ai-menu-overlay.show { display: flex; }
+.ai-menu {
+  width: 100%; max-width: 640px;
+  background: var(--card); border-radius: 20px 20px 0 0;
+  padding: 20px; padding-bottom: max(20px, env(safe-area-inset-bottom));
+  animation: slideUp 0.25s ease;
+}
+.ai-menu-title {
+  font-size: 15px; font-weight: 700; color: #fff;
+  margin-bottom: 16px; text-align: center;
+}
+.ai-menu-item {
+  width: 100%; padding: 14px 18px;
+  border: 1px solid var(--border); border-radius: 12px;
+  background: transparent; color: var(--text);
+  font-size: 14px; font-weight: 600;
+  cursor: pointer; display: flex; align-items: center; gap: 10px;
+  margin-bottom: 8px; font-family: inherit;
+  transition: all 0.15s;
+}
+.ai-menu-item:hover { background: rgba(124,58,237,0.1); border-color: var(--accent2); }
+.ai-menu-item .ai-icon { font-size: 18px; }
+.ai-menu-cancel {
+  width: 100%; padding: 12px; border: none; border-radius: 12px;
+  background: var(--border); color: var(--muted);
+  font-size: 14px; font-weight: 600;
+  cursor: pointer; font-family: inherit; margin-top: 4px;
+}
+.ai-menu-cancel:hover { color: var(--text); }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 .ai-action-btn {
   flex-shrink: 0; padding: 6px 12px;
   border-radius: 16px; border: 1px solid var(--border);
@@ -691,8 +740,9 @@ body {
 
 <!-- 顶栏 -->
 <div class="header">
-  <h1>📖 复盘册子 <span>v2.6</span></h1>
+  <h1>📖 复盘册子 <span>v2.7</span></h1>
   <div class="header-right">
+    <button class="icon-btn" onclick="shareAllQuestions()" title="分享全篇">📤</button>
     <button class="bg-settings-btn" onclick="showBgSettings()">🎨</button>
     <button class="icon-btn" onclick="showSettings()">⚙️</button>
     <div class="date-display" id="dateDisplay" onclick="showDatePicker()"></div>
@@ -701,7 +751,7 @@ body {
 
 <!-- 主内容 -->
 <div class="main">
-  <div class="section-label">📋 每日复盘 · 长按语音可持续录音1小时+</div>
+  <div class="section-label">📋 每日复盘 · 录音自动转文字+AI润色</div>
   <div id="questionsContainer"></div>
 </div>
 
@@ -867,6 +917,17 @@ body {
       </div>
     </div>
   </div>
+<!-- AI润色菜单 -->
+<div class="ai-menu-overlay" id="aiMenuOverlay">
+  <div class="ai-menu">
+    <div class="ai-menu-title">✨ AI润色功能</div>
+    <button class="ai-menu-item" onclick="doAI('clean')"><span class="ai-icon">✂️</span> 精简语气词</button>
+    <button class="ai-menu-item" onclick="doAI('polish')"><span class="ai-icon">✍️</span> 润色优化</button>
+    <button class="ai-menu-item" onclick="doAI('summary')"><span class="ai-icon">🧠</span> 智能总结</button>
+    <button class="ai-menu-item" onclick="doAI('golden')"><span class="ai-icon">💎</span> 提取金句</button>
+    <button class="ai-menu-item" onclick="doAI('all')" style="border-color:var(--accent2);color:var(--accent2);"><span class="ai-icon">✨</span> 全优化（四合一）</button>
+    <button class="ai-menu-cancel" onclick="closeAIMenu()">取消</button>
+  </div>
 </div>
 
 <script>
@@ -961,10 +1022,8 @@ function renderQuestions() {
           <div class="q-label">${q.text}<span class="q-hint">(${q.hint})</span></div>
         </div>
         <div class="q-header-right">
-          <button class="share-btn" id="shareBtn${num}" onclick="shareQuestion(${num})" title="分享">📤</button>
-          <button class="voice-btn" id="voiceBtn${num}" onclick="toggleVoice(${num})" title="点击开始/停止录音">
-            <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg>
-          </button>
+          <button class="share-btn-text" id="shareBtn${num}" onclick="shareQuestion(${num})" title="分享">📤 分享</button>
+          <button class="voice-btn-text" id="voiceBtn${num}" onclick="toggleVoice(${num})" title="点击开始/停止录音">🎤 录音转文字</button>
         </div>
       </div>
       <div class="tab-bar">
@@ -972,28 +1031,16 @@ function renderQuestions() {
         <button class="tab-btn" id="tabPolished${num}" onclick="switchTab(${num},'polished')">✨ AI润色版</button>
       </div>
       <div class="tab-panel active" id="panelOriginal${num}">
-        <textarea class="answer-area" id="original${num}" placeholder="点击🎤录音，或直接输入…" oninput="saveField(${num},'original')"></textarea>
+        <textarea class="answer-area" id="original${num}" placeholder="点击「🎤 录音转文字」，或直接输入…" oninput="saveField(${num},'original')"></textarea>
       </div>
       <div class="tab-panel" id="panelPolished${num}">
         <textarea class="answer-area" id="polished${num}" placeholder="AI润色结果将显示在这里…" oninput="saveField(${num},'polished')" style="color:#c4b5fd;"></textarea>
       </div>
-      <div class="ai-toolbar">
-        <button class="ai-action-btn" id="btnClean${num}" onclick="runAI(${num},'clean')">
-          <span class="spinner"></span><span class="btn-label">✂️ 精简</span>
+      <div class="ai-toolbar" style="justify-content:space-between;">
+        <button class="ai-action-btn ai-main-btn" id="btnAI${num}" onclick="showAIMenu(${num})">
+          <span class="spinner"></span><span class="btn-label">✨ AI润色</span>
         </button>
-        <button class="ai-action-btn" id="btnPolish${num}" onclick="runAI(${num},'polish')">
-          <span class="spinner"></span><span class="btn-label">✍️ 润色</span>
-        </button>
-        <button class="ai-action-btn" id="btnSummary${num}" onclick="runAI(${num},'summary')">
-          <span class="spinner"></span><span class="btn-label">🧠 总结</span>
-        </button>
-        <button class="ai-action-btn" id="btnGolden${num}" onclick="runAI(${num},'golden')">
-          <span class="spinner"></span><span class="btn-label">💎 金句</span>
-        </button>
-        <button class="ai-action-btn" id="btnAll${num}" onclick="runAI(${num},'all')" style="border-color:var(--accent2);color:var(--accent2);">
-          <span class="spinner"></span><span class="btn-label">✨ 全优化</span>
-        </button>
-        <button class="ai-action-btn" id="btnFix${num}" onclick="runAI(${num},'fix')" style="border-color:var(--success);color:var(--success);" title="自动修正错别字">
+        <button class="ai-action-btn ai-fix-btn" id="btnFix${num}" onclick="runAI(${num},'fix')" title="自动修正错别字">
           <span class="spinner"></span><span class="btn-label">🔍 错别字</span>
         </button>
       </div>
@@ -1518,38 +1565,38 @@ function setLoading(btnId, loading) {
 // AI 功能（工具栏按钮）
 // ============================================================
 const AI_PROMPTS = {
-  clean: (text) => `请帮我精简以下文字中的语气词、重复词和无意义的口头禅（如"嗯、啊、这个、那个、就是、的话、然后、其实"等），保持原意不变，直接输出处理后的文字，不要解释 /no_think：
+  clean: (text) => `请帮我精简以下文字中的语气词、重复词和无意义的口头禅（如"嗯、啊、这个、那个、就是、的话、然后、其实"等），保持原意不变，直接输出处理后的文字。重要：输出必须是纯中文，严禁出现任何英文单词或助词（如ok、okay、yeah、no、sure、well等），不要解释 /no_think：
 
 """
 ${text}
 ---`,
 
-  polish: (text) => `请帮我润色优化以下复盘文字，提升表达质量，使其更流畅、清晰、有条理。直接输出结果，不要解释 /no_think：
+  polish: (text) => `请帮我润色优化以下复盘文字，提升表达质量，使其更流畅、清晰、有条理。重要：输出必须是纯中文，严禁出现任何英文单词或助词（如ok、okay、yeah、no、sure、well等），直接输出结果，不要解释 /no_think：
 
 """
 ${text}
 ---`,
 
-  summary: (text) => `请帮我提炼以下文字的核心观点，用简洁的一句话概括。直接输出结果，不要"概括如下"等前缀 /no_think：
+  summary: (text) => `请帮我提炼以下文字的核心观点，用简洁的一句话概括。重要：输出必须是纯中文，严禁出现任何英文单词或助词（如ok、okay、yeah、no、sure、well等），直接输出结果，不要"概括如下"等前缀 /no_think：
 
 """
 ${text}
 ---`,
 
-  fix: (text) => `Please correct typos in the following text. Output ONLY the corrected text, no explanations. Use format: original-><correct> for each typo.
+  fix: (text) => `请修正以下文字中的错别字，直接输出修正后的完整文字，不要解释。重要：输出必须是纯中文，严禁出现任何英文单词或助词 /no_think：
 
-```
+"""
 ${text}
-```
+---
 `,
 
-  golden: (text) => `请从以下文字中提取1-3句最有价值的金句。要求简短有力、有洞察力。每句一行，只输出金句，不要解释 /no_think：
+  golden: (text) => `请从以下文字中提取1-3句最有价值的金句。要求简短有力、有洞察力。每句一行，只输出金句。重要：输出必须是纯中文，严禁出现任何英文单词或助词（如ok、okay、yeah、no、sure、well等），不要解释 /no_think：
 
 """
 ${text}
 ---`,
 
-  all: (text) => `请对以下复盘文字同时进行4种处理，用 |----| 分隔每个部分 /no_think：
+  all: (text) => `请对以下复盘文字同时进行4种处理，用 |----| 分隔每个部分。重要：所有输出必须是纯中文，严禁出现任何英文单词或助词（如ok、okay、yeah、no、sure、well等） /no_think：
 
 """
 ${text}
@@ -1573,7 +1620,8 @@ async function runAI(num, action) {
 
   const apiKey = getApiKey();
 
-  const btnId = `btn${action.charAt(0).toUpperCase()+action.slice(1)}${num}`;
+  // 统一使用 btnAI 按钮（clean/polish/summary/golden/all 都指向它）
+  const btnId = (action === 'fix') ? `btnFix${num}` : `btnAI${num}`;
   setLoading(btnId, true);
 
   try {
@@ -2093,6 +2141,54 @@ function closeExportModal() {
 // ============================================================
 // 分享功能
 // ============================================================
+// AI菜单（底部弹出）
+// ============================================================
+function showAIMenu(num) {
+  const menu = document.getElementById('aiMenuOverlay');
+  menu.classList.add('show');
+  menu.dataset.num = num;
+}
+function closeAIMenu() {
+  document.getElementById('aiMenuOverlay').classList.remove('show');
+}
+function doAI(action) {
+  const menu = document.getElementById('aiMenuOverlay');
+  const num = parseInt(menu.dataset.num);
+  closeAIMenu();
+  runAI(num, action);
+}
+
+// ============================================================
+// 通篇分享
+// ============================================================
+function shareAllQuestions() {
+  const dateStr = formatDateCN(currentDate);
+  const lines = [`📖 复盘笔记 · ${dateStr}`, ''];
+  for (let i = 1; i <= 5; i++) {
+    const qd = getQuestionData(i);
+    const q = QUESTIONS[i - 1];
+    const original = qd.original || '';
+    const polished = qd.polished || '';
+    const text = polished || original;
+    if (text.trim()) {
+      lines.push(`━━━ 第${i}题：${q.text} ━━━`);
+      if (polished && polished !== original) {
+        lines.push(`✨ ${polished}`);
+      } else {
+        lines.push(`📝 ${original}`);
+      }
+      lines.push('');
+    }
+  }
+  lines.push('复盘册子 v2.7');
+  const shareText = lines.join('\n');
+  currentShareText = shareText;
+  document.getElementById('shareModalTitle').textContent = `📤 全篇分享 · ${dateStr}`;
+  document.getElementById('sharePreview').textContent = shareText;
+  document.getElementById('shareModal').classList.add('show');
+}
+
+// ============================================================
 let currentShareNum = null;
 let currentShareText = '';
 
@@ -2114,7 +2210,7 @@ function shareQuestion(num) {
     ``,
     `✨ AI润色：${polished || '（未润色）'}`,
     ``,
-    `复盘册子 v2.6`
+    `复盘册子 v2.7`
   ].join('\n');
 
   currentShareText = lines;
@@ -2216,6 +2312,11 @@ function nativeShare() {
 // ============================================================
 // PWA Service Worker
 // ============================================================
+// AI菜单点击外部关闭
+document.getElementById('aiMenuOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeAIMenu();
+});
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
     navigator.serviceWorker.register('sw.js').catch(() => {});

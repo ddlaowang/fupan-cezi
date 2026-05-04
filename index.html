@@ -997,6 +997,10 @@ const AI_CHANNELS = [
   { url: 'https://api.siliconflow.cn/v1/chat/completions', model: 'Qwen/Qwen2.5-7B-Instruct', key: DEFAULT_API_KEY },
   { url: 'https://api.siliconflow.cn/v1/chat/completions', model: 'THUDM/glm-4-flash', key: DEFAULT_API_KEY },
 ];
+// ─── 语音识别配置 ────────────────────────────────────────────
+// 本地 faster-whisper 服务器（优先，隐私+免费+中文准）
+const WHISPER_LOCAL_URL = 'http://localhost:8765/transcribe';
+// 云端 SiliconFlow（降级备用）
 const WHISPER_URL = 'https://api.siliconflow.cn/v1/audio/transcriptions';
 const WHISPER_MODEL = 'FunAudioLLM/SenseVoiceSmall';
 let currentChannel = 0; // 当前通道索引
@@ -1613,23 +1617,48 @@ function getApiKey() {
 
 // 手机云端录音转写
 async function transcribeAudio(audioBlob, apiKey) {
+  // ─── 第一步：尝试本地 faster-whisper ───────────────────────────
+  const formDataLocal = new FormData();
+  formDataLocal.append('file', audioBlob, 'recording.webm');
+
+  try {
+    showToast('🔊 本地转写中...（首次运行需下载模型，请稍候）', 'success');
+    const localRes = await fetch(WHISPER_LOCAL_URL, { method: 'POST', body: formDataLocal });
+    if (localRes.ok) {
+      const localData = await localRes.json();
+      if (localData.text) {
+        showToast('✅ 本地转写成功', 'success');
+        return localData.text;
+      }
+      // 有响应但无文字，降级
+      console.warn('[转写] 本地返回空内容，降级到云端');
+    } else {
+      const errText = await localRes.text().catch(() => '');
+      console.warn('[转写] 本地服务器异常:', localRes.status, errText);
+    }
+  } catch (e) {
+    // 本地服务器未启动或网络问题，正常降级
+    console.warn('[转写] 本地服务器连接失败:', e.message);
+  }
+
+  // ─── 第二步：降级到云端 SiliconFlow ───────────────────────────
+  showToast('🔄 本地转写不可用，云端转写中...', 'success');
   if (!apiKey) apiKey = DEFAULT_API_KEY;
-  showToast('🔄 正在上传录音并转写...', 'success');
   const formData = new FormData();
   formData.append('file', audioBlob, 'recording.webm');
   formData.append('model', WHISPER_MODEL);
-  
+
   const response = await fetch(WHISPER_URL, {
     method: 'POST',
     headers: { 'Authorization': `Bearer ${apiKey}` },
     body: formData
   });
-  
+
   if (!response.ok) {
     const err = await response.json().catch(() => ({}));
     throw new Error(err.error?.message || `转写失败 ${response.status}`);
   }
-  
+
   const data = await response.json();
   return data.text || '';
 }

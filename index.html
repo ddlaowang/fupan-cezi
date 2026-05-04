@@ -938,7 +938,7 @@ body {
       <div class="share-preview" id="sharePreview"></div>
       <div class="share-actions">
         <button class="share-action-btn" onclick="copyShareText()">📋 复制文字</button>
-        <button class="share-action-btn" onclick="downloadShareImage()">🖼️ 下载图片</button>
+        <button class="share-action-btn" onclick="confirmSaveImage()">🖼️ 保存图片</button>
         <button class="share-action-btn primary" onclick="nativeShare()">📱 分享</button>
       </div>
     </div>
@@ -2257,6 +2257,17 @@ function copyShareText() {
   });
 }
 
+function confirmSaveImage() {
+  if (!currentShareNum && !currentShareText) return;
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const msg = isMobile
+    ? '🖼️ 是否保存图片到手机？\n\n图片会保存到系统相册或下载目录，可在「文件管理」或「相册」中查看。'
+    : '🖼️ 是否保存图片到本地？\n\n图片会保存到浏览器默认下载目录。';
+  if (confirm(msg)) {
+    downloadShareImage();
+  }
+}
+
 function downloadShareImage() {
   if (!currentShareNum && !currentShareText) return;
   const num = currentShareNum;
@@ -2303,7 +2314,8 @@ function doShareImage(container, num) {
     document.body.appendChild(a); a.click();
     document.body.removeChild(a);
     closeShareModal();
-    showToast('图片已下载 ✓', 'success');
+    const isMobile2 = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    showToast(isMobile2 ? '图片已保存，请在相册或文件管理中查看 📱' : '图片已保存到下载目录 📂', 'success');
   }).catch(err => {
     document.body.removeChild(container);
     closeShareModal();

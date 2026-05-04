@@ -742,9 +742,9 @@ body {
 <div class="header">
   <h1>📖 复盘册子 <span>v2.7</span></h1>
   <div class="header-right">
-    <button class="icon-btn" onclick="shareAllQuestions()" title="分享全篇">📤</button>
-    <button class="bg-settings-btn" onclick="showBgSettings()">🎨</button>
-    <button class="icon-btn" onclick="showSettings()">⚙️</button>
+    <button class="icon-btn" onclick="shareAllQuestions()" title="分享全篇">📤 分享</button>
+    <button class="bg-settings-btn" onclick="showBgSettings()">🎨 主题</button>
+    <button class="icon-btn" onclick="showSettings()">⚙️ 设置</button>
     <div class="date-display" id="dateDisplay" onclick="showDatePicker()"></div>
   </div>
 </div>
@@ -1418,7 +1418,11 @@ async function autoPolish(num, text) {
   aiProcessing[num] = 'loading';
 
   try {
-    const prompt = `请润色以下复盘文字，使其更流畅、清晰、有条理，但保持原意不变。直接输出润色后的文字，不要任何解释 /no_think：
+    const prompt = `请润色以下复盘文字，使其更流畅、清晰、有条理，但保持原意不变。
+严格要求：
+1. 禁止出现任何英文单词或英文助词（okay/no/yeah等）
+2. 禁止词语重复（如连续出现两个相同的词如"非常""非常"）
+3. 直接输出润色后的文字，不要任何解释 /no_think：
 
 """
 ${text}

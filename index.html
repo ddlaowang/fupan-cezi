@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿锘�<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -18,10 +18,10 @@ if(!vp || ['3.6','3.5','3.4','3.3','3.2','3.1','3.0'].indexOf(vp) >= 0) {
 <meta name="theme-color" content="#4a90d9">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="复盘册子">
+<meta name="apple-mobile-web-app-title" content="澶嶇洏鍐屽瓙">
 <link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
-<title>复盘册子 3.7</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>馃摉</text></svg>">
+<title>澶嶇洏鍐屽瓙 3.7</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
@@ -40,7 +40,7 @@ if(!vp || ['3.6','3.5','3.4','3.3','3.2','3.1','3.0'].indexOf(vp) >= 0) {
   --shadow: 0 2px 12px rgba(0,0,0,0.06);
 }
 
-/* ===== 蓝天白云主题（默认） ===== */
+/* ===== 钃濆ぉ鐧戒簯涓婚�橈紙榛樿�わ級 ===== */
 html[data-theme="bluesky"] {
   --primary: #e0eef9;
   --accent: #1a6baa;
@@ -56,7 +56,7 @@ html[data-theme="bluesky"] {
   --shadow: 0 2px 16px rgba(26,107,170,0.1);
 }
 
-/* ===== 深色主题 ===== */
+/* ===== 娣辫壊涓婚�� ===== */
 html[data-theme="dark"] {
   --primary: #1a1a2e;
   --accent: #e94560;
@@ -72,7 +72,7 @@ html[data-theme="dark"] {
   --shadow: 0 2px 12px rgba(0,0,0,0.3);
 }
 
-/* ===== 暖光主题 ===== */
+/* ===== 鏆栧厜涓婚�� ===== */
 html[data-theme="warm"] {
   --primary: #fff8f0;
   --accent: #d97706;
@@ -88,7 +88,7 @@ html[data-theme="warm"] {
   --shadow: 0 2px 12px rgba(217,119,6,0.08);
 }
 
-/* ===== 薄荷主题 ===== */
+/* ===== 钖勮嵎涓婚�� ===== */
 html[data-theme="mint"] {
   --primary: #ecfdf5;
   --accent: #059669;
@@ -104,7 +104,7 @@ html[data-theme="mint"] {
   --shadow: 0 2px 12px rgba(5,150,105,0.08);
 }
 
-/* ===== 蓝天白云CSS装饰 ===== */
+/* ===== 钃濆ぉ鐧戒簯CSS瑁呴グ ===== */
 .clouds-bg {
   position: fixed; top: 0; left: 0; right: 0;
   height: 200px; pointer-events: none; z-index: 0;
@@ -142,7 +142,7 @@ body {
   transition: background 0.3s, color 0.3s;
 }
 
-/* ===== 顶栏（参考笔记本：简洁清爽） ===== */
+/* ===== 椤舵爮锛堝弬鑰冪瑪璁版湰锛氱畝娲佹竻鐖斤級 ===== */
 .header {
   background: var(--primary); padding: 12px 16px;
   display: flex; justify-content: space-between; align-items: center;
@@ -169,7 +169,7 @@ body {
 }
 .date-display:hover { background: var(--accent); color: #fff; }
 
-/* ===== 录音状态条 ===== */
+/* ===== 褰曢煶鐘舵�佹潯 ===== */
 .recording-bar {
   display: none; position: fixed; top: 0; left: 0; right: 0;
   background: linear-gradient(90deg, #e94560, #7c3aed);
@@ -191,7 +191,7 @@ body {
 }
 .rec-stop-btn:hover { background: rgba(255,255,255,0.35); }
 
-/* ===== 主内容 ===== */
+/* ===== 涓诲唴瀹� ===== */
 .main { max-width: 640px; margin: 0 auto; padding: 14px 12px 100px; position: relative; z-index: 1; }
 .section-label {
   font-size: 12px; color: var(--muted); font-weight: 600;
@@ -199,7 +199,7 @@ body {
   margin-bottom: 12px; padding-left: 4px;
 }
 
-/* ===== 问题块（参考笔记本：卡片式、简洁） ===== */
+/* ===== 闂�棰樺潡锛堝弬鑰冪瑪璁版湰锛氬崱鐗囧紡銆佺畝娲侊級 ===== */
 .q-block {
   background: var(--card); border-radius: 16px;
   margin-bottom: 14px; border: 1px solid var(--border);
@@ -224,10 +224,10 @@ body {
 .q-hint { font-size: 11px; color: var(--muted); font-weight: 400; margin-left: 4px; }
 .q-header-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
 
-/* 语音+播放按钮组 */
+/* 璇�闊�+鎾�鏀炬寜閽�缁� */
 .voice-btn-group { display: flex; gap: 4px; }
 
-/* 分享按钮 */
+/* 鍒嗕韩鎸夐挳 */
 .share-btn-text {
   padding: 5px 10px; border-radius: 14px;
   background: var(--input-bg); border: 1px solid var(--border); cursor: pointer;
@@ -238,7 +238,7 @@ body {
 }
 .share-btn-text:hover { transform: scale(1.05); background: var(--accent); color: #fff; border-color: var(--accent); }
 
-/* 语音按钮 */
+/* 璇�闊虫寜閽� */
 .voice-btn-text {
   padding: 5px 10px; border-radius: 14px;
   background: var(--accent); border: none; cursor: pointer;
@@ -254,7 +254,7 @@ body {
   50% { transform: scale(1.08); box-shadow: 0 0 0 8px rgba(233,69,96,0); }
 }
 
-/* 播放录音按钮 */
+/* 鎾�鏀惧綍闊虫寜閽� */
 .play-btn {
   padding: 5px 10px; border-radius: 14px;
   background: var(--success); border: none; cursor: pointer;
@@ -266,7 +266,7 @@ body {
 .play-btn.has-audio { display: flex; }
 .play-btn:hover { filter: brightness(1.1); }
 
-/* ===== 双Tab区域 ===== */
+/* ===== 鍙孴ab鍖哄煙 ===== */
 .tab-bar {
   display: flex; gap: 0; padding: 0 16px;
   border-bottom: 1px solid var(--border);
@@ -288,7 +288,7 @@ body {
 .tab-btn .badge.ai-done { background: var(--success); color: #fff; }
 .tab-btn .badge.ai-loading { background: var(--warning); color: #000; animation: blink 1s infinite; }
 
-/* 文本区域（输入色淡、文字色深） */
+/* 鏂囨湰鍖哄煙锛堣緭鍏ヨ壊娣°�佹枃瀛楄壊娣憋級 */
 .tab-panel { display: none; }
 .tab-panel.active { display: block; }
 .answer-area {
@@ -301,7 +301,7 @@ body {
 .answer-area::placeholder { color: var(--muted); font-size: 14px; }
 .answer-area:focus { background: var(--input-bg); box-shadow: inset 0 0 0 1px var(--border); }
 
-/* AI工具栏 */
+/* AI宸ュ叿鏍� */
 .ai-toolbar {
   display: flex; align-items: center;
   padding: 8px 12px; gap: 6px;
@@ -319,7 +319,7 @@ body {
 .ai-fix-btn {
   border-color: var(--success); color: var(--success);
 }
-/* AI菜单弹窗 */
+/* AI鑿滃崟寮圭獥 */
 .ai-menu-overlay {
   display: none; position: fixed; inset: 0;
   background: rgba(0,0,0,0.4); z-index: 300;
@@ -381,7 +381,7 @@ body {
 }
 .save-hint.show { color: var(--success); }
 
-/* ===== 底部栏 ===== */
+/* ===== 搴曢儴鏍� ===== */
 .bottom-bar {
   position: fixed; bottom: 0; left: 0; right: 0;
   background: var(--primary); border-top: 1px solid var(--border);
@@ -402,7 +402,7 @@ body {
 .btn-today { background: var(--accent); color: #fff; }
 .btn-today:hover { filter: brightness(1.1); }
 
-/* ===== 弹窗通用 ===== */
+/* ===== 寮圭獥閫氱敤 ===== */
 .modal-overlay {
   display: none; position: fixed; inset: 0;
   background: rgba(0,0,0,0.4); z-index: 200;
@@ -430,7 +430,7 @@ body {
 .close-btn:hover { background: var(--accent); color: #fff; }
 .modal-body { padding: 18px; }
 
-/* 设置弹窗 */
+/* 璁剧疆寮圭獥 */
 .settings-group { margin-bottom: 18px; }
 .settings-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text-strong); margin-bottom: 6px; }
 .settings-group .desc { font-size: 12px; color: var(--muted); margin-bottom: 8px; line-height: 1.5; }
@@ -463,7 +463,7 @@ body {
 .usage-tips h4 { font-size: 12px; color: var(--accent); margin-bottom: 6px; }
 .usage-tips ul { font-size: 11px; color: var(--muted); padding-left: 14px; line-height: 1.8; }
 
-/* 历史弹窗 */
+/* 鍘嗗彶寮圭獥 */
 .history-list { padding: 14px 18px 36px; }
 .history-item {
   padding: 12px; border-radius: 12px; margin-bottom: 6px;
@@ -475,7 +475,7 @@ body {
 .history-item-preview { font-size: 11px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .history-empty { text-align: center; padding: 36px 20px; color: var(--muted); font-size: 13px; }
 
-/* 日期选择器 */
+/* 鏃ユ湡閫夋嫨鍣� */
 .date-picker-modal {
   display: none; position: fixed; inset: 0;
   background: rgba(0,0,0,0.4); z-index: 300;
@@ -502,7 +502,7 @@ body {
 .btn-cancel { background: var(--input-bg); color: var(--text); border: 1px solid var(--border); }
 .btn-confirm { background: var(--accent); color: #fff; }
 
-/* 历史详情 */
+/* 鍘嗗彶璇︽儏 */
 .detail-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 250; overflow-y: auto; }
 .detail-modal.show { display: block; }
 .detail-content { max-width: 640px; margin: 0 auto; padding: 18px 12px 60px; }
@@ -552,7 +552,7 @@ body {
 .toast.success { border-color: var(--success); }
 .toast.error { border-color: #ef4444; }
 
-/* ===== 背景主题 ===== */
+/* ===== 鑳屾櫙涓婚�� ===== */
 .bg-settings-btn {
   height: 32px; padding: 0 10px; border-radius: 16px;
   background: var(--input-bg); border: 1px solid var(--border); cursor: pointer;
@@ -625,7 +625,7 @@ body {
 .bg-preview-label { font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
 .bg-preview-remove { font-size: 11px; color: var(--accent); cursor: pointer; background: none; border: none; font-family: inherit; }
 
-/* ===== 导出功能 ===== */
+/* ===== 瀵煎嚭鍔熻兘 ===== */
 .export-bar {
   position: fixed; bottom: 56px; left: 0; right: 0;
   background: var(--primary); border-top: 1px solid var(--border);
@@ -645,7 +645,7 @@ body {
 .export-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
 .export-btn.primary:hover { filter: brightness(1.1); }
 
-/* ===== 分享弹窗 ===== */
+/* ===== 鍒嗕韩寮圭獥 ===== */
 .share-modal {
   display: none; position: fixed; inset: 0;
   background: rgba(0,0,0,0.4); z-index: 210;
@@ -684,7 +684,7 @@ body {
 .share-action-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
 .share-action-btn.primary:hover { filter: brightness(1.1); }
 
-/* ===== 导出弹窗 ===== */
+/* ===== 瀵煎嚭寮圭獥 ===== */
 .export-modal {
   display: none; position: fixed; inset: 0;
   background: rgba(0,0,0,0.4); z-index: 250;
@@ -724,7 +724,7 @@ body {
 .export-action-btn.secondary { background: var(--input-bg); color: var(--text); border: 1px solid var(--border); }
 .export-action-btn.secondary:hover { background: var(--border); }
 
-/* 选择应用弹窗 */
+/* 閫夋嫨搴旂敤寮圭獥 */
 .apply-modal {
   display: none; position: fixed; inset: 0;
   background: rgba(0,0,0,0.4); z-index: 280;
@@ -748,7 +748,7 @@ body {
 .apply-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
 .apply-btn.primary:hover { filter: brightness(1.1); }
 
-/* 音频播放器 */
+/* 闊抽�戞挱鏀惧櫒 */
 .audio-player-mini {
   display: none; padding: 6px 16px;
   background: var(--input-bg); border-top: 1px solid var(--border);
@@ -766,7 +766,7 @@ body {
 </head>
 <body>
 
-<!-- 蓝天白云装饰 -->
+<!-- 钃濆ぉ鐧戒簯瑁呴グ -->
 <div class="clouds-bg">
   <div class="cloud cloud-1"></div>
   <div class="cloud cloud-2"></div>
@@ -774,93 +774,93 @@ body {
   <div class="cloud cloud-4"></div>
 </div>
 
-<!-- 录音状态条 -->
+<!-- 褰曢煶鐘舵�佹潯 -->
 <div class="recording-bar" id="recordingBar">
   <div class="rec-bar-left">
     <div class="rec-dot"></div>
-    <span id="recModeLabel">正在录音</span>
+    <span id="recModeLabel">姝ｅ湪褰曢煶</span>
     <span id="recTimer">00:00</span>
     <span style="font-size:11px;opacity:0.7;" id="recQuestion"></span>
   </div>
-  <button class="rec-stop-btn" onclick="stopVoice()">⏹ 停止</button>
+  <button class="rec-stop-btn" onclick="stopVoice()">鈴� 鍋滄��</button>
 </div>
 
-<!-- 顶栏 -->
+<!-- 椤舵爮 -->
 <div class="header">
-  <h1>📖 复盘册子 <span>v3.7</span></h1>
+  <h1>馃摉 澶嶇洏鍐屽瓙 <span>v3.7</span></h1>
   <div class="header-right">
-    <button class="icon-btn" onclick="shareAllQuestions()" title="分享全篇">📤 分享</button>
-    <button class="bg-settings-btn" onclick="showBgSettings()">🎨 主题</button>
-    <button class="icon-btn" onclick="showSettings()">⚙️ 设置</button>
+    <button class="icon-btn" onclick="shareAllQuestions()" title="鍒嗕韩鍏ㄧ瘒">馃摛 鍒嗕韩</button>
+    <button class="bg-settings-btn" onclick="showBgSettings()">馃帹 涓婚��</button>
+    <button class="icon-btn" onclick="showSettings()">鈿欙笍 璁剧疆</button>
     <div class="date-display" id="dateDisplay" onclick="showDatePicker()"></div>
   </div>
 </div>
 
-<!-- 主内容 -->
+<!-- 涓诲唴瀹� -->
 <div class="main">
-  <div class="section-label">📋 每日复盘 · 录音自动转文字+AI润色</div>
+  <div class="section-label">馃搵 姣忔棩澶嶇洏 路 褰曢煶鑷�鍔ㄨ浆鏂囧瓧+AI娑﹁壊</div>
   <div id="questionsContainer"></div>
 </div>
 
-<!-- 导出栏 -->
+<!-- 瀵煎嚭鏍� -->
 <div class="export-bar">
-  <button class="export-btn" onclick="exportText()">📄 导出文本</button>
-  <button class="export-btn primary" onclick="exportImage()">🖼️ 导出图片</button>
+  <button class="export-btn" onclick="exportText()">馃搫 瀵煎嚭鏂囨湰</button>
+  <button class="export-btn primary" onclick="exportImage()">馃柤锔� 瀵煎嚭鍥剧墖</button>
 </div>
 
-<!-- 底部栏 -->
+<!-- 搴曢儴鏍� -->
 <div class="bottom-bar">
-  <button class="bottom-btn btn-history" onclick="showHistory()">📋 历史</button>
-  <button class="bottom-btn btn-today" onclick="goToday()">📅 今天</button>
+  <button class="bottom-btn btn-history" onclick="showHistory()">馃搵 鍘嗗彶</button>
+  <button class="bottom-btn btn-today" onclick="goToday()">馃搮 浠婂ぉ</button>
 </div>
 
-<!-- 设置弹窗 -->
+<!-- 璁剧疆寮圭獥 -->
 <div class="modal-overlay" id="settingsModal">
   <div class="modal">
     <div class="modal-header">
-      <h2>⚙️ 设置</h2>
-      <button class="close-btn" onclick="closeSettings()">×</button>
+      <h2>鈿欙笍 璁剧疆</h2>
+      <button class="close-btn" onclick="closeSettings()">脳</button>
     </div>
     <div class="modal-body">
       <div class="settings-group">
-        <label>🤖 AI功能（开箱即用）</label>
+        <label>馃�� AI鍔熻兘锛堝紑绠卞嵆鐢�锛�</label>
         <div class="desc">
-          ✅ AI润色、语音转文字等功能<strong>无需注册</strong>，打开即用！<br>
-          内置免费通道，新用户直接可用。<br>
-          <span style="font-size:11px;color:var(--muted);">如需使用自己的API Key，可在下方填写</span>
+          鉁� AI娑﹁壊銆佽��闊宠浆鏂囧瓧绛夊姛鑳�<strong>鏃犻渶娉ㄥ唽</strong>锛屾墦寮�鍗崇敤锛�<br>
+          鍐呯疆鍏嶈垂閫氶亾锛屾柊鐢ㄦ埛鐩存帴鍙�鐢ㄣ��<br>
+          <span style="font-size:11px;color:var(--muted);">濡傞渶浣跨敤鑷�宸辩殑API Key锛屽彲鍦ㄤ笅鏂瑰～鍐�</span>
         </div>
         <details style="margin-top:8px;">
-          <summary style="font-size:12px;color:var(--accent);cursor:pointer;">高级设置：自定义API Key</summary>
+          <summary style="font-size:12px;color:var(--accent);cursor:pointer;">楂樼骇璁剧疆锛氳嚜瀹氫箟API Key</summary>
           <div style="margin-top:8px;">
-            <input type="password" class="api-key-input" id="apiKeyInput" placeholder="留空使用内置免费通道" autocomplete="off">
+            <input type="password" class="api-key-input" id="apiKeyInput" placeholder="鐣欑┖浣跨敤鍐呯疆鍏嶈垂閫氶亾" autocomplete="off">
             <div class="api-key-status" id="apiKeyStatus"></div>
             <div style="font-size:11px;color:var(--muted);margin-top:6px;">
-              支持：硅基流动(SiliconFlow) / DeepSeek / OpenAI 兼容API<br>
-              <a class="api-link" href="https://cloud.siliconflow.cn" target="_blank">硅基流动注册 →</a>
+              鏀�鎸侊細纭呭熀娴佸姩(SiliconFlow) / DeepSeek / OpenAI 鍏煎�笰PI<br>
+              <a class="api-link" href="https://cloud.siliconflow.cn" target="_blank">纭呭熀娴佸姩娉ㄥ唽 鈫�</a>
             </div>
           </div>
         </details>
       </div>
-      <button class="save-settings-btn" onclick="saveSettings()">保存设置</button>
-      <button class="save-settings-btn" style="background:var(--input-bg);color:var(--text);margin-top:8px;border:1px solid var(--border);" onclick="testMic()">🎤 测试录音功能</button>
+      <button class="save-settings-btn" onclick="saveSettings()">淇濆瓨璁剧疆</button>
+      <button class="save-settings-btn" style="background:var(--input-bg);color:var(--text);margin-top:8px;border:1px solid var(--border);" onclick="testMic()">馃帳 娴嬭瘯褰曢煶鍔熻兘</button>
       <div id="micTestResult" style="font-size:12px;padding:8px 0;display:none;white-space:pre-line;"></div>
       <hr class="settings-divider">
       <div class="settings-group" style="margin-bottom:0">
-        <label>💡 功能说明</label>
+        <label>馃挕 鍔熻兘璇存槑</label>
         <div class="usage-tips">
-          <h4>🎙️ 语音输入（双模式自动切换）</h4>
+          <h4>馃帣锔� 璇�闊宠緭鍏ワ紙鍙屾ā寮忚嚜鍔ㄥ垏鎹�锛�</h4>
           <ul>
-            <li>🖥️ 电脑Chrome：实时转写，边说边出字</li>
-            <li>📱 手机/其他浏览器：录音后云端识别</li>
-            <li>点击🎤开始，再点⏹停止，停止后自动AI润色</li>
-            <li>🔊 录音音频自动保存，可随时回放</li>
+            <li>馃枼锔� 鐢佃剳Chrome锛氬疄鏃惰浆鍐欙紝杈硅�磋竟鍑哄瓧</li>
+            <li>馃摫 鎵嬫満/鍏朵粬娴忚�堝櫒锛氬綍闊冲悗浜戠��璇嗗埆</li>
+            <li>鐐瑰嚮馃帳寮�濮嬶紝鍐嶇偣鈴瑰仠姝�锛屽仠姝㈠悗鑷�鍔ˋI娑﹁壊</li>
+            <li>馃攰 褰曢煶闊抽�戣嚜鍔ㄤ繚瀛橈紝鍙�闅忔椂鍥炴斁</li>
           </ul>
-          <h4 style="margin-top:10px">🤖 AI功能</h4>
+          <h4 style="margin-top:10px">馃�� AI鍔熻兘</h4>
           <ul>
-            <li>✂️ 精简 — 去除语气词口头禅</li>
-            <li>✍️ 润色 — 口语变书面</li>
-            <li>🧠 总结 — 一句话核心观点</li>
-            <li>💎 金句 — 提取最有价值的话</li>
+            <li>鉁傦笍 绮剧畝 鈥� 鍘婚櫎璇�姘旇瘝鍙ｅご绂�</li>
+            <li>鉁嶏笍 娑﹁壊 鈥� 鍙ｈ��鍙樹功闈�</li>
+            <li>馃�� 鎬荤粨 鈥� 涓�鍙ヨ瘽鏍稿績瑙傜偣</li>
+            <li>馃拵 閲戝彞 鈥� 鎻愬彇鏈�鏈変环鍊肩殑璇�</li>
           </ul>
         </div>
       </div>
@@ -868,38 +868,38 @@ body {
   </div>
 </div>
 
-<!-- 历史弹窗 -->
+<!-- 鍘嗗彶寮圭獥 -->
 <div class="modal-overlay" id="historyModal">
   <div class="modal" style="margin-top:40px">
     <div class="modal-header">
-      <h2>📚 复盘历史</h2>
-      <button class="close-btn" onclick="closeHistory()">×</button>
+      <h2>馃摎 澶嶇洏鍘嗗彶</h2>
+      <button class="close-btn" onclick="closeHistory()">脳</button>
     </div>
     <div class="history-list" id="historyList"></div>
   </div>
 </div>
 
-<!-- 日期选择器 -->
+<!-- 鏃ユ湡閫夋嫨鍣� -->
 <div class="date-picker-modal" id="datePicker">
   <div class="date-picker-box">
-    <h3>选择日期</h3>
+    <h3>閫夋嫨鏃ユ湡</h3>
     <input type="date" class="date-input" id="dateInput">
     <div class="date-picker-btns">
-      <button class="btn-cancel" onclick="closeDatePicker()">取消</button>
-      <button class="btn-confirm" onclick="confirmDate()">确定</button>
+      <button class="btn-cancel" onclick="closeDatePicker()">鍙栨秷</button>
+      <button class="btn-confirm" onclick="confirmDate()">纭�瀹�</button>
     </div>
   </div>
 </div>
 
-<!-- 历史详情 -->
+<!-- 鍘嗗彶璇︽儏 -->
 <div class="detail-modal" id="detailModal">
   <div class="detail-content" id="detailContent"></div>
 </div>
 
-<!-- AI结果应用弹窗 -->
+<!-- AI缁撴灉搴旂敤寮圭獥 -->
 <div class="apply-modal" id="applyModal">
   <div class="apply-box">
-    <h3>应用到</h3>
+    <h3>搴旂敤鍒�</h3>
     <div class="apply-btns" id="applyBtns"></div>
   </div>
 </div>
@@ -907,31 +907,31 @@ body {
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
-<!-- 背景设置弹窗 -->
+<!-- 鑳屾櫙璁剧疆寮圭獥 -->
 <div class="bg-modal" id="bgModal">
   <div class="bg-modal-content">
     <div class="bg-modal-header">
-      <h2>🎨 背景主题</h2>
-      <button class="close-btn" onclick="closeBgSettings()">×</button>
+      <h2>馃帹 鑳屾櫙涓婚��</h2>
+      <button class="close-btn" onclick="closeBgSettings()">脳</button>
     </div>
     <div class="bg-modal-body">
       <div class="bg-section">
-        <div class="bg-section-title">选择主题</div>
+        <div class="bg-section-title">閫夋嫨涓婚��</div>
         <div class="bg-color-grid" id="bgColorGrid"></div>
       </div>
       <div class="bg-section">
-        <div class="bg-section-title">自定义图片背景</div>
+        <div class="bg-section-title">鑷�瀹氫箟鍥剧墖鑳屾櫙</div>
         <div class="bg-upload-area" onclick="document.getElementById('bgFileInput').click()">
-          <div class="bg-upload-icon">📷</div>
-          <div class="bg-upload-text">点击上传图片</div>
-          <div class="bg-upload-hint">支持 JPG、PNG，建议尺寸 1080×1920</div>
+          <div class="bg-upload-icon">馃摲</div>
+          <div class="bg-upload-text">鐐瑰嚮涓婁紶鍥剧墖</div>
+          <div class="bg-upload-hint">鏀�鎸� JPG銆丳NG锛屽缓璁�灏哄�� 1080脳1920</div>
         </div>
         <input type="file" id="bgFileInput" accept="image/*" style="display:none" onchange="handleBgUpload(this)">
         <div class="bg-preview" id="bgPreview" style="display:none">
           <img class="bg-preview-img" id="bgPreviewImg">
           <div class="bg-preview-bar">
-            <span class="bg-preview-label" id="bgPreviewLabel">自定义图片</span>
-            <button class="bg-preview-remove" onclick="removeCustomBg()">移除</button>
+            <span class="bg-preview-label" id="bgPreviewLabel">鑷�瀹氫箟鍥剧墖</span>
+            <button class="bg-preview-remove" onclick="removeCustomBg()">绉婚櫎</button>
           </div>
         </div>
       </div>
@@ -939,65 +939,65 @@ body {
   </div>
 </div>
 
-<!-- 分享弹窗 -->
+<!-- 鍒嗕韩寮圭獥 -->
 <div class="share-modal" id="shareModal">
   <div class="share-modal-content">
     <div class="share-modal-header">
-      <h2 id="shareModalTitle">📤 分享</h2>
-      <button class="close-btn" onclick="closeShareModal()">×</button>
+      <h2 id="shareModalTitle">馃摛 鍒嗕韩</h2>
+      <button class="close-btn" onclick="closeShareModal()">脳</button>
     </div>
     <div class="share-modal-body">
       <div class="share-preview" id="sharePreview"></div>
       <div class="share-actions">
-        <button class="share-action-btn" onclick="copyShareText()">📋 复制文字</button>
-        <button class="share-action-btn" onclick="confirmSaveImage()">🖼️ 保存图片</button>
-        <button class="share-action-btn primary" onclick="nativeShare()">📱 分享</button>
+        <button class="share-action-btn" onclick="copyShareText()">馃搵 澶嶅埗鏂囧瓧</button>
+        <button class="share-action-btn" onclick="confirmSaveImage()">馃柤锔� 淇濆瓨鍥剧墖</button>
+        <button class="share-action-btn primary" onclick="nativeShare()">馃摫 鍒嗕韩</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- 导出预览弹窗 -->
+<!-- 瀵煎嚭棰勮�堝脊绐� -->
 <div class="export-modal" id="exportModal">
   <div class="export-modal-content">
     <div class="export-modal-header">
-      <h2 id="exportModalTitle">📄 导出预览</h2>
-      <button class="close-btn" onclick="closeExportModal()">×</button>
+      <h2 id="exportModalTitle">馃搫 瀵煎嚭棰勮��</h2>
+      <button class="close-btn" onclick="closeExportModal()">脳</button>
     </div>
     <div class="export-modal-body">
       <div class="export-preview" id="exportPreview"></div>
       <div class="export-actions">
-        <button class="export-action-btn secondary" onclick="closeExportModal()">取消</button>
-        <button class="export-action-btn primary" id="exportConfirmBtn">📥 下载</button>
+        <button class="export-action-btn secondary" onclick="closeExportModal()">鍙栨秷</button>
+        <button class="export-action-btn primary" id="exportConfirmBtn">馃摜 涓嬭浇</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- AI润色菜单 -->
+<!-- AI娑﹁壊鑿滃崟 -->
 <div class="ai-menu-overlay" id="aiMenuOverlay">
   <div class="ai-menu">
-    <div class="ai-menu-title">✨ AI润色功能</div>
-    <button class="ai-menu-item" onclick="doAI('clean')"><span class="ai-icon">✂️</span> 精简语气词</button>
-    <button class="ai-menu-item" onclick="doAI('polish')"><span class="ai-icon">✍️</span> 润色优化</button>
-    <button class="ai-menu-item" onclick="doAI('summary')"><span class="ai-icon">🧠</span> 智能总结</button>
-    <button class="ai-menu-item" onclick="doAI('golden')"><span class="ai-icon">💎</span> 提取金句</button>
-    <button class="ai-menu-item" onclick="doAI('all')" style="border-color:var(--accent2);color:var(--accent2);"><span class="ai-icon">✨</span> 全优化（四合一）</button>
-    <button class="ai-menu-cancel" onclick="closeAIMenu()">取消</button>
+    <div class="ai-menu-title">鉁� AI娑﹁壊鍔熻兘</div>
+    <button class="ai-menu-item" onclick="doAI('clean')"><span class="ai-icon">鉁傦笍</span> 绮剧畝璇�姘旇瘝</button>
+    <button class="ai-menu-item" onclick="doAI('polish')"><span class="ai-icon">鉁嶏笍</span> 娑﹁壊浼樺寲</button>
+    <button class="ai-menu-item" onclick="doAI('summary')"><span class="ai-icon">馃��</span> 鏅鸿兘鎬荤粨</button>
+    <button class="ai-menu-item" onclick="doAI('golden')"><span class="ai-icon">馃拵</span> 鎻愬彇閲戝彞</button>
+    <button class="ai-menu-item" onclick="doAI('all')" style="border-color:var(--accent2);color:var(--accent2);"><span class="ai-icon">鉁�</span> 鍏ㄤ紭鍖栵紙鍥涘悎涓�锛�</button>
+    <button class="ai-menu-cancel" onclick="closeAIMenu()">鍙栨秷</button>
   </div>
 </div>
 
 <script>
 // ============================================================
-// 常量 & 状态
+// 甯搁噺 & 鐘舵��
 // ============================================================
 const QUESTIONS = [
-  { text: '针对什么的复盘？（目标）', hint: '目标' },
-  { text: '我做对了什么？', hint: '沉淀' },
-  { text: '我做错了什么？', hint: '问题' },
-  { text: '当时怎么想的？为什么会这样？', hint: '原因' },
-  { text: '重新来怎么做？', hint: '改进' },
-  { text: '下次具体怎么做？', hint: '行动' }
+  { text: '閽堝�逛粈涔堢殑澶嶇洏锛燂紙鐩�鏍囷級', hint: '鐩�鏍�' },
+  { text: '鎴戝仛瀵逛簡浠�涔堬紵', hint: '娌夋穩' },
+  { text: '鎴戝仛閿欎簡浠�涔堬紵', hint: '闂�棰�' },
+  { text: '褰撴椂鎬庝箞鎯崇殑锛熶负浠�涔堜細杩欐牱锛�', hint: '鍘熷洜' },
+  { text: '閲嶆柊鏉ユ�庝箞鍋氾紵', hint: '鏀硅繘' },
+  { text: '涓嬫�″叿浣撴�庝箞鍋氾紵', hint: '琛屽姩' }
 ];
 
 const STORAGE_KEY = 'fanpan_records_v3';
@@ -1005,29 +1005,29 @@ const API_KEY_STORAGE = 'fanpan_api_key';
 const AUDIO_STORAGE = 'fanpan_audio_';
 const DEFAULT_API_KEY = 'sk-bmpjwdksyuqvqtdullaehtxwnfvclpffkjvlpglkqhuphtig';
 
-// ===== 多通道免费AI（免注册，自动轮换） =====
+// ===== 澶氶�氶亾鍏嶈垂AI锛堝厤娉ㄥ唽锛岃嚜鍔ㄨ疆鎹�锛� =====
 const AI_CHANNELS = [
   { url: 'https://api.siliconflow.cn/v1/chat/completions', model: 'Qwen/Qwen2.5-7B-Instruct', key: DEFAULT_API_KEY },
   { url: 'https://api.siliconflow.cn/v1/chat/completions', model: 'THUDM/glm-4-flash', key: DEFAULT_API_KEY },
 ];
-// ─── 语音识别配置 ────────────────────────────────────────────
-// 本地 faster-whisper 服务器（优先，隐私+免费+中文准）
+// 鈹�鈹�鈹� 璇�闊宠瘑鍒�閰嶇疆 鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�
+// 鏈�鍦� faster-whisper 鏈嶅姟鍣�锛堜紭鍏堬紝闅愮��+鍏嶈垂+涓�鏂囧噯锛�
 const WHISPER_LOCAL_URL = 'http://localhost:8765/transcribe';
-// 云端 SiliconFlow（降级备用）
+// 浜戠�� SiliconFlow锛堥檷绾у�囩敤锛�
 const WHISPER_URL = 'https://api.siliconflow.cn/v1/audio/transcriptions';
 const WHISPER_MODEL = 'FunAudioLLM/SenseVoiceSmall';
-let currentChannel = 0; // 当前通道索引
+let currentChannel = 0; // 褰撳墠閫氶亾绱㈠紩
 
-// 手机检测
+// 鎵嬫満妫�娴�
 function isMobile() {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
 
-// MediaRecorder变量（手机录音用）
+// MediaRecorder鍙橀噺锛堟墜鏈哄綍闊崇敤锛�
 let mediaRecorder = null;
 let audioChunks = [];
 
-// 录音音频保存
+// 褰曢煶闊抽�戜繚瀛�
 let audioBlobs = {}; // { 'q1_2026-05-04': blob }
 let currentPlayingAudio = null;
 
@@ -1040,11 +1040,11 @@ let isRecording = false;
 let fullTranscript = '';
 let interimText = '';
 
-// AI处理状态
+// AI澶勭悊鐘舵��
 let aiProcessing = {};
 
 // ============================================================
-// 工具函数
+// 宸ュ叿鍑芥暟
 // ============================================================
 function getTodayStr() {
   const d = new Date();
@@ -1054,8 +1054,8 @@ function pad(n) { return String(n).padStart(2,'0'); }
 
 function formatDateCN(dateStr) {
   const d = new Date(dateStr + 'T00:00:00');
-  const weekdays = ['周日','周一','周二','周三','周四','周五','周六'];
-  return `${d.getMonth()+1}月${d.getDate()}日 ${weekdays[d.getDay()]}`;
+  const weekdays = ['鍛ㄦ棩','鍛ㄤ竴','鍛ㄤ簩','鍛ㄤ笁','鍛ㄥ洓','鍛ㄤ簲','鍛ㄥ叚'];
+  return `${d.getMonth()+1}鏈�${d.getDate()}鏃� ${weekdays[d.getDay()]}`;
 }
 
 function showToast(msg, type='default') {
@@ -1078,7 +1078,7 @@ function updateTimerDisplay() {
 }
 
 // ============================================================
-// 动态生成问题块
+// 鍔ㄦ�佺敓鎴愰棶棰樺潡
 // ============================================================
 function renderQuestions() {
   const container = document.getElementById('questionsContainer');
@@ -1092,34 +1092,34 @@ function renderQuestions() {
           <div class="q-label">${q.text}<span class="q-hint">(${q.hint})</span></div>
         </div>
         <div class="q-header-right">
-          <button class="share-btn-text" id="shareBtn${num}" onclick="shareQuestion(${num})" title="分享">📤 分享</button>
+          <button class="share-btn-text" id="shareBtn${num}" onclick="shareQuestion(${num})" title="鍒嗕韩">馃摛 鍒嗕韩</button>
           <div class="voice-btn-group">
-            <button class="voice-btn-text" id="voiceBtn${num}" onclick="toggleVoice(${num})" title="点击开始/停止录音">🎤 录音</button>
-            <button class="play-btn" id="playBtn${num}" onclick="playAudio(${num})" title="播放录音">🔊 播放</button>
+            <button class="voice-btn-text" id="voiceBtn${num}" onclick="toggleVoice(${num})" title="鐐瑰嚮寮�濮�/鍋滄�㈠綍闊�">馃帳 褰曢煶</button>
+            <button class="play-btn" id="playBtn${num}" onclick="playAudio(${num})" title="鎾�鏀惧綍闊�">馃攰 鎾�鏀�</button>
           </div>
         </div>
       </div>
       <div class="tab-bar">
-        <button class="tab-btn active" id="tabOriginal${num}" onclick="switchTab(${num},'original')">📝 原文</button>
-        <button class="tab-btn" id="tabPolished${num}" onclick="switchTab(${num},'polished')">✨ AI润色版</button>
+        <button class="tab-btn active" id="tabOriginal${num}" onclick="switchTab(${num},'original')">馃摑 鍘熸枃</button>
+        <button class="tab-btn" id="tabPolished${num}" onclick="switchTab(${num},'polished')">鉁� AI娑﹁壊鐗�</button>
       </div>
       <div class="tab-panel active" id="panelOriginal${num}">
-        <textarea class="answer-area" id="original${num}" placeholder="点击「🎤 录音」，或直接输入…" oninput="saveField(${num},'original')"></textarea>
+        <textarea class="answer-area" id="original${num}" placeholder="鐐瑰嚮銆岎煄� 褰曢煶銆嶏紝鎴栫洿鎺ヨ緭鍏モ��" oninput="saveField(${num},'original')"></textarea>
       </div>
       <div class="tab-panel" id="panelPolished${num}">
-        <textarea class="answer-area" id="polished${num}" placeholder="AI润色结果将显示在这里…" oninput="saveField(${num},'polished')"></textarea>
+        <textarea class="answer-area" id="polished${num}" placeholder="AI娑﹁壊缁撴灉灏嗘樉绀哄湪杩欓噷鈥�" oninput="saveField(${num},'polished')"></textarea>
       </div>
       <div class="audio-player-mini" id="audioPlayer${num}">
-        <button onclick="playAudio(${num})">▶️ 播放</button>
+        <button onclick="playAudio(${num})">鈻讹笍 鎾�鏀�</button>
         <span class="audio-time" id="audioTime${num}"></span>
-        <button onclick="deleteAudio(${num})" style="background:var(--muted);">🗑️</button>
+        <button onclick="deleteAudio(${num})" style="background:var(--muted);">馃棏锔�</button>
       </div>
       <div class="ai-toolbar" style="justify-content:space-between;">
         <button class="ai-action-btn ai-main-btn" id="btnAI${num}" onclick="showAIMenu(${num})">
-          <span class="spinner"></span><span class="btn-label">✨ AI润色</span>
+          <span class="spinner"></span><span class="btn-label">鉁� AI娑﹁壊</span>
         </button>
-        <button class="ai-action-btn ai-fix-btn" id="btnFix${num}" onclick="runAI(${num},'fix')" title="自动修正错别字">
-          <span class="spinner"></span><span class="btn-label">🔍 错别字</span>
+        <button class="ai-action-btn ai-fix-btn" id="btnFix${num}" onclick="runAI(${num},'fix')" title="鑷�鍔ㄤ慨姝ｉ敊鍒�瀛�">
+          <span class="spinner"></span><span class="btn-label">馃攳 閿欏埆瀛�</span>
         </button>
       </div>
       <div class="save-hint" id="save${num}"></div>
@@ -1128,7 +1128,7 @@ function renderQuestions() {
 }
 
 // ============================================================
-// Tab 切换
+// Tab 鍒囨崲
 // ============================================================
 function switchTab(num, tab) {
   document.getElementById('tabOriginal'+num).classList.toggle('active', tab==='original');
@@ -1138,7 +1138,7 @@ function switchTab(num, tab) {
 }
 
 // ============================================================
-// 存储
+// 瀛樺偍
 // ============================================================
 function getRecords() {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
@@ -1177,7 +1177,7 @@ function saveAnswer(num) {
 
 function showSaveHint(num) {
   const el = document.getElementById('save'+num);
-  el.textContent = '✓ 已保存'; el.classList.add('show');
+  el.textContent = '鉁� 宸蹭繚瀛�'; el.classList.add('show');
   clearTimeout(el._t);
   el._t = setTimeout(() => el.classList.remove('show'), 2000);
 }
@@ -1194,7 +1194,7 @@ function loadRecord(dateStr) {
     updateAITabBadge(i, null);
   }
   document.getElementById('dateDisplay').textContent = formatDateCN(dateStr);
-  // 更新音频播放按钮
+  // 鏇存柊闊抽�戞挱鏀炬寜閽�
   for (let i = 1; i <= 5; i++) updateAudioUI(i);
 }
 
@@ -1206,14 +1206,14 @@ function saveCurrentAndLoad(dateStr) {
 function goToday() { saveCurrentAndLoad(getTodayStr()); }
 
 // ============================================================
-// 音频保存与回放
+// 闊抽�戜繚瀛樹笌鍥炴斁
 // ============================================================
 function audioKey(num) { return AUDIO_STORAGE + 'q' + num + '_' + currentDate; }
 
 function saveAudioBlob(num, blob) {
   const key = audioKey(num);
   audioBlobs[key] = blob;
-  // 尝试存入IndexedDB（localStorage太小存不了音频）
+  // 灏濊瘯瀛樺叆IndexedDB锛坙ocalStorage澶�灏忓瓨涓嶄簡闊抽�戯級
   try {
     const reader = new FileReader();
     reader.onload = function() {
@@ -1231,7 +1231,7 @@ function updateAudioUI(num) {
   const audioPlayer = document.getElementById('audioPlayer' + num);
   if (playBtn) playBtn.classList.toggle('has-audio', hasAudio);
   if (audioPlayer) audioPlayer.classList.toggle('has-audio', hasAudio);
-  // 尝试从meta获取时长
+  // 灏濊瘯浠巑eta鑾峰彇鏃堕暱
   try {
     const meta = JSON.parse(localStorage.getItem(key + '_meta') || 'null');
     if (meta && audioPlayer) {
@@ -1243,9 +1243,9 @@ function updateAudioUI(num) {
 async function playAudio(num) {
   const key = audioKey(num);
   const blob = audioBlobs[key];
-  if (!blob) { showToast('暂无录音', 'error'); return; }
+  if (!blob) { showToast('鏆傛棤褰曢煶', 'error'); return; }
   
-  // 停止当前播放
+  // 鍋滄�㈠綋鍓嶆挱鏀�
   if (currentPlayingAudio) {
     currentPlayingAudio.pause();
     currentPlayingAudio = null;
@@ -1254,12 +1254,12 @@ async function playAudio(num) {
   const url = URL.createObjectURL(blob);
   const audio = new Audio(url);
   currentPlayingAudio = audio;
-  audio.play().catch(e => showToast('播放失败: ' + e.message, 'error'));
+  audio.play().catch(e => showToast('鎾�鏀惧け璐�: ' + e.message, 'error'));
   audio.onended = function() {
     currentPlayingAudio = null;
     URL.revokeObjectURL(url);
   };
-  showToast('🔊 播放录音中...', 'success');
+  showToast('馃攰 鎾�鏀惧綍闊充腑...', 'success');
 }
 
 function deleteAudio(num) {
@@ -1267,25 +1267,25 @@ function deleteAudio(num) {
   delete audioBlobs[key];
   try { localStorage.removeItem(key + '_meta'); } catch(e) {}
   updateAudioUI(num);
-  showToast('录音已删除', 'success');
+  showToast('褰曢煶宸插垹闄�', 'success');
 }
 
 // ============================================================
-// AI Tab Badge 状态
+// AI Tab Badge 鐘舵��
 // ============================================================
 function updateAITabBadge(num, status) {
   const tabBtn = document.getElementById('tabPolished'+num);
   const old = tabBtn.querySelector('.badge');
   if (old) old.remove();
   if (status === 'loading') {
-    tabBtn.insertAdjacentHTML('beforeend', '<span class="badge ai-loading">⏳</span>');
+    tabBtn.insertAdjacentHTML('beforeend', '<span class="badge ai-loading">鈴�</span>');
   } else if (status === 'done') {
-    tabBtn.insertAdjacentHTML('beforeend', '<span class="badge ai-done">✓</span>');
+    tabBtn.insertAdjacentHTML('beforeend', '<span class="badge ai-done">鉁�</span>');
   }
 }
 
 // ============================================================
-// 语音输入（长时间连续录音）v3.5 — 带音频保存
+// 璇�闊宠緭鍏ワ紙闀挎椂闂磋繛缁�褰曢煶锛塿3.5 鈥� 甯﹂煶棰戜繚瀛�
 // ============================================================
 let voiceRestartCount = 0;
 let voiceLastStartTime = 0;
@@ -1345,12 +1345,12 @@ function startVoice(num) {
   
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SR) {
-    showToast('你的浏览器不支持语音输入，请用 Chrome 打开', 'error');
+    showToast('浣犵殑娴忚�堝櫒涓嶆敮鎸佽��闊宠緭鍏ワ紝璇风敤 Chrome 鎵撳紑', 'error');
     return;
   }
   var ua = navigator.userAgent.toLowerCase();
   if (ua.indexOf('micromessenger') !== -1) {
-    showToast('微信内置浏览器不支持语音，请点右上角"..."用浏览器打开', 'error');
+    showToast('寰�淇″唴缃�娴忚�堝櫒涓嶆敮鎸佽��闊筹紝璇风偣鍙充笂瑙�"..."鐢ㄦ祻瑙堝櫒鎵撳紑', 'error');
     return;
   }
 
@@ -1364,7 +1364,7 @@ function startVoice(num) {
   document.getElementById('voiceBtn' + num).classList.add('recording');
   document.getElementById('qblock' + num).classList.add('recording-active');
   document.getElementById('recordingBar').classList.add('show');
-  document.getElementById('recQuestion').textContent = '第' + num + '题';
+  document.getElementById('recQuestion').textContent = '绗�' + num + '棰�';
   switchTab(num, 'original');
 
   updateTimerDisplay();
@@ -1373,7 +1373,7 @@ function startVoice(num) {
   setTimeout(function() { startRecognition(); }, 500);
 }
 
-// 手机录音开始
+// 鎵嬫満褰曢煶寮�濮�
 async function startMobileRecording(num) {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -1391,7 +1391,7 @@ async function startMobileRecording(num) {
       
       const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
       
-      // 保存音频blob用于回放
+      // 淇濆瓨闊抽�慴lob鐢ㄤ簬鍥炴斁
       if (num) saveAudioBlob(num, audioBlob);
       
       if (recordingTimer) {
@@ -1412,13 +1412,13 @@ async function startMobileRecording(num) {
         const newText = currentText + (currentText ? ' ' : '') + text;
         ta.value = newText;
         saveField(num, 'original');
-        showToast('✅ 转写完成，录音已保存', 'success');
+        showToast('鉁� 杞�鍐欏畬鎴愶紝褰曢煶宸蹭繚瀛�', 'success');
         
         if (newText.trim().length > 3) {
           autoPolish(num, newText.trim());
         }
       } catch(e) {
-        showToast('转写失败: ' + e.message + '（录音已保存可回放）', 'error');
+        showToast('杞�鍐欏け璐�: ' + e.message + '锛堝綍闊冲凡淇濆瓨鍙�鍥炴斁锛�', 'error');
       }
       
       stream.getTracks().forEach(function(t) { t.stop(); });
@@ -1437,14 +1437,14 @@ async function startMobileRecording(num) {
     document.getElementById('voiceBtn' + num).classList.add('recording');
     document.getElementById('qblock' + num).classList.add('recording-active');
     document.getElementById('recordingBar').classList.add('show');
-    document.getElementById('recQuestion').textContent = '第' + num + '题 📱手机录音';
+    document.getElementById('recQuestion').textContent = '绗�' + num + '棰� 馃摫鎵嬫満褰曢煶';
     switchTab(num, 'original');
     updateTimerDisplay();
     recordingTimer = setInterval(function() { recordingSeconds++; updateTimerDisplay(); }, 1000);
     
-    showToast('📱 录音中...点击停止完成转写', 'success');
+    showToast('馃摫 褰曢煶涓�...鐐瑰嚮鍋滄�㈠畬鎴愯浆鍐�', 'success');
   } catch(e) {
-    showToast('录音失败: ' + e.message, 'error');
+    showToast('褰曢煶澶辫触: ' + e.message, 'error');
   }
 }
 
@@ -1453,7 +1453,7 @@ function startRecognition() {
   if (now - voiceLastStartTime < MIN_RESTART_INTERVAL) {
     voiceRestartCount++;
     if (voiceRestartCount >= MAX_VOICE_RESTARTS) {
-      showToast('语音识别启动失败，请刷新页面重试', 'error');
+      showToast('璇�闊宠瘑鍒�鍚�鍔ㄥけ璐ワ紝璇峰埛鏂伴〉闈㈤噸璇�', 'error');
       stopVoice();
       return;
     }
@@ -1507,12 +1507,12 @@ function startRecognition() {
     var fatal = ['not-allowed', 'service-not-allowed', 'audio-capture', 'network'];
     if (fatal.indexOf(event.error) !== -1) {
       var msgs = {
-        'not-allowed': '请允许麦克风权限后重试',
-        'service-not-allowed': '语音服务不可用，请用Chrome浏览器打开',
-        'audio-capture': '未检测到麦克风，请检查设备',
-        'network': '网络错误，请检查网络连接'
+        'not-allowed': '璇峰厑璁搁害鍏嬮�庢潈闄愬悗閲嶈瘯',
+        'service-not-allowed': '璇�闊虫湇鍔′笉鍙�鐢�锛岃�风敤Chrome娴忚�堝櫒鎵撳紑',
+        'audio-capture': '鏈�妫�娴嬪埌楹﹀厠椋庯紝璇锋��鏌ヨ�惧��',
+        'network': '缃戠粶閿欒��锛岃�锋��鏌ョ綉缁滆繛鎺�'
       };
-      showToast(msgs[event.error] || '语音识别出错', 'error');
+      showToast(msgs[event.error] || '璇�闊宠瘑鍒�鍑洪敊', 'error');
       stopVoice();
       return;
     }
@@ -1538,19 +1538,19 @@ function startRecognition() {
 }
 
 // ============================================================
-// 自动AI润色
+// 鑷�鍔ˋI娑﹁壊
 // ============================================================
 async function autoPolish(num, text) {
   updateAITabBadge(num, 'loading');
   aiProcessing[num] = 'loading';
 
   try {
-    const prompt = `请润色以下复盘文字，使其更流畅、清晰、有条理，但保持原意不变。
-严格要求：
-1. 禁止出现任何英文单词或英文助词（okay/no/yeah等）
-2. 禁止词语重复（如连续出现两个相同的词如"非常""非常"）
-3. 禁止添加任何emoji表情符号，只输出纯文字
-4. 直接输出润色后的文字，不要任何解释 /no_think：
+    const prompt = `璇锋鼎鑹蹭互涓嬪�嶇洏鏂囧瓧锛屼娇鍏舵洿娴佺晠銆佹竻鏅般�佹湁鏉＄悊锛屼絾淇濇寔鍘熸剰涓嶅彉銆�
+涓ユ牸瑕佹眰锛�
+1. 绂佹�㈠嚭鐜颁换浣曡嫳鏂囧崟璇嶆垨鑻辨枃鍔╄瘝锛坥kay/no/yeah绛夛級
+2. 绂佹�㈣瘝璇�閲嶅�嶏紙濡傝繛缁�鍑虹幇涓や釜鐩稿悓鐨勮瘝濡�"闈炲父""闈炲父"锛�
+3. 绂佹�㈡坊鍔犱换浣昬moji琛ㄦ儏绗﹀彿锛屽彧杈撳嚭绾�鏂囧瓧
+4. 鐩存帴杈撳嚭娑﹁壊鍚庣殑鏂囧瓧锛屼笉瑕佷换浣曡В閲� /no_think锛�
 
 """
 ${text}
@@ -1561,30 +1561,30 @@ ${text}
     updateAITabBadge(num, 'done');
     aiProcessing[num] = 'done';
     switchTab(num, 'polished');
-    showToast(`第${num}题 AI润色完成 ✓`, 'success');
+    showToast(`绗�${num}棰� AI娑﹁壊瀹屾垚 鉁揱, 'success');
   } catch(e) {
     updateAITabBadge(num, null);
     aiProcessing[num] = null;
-    showToast('AI润色失败：' + e.message, 'error');
+    showToast('AI娑﹁壊澶辫触锛�' + e.message, 'error');
   }
 }
 
 // ============================================================
-// AI API 多通道调用（免注册核心逻辑）
+// AI API 澶氶�氶亾璋冪敤锛堝厤娉ㄥ唽鏍稿績閫昏緫锛�
 // ============================================================
 async function callAI(prompt, customKey) {
-  // 如果用户配置了自定义Key，优先使用
+  // 濡傛灉鐢ㄦ埛閰嶇疆浜嗚嚜瀹氫箟Key锛屼紭鍏堜娇鐢�
   if (customKey) {
     return await callAISingle(AI_CHANNELS[0].url, AI_CHANNELS[0].model, customKey, prompt);
   }
   
-  // 多通道轮换，一个失败试下一个
+  // 澶氶�氶亾杞�鎹�锛屼竴涓�澶辫触璇曚笅涓�涓�
   let lastError = null;
   for (let i = 0; i < AI_CHANNELS.length; i++) {
     const ch = AI_CHANNELS[(currentChannel + i) % AI_CHANNELS.length];
     try {
       const result = await callAISingle(ch.url, ch.model, ch.key, prompt);
-      currentChannel = (currentChannel + i) % AI_CHANNELS.length; // 记住成功的通道
+      currentChannel = (currentChannel + i) % AI_CHANNELS.length; // 璁颁綇鎴愬姛鐨勯�氶亾
       return result;
     } catch(e) {
       lastError = e;
@@ -1592,7 +1592,7 @@ async function callAI(prompt, customKey) {
       continue;
     }
   }
-  throw lastError || new Error('所有AI通道均失败');
+  throw lastError || new Error('鎵�鏈堿I閫氶亾鍧囧け璐�');
 }
 
 async function callAISingle(url, model, apiKey, prompt) {
@@ -1611,11 +1611,11 @@ async function callAISingle(url, model, apiKey, prompt) {
   });
   if (!response.ok) {
     const err = await response.json().catch(() => ({}));
-    throw new Error(err.error?.message || `请求失败 ${response.status}`);
+    throw new Error(err.error?.message || `璇锋眰澶辫触 ${response.status}`);
   }
   const data = await response.json();
   let content = data.choices[0].message.content.trim();
-  // 清洗AI输出中的思考标签和多余内容
+  // 娓呮礂AI杈撳嚭涓�鐨勬�濊�冩爣绛惧拰澶氫綑鍐呭��
   content = content.replace(/<nothink>[\s\S]*?<\/nothink>/gi, '');
   content = content.replace(/<think>[\s\S]*?<\/think>/gi, '');
   content = content.replace(/```[\s\S]*?```/g, '');
@@ -1628,34 +1628,34 @@ function getApiKey() {
   return localStorage.getItem(API_KEY_STORAGE) || '';
 }
 
-// 手机云端录音转写
+// 鎵嬫満浜戠��褰曢煶杞�鍐�
 async function transcribeAudio(audioBlob, apiKey) {
-  // ─── 第一步：尝试本地 faster-whisper ───────────────────────────
+  // 鈹�鈹�鈹� 绗�涓�姝ワ細灏濊瘯鏈�鍦� faster-whisper 鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�
   const formDataLocal = new FormData();
   formDataLocal.append('file', audioBlob, 'recording.webm');
 
   try {
-    showToast('🔊 本地转写中...（首次运行需下载模型，请稍候）', 'success');
+    showToast('馃攰 鏈�鍦拌浆鍐欎腑...锛堥�栨�¤繍琛岄渶涓嬭浇妯″瀷锛岃�风◢鍊欙級', 'success');
     const localRes = await fetch(WHISPER_LOCAL_URL, { method: 'POST', body: formDataLocal });
     if (localRes.ok) {
       const localData = await localRes.json();
       if (localData.text) {
-        showToast('✅ 本地转写成功', 'success');
+        showToast('鉁� 鏈�鍦拌浆鍐欐垚鍔�', 'success');
         return localData.text;
       }
-      // 有响应但无文字，降级
-      console.warn('[转写] 本地返回空内容，降级到云端');
+      // 鏈夊搷搴斾絾鏃犳枃瀛楋紝闄嶇骇
+      console.warn('[杞�鍐橾 鏈�鍦拌繑鍥炵┖鍐呭�癸紝闄嶇骇鍒颁簯绔�');
     } else {
       const errText = await localRes.text().catch(() => '');
-      console.warn('[转写] 本地服务器异常:', localRes.status, errText);
+      console.warn('[杞�鍐橾 鏈�鍦版湇鍔″櫒寮傚父:', localRes.status, errText);
     }
   } catch (e) {
-    // 本地服务器未启动或网络问题，正常降级
-    console.warn('[转写] 本地服务器连接失败:', e.message);
+    // 鏈�鍦版湇鍔″櫒鏈�鍚�鍔ㄦ垨缃戠粶闂�棰橈紝姝ｅ父闄嶇骇
+    console.warn('[杞�鍐橾 鏈�鍦版湇鍔″櫒杩炴帴澶辫触:', e.message);
   }
 
-  // ─── 第二步：降级到云端 SiliconFlow ───────────────────────────
-  showToast('🔄 本地转写不可用，云端转写中...', 'success');
+  // 鈹�鈹�鈹� 绗�浜屾�ワ細闄嶇骇鍒颁簯绔� SiliconFlow 鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�鈹�
+  showToast('馃攧 鏈�鍦拌浆鍐欎笉鍙�鐢�锛屼簯绔�杞�鍐欎腑...', 'success');
   if (!apiKey) apiKey = DEFAULT_API_KEY;
   const formData = new FormData();
   formData.append('file', audioBlob, 'recording.webm');
@@ -1669,57 +1669,57 @@ async function transcribeAudio(audioBlob, apiKey) {
 
   if (!response.ok) {
     const err = await response.json().catch(() => ({}));
-    throw new Error(err.error?.message || `转写失败 ${response.status}`);
+    throw new Error(err.error?.message || `杞�鍐欏け璐� ${response.status}`);
   }
 
   const data = await response.json();
   return data.text || '';
 }
 
-// 测试录音功能
+// 娴嬭瘯褰曢煶鍔熻兘
 async function testMic() {
   const el = document.getElementById('micTestResult');
   el.style.display = 'block';
   el.style.color = 'var(--warning)';
-  el.textContent = '🔍 正在检测...';
+  el.textContent = '馃攳 姝ｅ湪妫�娴�...';
 
   if (isMobile()) {
-    el.textContent = '📱 检测到手机\n';
+    el.textContent = '馃摫 妫�娴嬪埌鎵嬫満\n';
   } else {
-    el.textContent = '🖥️ 检测到电脑\n';
+    el.textContent = '馃枼锔� 妫�娴嬪埌鐢佃剳\n';
   }
 
   const isHTTPS = location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
   if (!isHTTPS) {
     el.style.color = '#ef4444';
-    el.textContent += '❌ 必须用HTTPS才能录音（当前是' + location.protocol + '）';
+    el.textContent += '鉂� 蹇呴』鐢℉TTPS鎵嶈兘褰曢煶锛堝綋鍓嶆槸' + location.protocol + '锛�';
     return;
   }
-  el.textContent += '✅ HTTPS ✓\n';
+  el.textContent += '鉁� HTTPS 鉁揬n';
 
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
     el.style.color = '#ef4444';
-    el.textContent += '❌ 浏览器不支持getUserMedia\n';
+    el.textContent += '鉂� 娴忚�堝櫒涓嶆敮鎸乬etUserMedia\n';
     return;
   }
-  el.textContent += '✅ getUserMedia ✓\n';
+  el.textContent += '鉁� getUserMedia 鉁揬n';
 
   if (typeof MediaRecorder !== 'undefined') {
-    el.textContent += '✅ MediaRecorder ✓\n';
+    el.textContent += '鉁� MediaRecorder 鉁揬n';
   }
 
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     stream.getTracks().forEach(t => t.stop());
-    el.textContent += '✅ 麦克风权限 ✓\n';
+    el.textContent += '鉁� 楹﹀厠椋庢潈闄� 鉁揬n';
   } catch(e) {
     el.style.color = '#ef4444';
-    el.textContent = '❌ 麦克风不可用：' + e.name;
+    el.textContent = '鉂� 楹﹀厠椋庝笉鍙�鐢�锛�' + e.name;
     return;
   }
 
   el.style.color = 'var(--success)';
-  el.textContent += '\n🎉 录音功能正常！';
+  el.textContent += '\n馃帀 褰曢煶鍔熻兘姝ｅ父锛�';
 }
 
 function setLoading(btnId, loading) {
@@ -1730,58 +1730,58 @@ function setLoading(btnId, loading) {
 }
 
 // ============================================================
-// AI 功能（工具栏按钮）
+// AI 鍔熻兘锛堝伐鍏锋爮鎸夐挳锛�
 // ============================================================
 const AI_PROMPTS = {
-  clean: (text) => `请帮我精简以下文字中的语气词、重复词和无意义的口头禅（如"嗯、啊、这个、那个、就是、的话、然后、其实"等），保持原意不变，直接输出处理后的文字。重要：输出必须是纯中文，严禁出现任何英文单词或助词（如ok、okay、yeah、no、sure、well等），严禁词语重复，严禁添加emoji表情符号，不要解释 /no_think：
+  clean: (text) => `璇峰府鎴戠簿绠�浠ヤ笅鏂囧瓧涓�鐨勮��姘旇瘝銆侀噸澶嶈瘝鍜屾棤鎰忎箟鐨勫彛澶寸�咃紙濡�"鍡�銆佸晩銆佽繖涓�銆侀偅涓�銆佸氨鏄�銆佺殑璇濄�佺劧鍚庛�佸叾瀹�"绛夛級锛屼繚鎸佸師鎰忎笉鍙橈紝鐩存帴杈撳嚭澶勭悊鍚庣殑鏂囧瓧銆傞噸瑕侊細杈撳嚭蹇呴』鏄�绾�涓�鏂囷紝涓ョ�佸嚭鐜颁换浣曡嫳鏂囧崟璇嶆垨鍔╄瘝锛堝�俹k銆乷kay銆亂eah銆乶o銆乻ure銆亀ell绛夛級锛屼弗绂佽瘝璇�閲嶅�嶏紝涓ョ�佹坊鍔爀moji琛ㄦ儏绗﹀彿锛屼笉瑕佽В閲� /no_think锛�
 
 """
 ${text}
 ---`,
 
-  polish: (text) => `请帮我润色优化以下复盘文字，提升表达质量，使其更流畅、清晰、有条理。重要：输出必须是纯中文，严禁出现任何英文单词或助词（如ok、okay、yeah、no、sure、well等），严禁词语重复，严禁添加emoji表情符号，直接输出结果，不要解释 /no_think：
+  polish: (text) => `璇峰府鎴戞鼎鑹蹭紭鍖栦互涓嬪�嶇洏鏂囧瓧锛屾彁鍗囪〃杈捐川閲忥紝浣垮叾鏇存祦鐣呫�佹竻鏅般�佹湁鏉＄悊銆傞噸瑕侊細杈撳嚭蹇呴』鏄�绾�涓�鏂囷紝涓ョ�佸嚭鐜颁换浣曡嫳鏂囧崟璇嶆垨鍔╄瘝锛堝�俹k銆乷kay銆亂eah銆乶o銆乻ure銆亀ell绛夛級锛屼弗绂佽瘝璇�閲嶅�嶏紝涓ョ�佹坊鍔爀moji琛ㄦ儏绗﹀彿锛岀洿鎺ヨ緭鍑虹粨鏋滐紝涓嶈�佽В閲� /no_think锛�
 
 """
 ${text}
 ---`,
 
-  summary: (text) => `请帮我提炼以下文字的核心观点，用简洁的一句话概括。重要：输出必须是纯中文，严禁出现任何英文单词或助词，严禁词语重复，严禁添加emoji表情符号，直接输出结果，不要"概括如下"等前缀 /no_think：
+  summary: (text) => `璇峰府鎴戞彁鐐间互涓嬫枃瀛楃殑鏍稿績瑙傜偣锛岀敤绠�娲佺殑涓�鍙ヨ瘽姒傛嫭銆傞噸瑕侊細杈撳嚭蹇呴』鏄�绾�涓�鏂囷紝涓ョ�佸嚭鐜颁换浣曡嫳鏂囧崟璇嶆垨鍔╄瘝锛屼弗绂佽瘝璇�閲嶅�嶏紝涓ョ�佹坊鍔爀moji琛ㄦ儏绗﹀彿锛岀洿鎺ヨ緭鍑虹粨鏋滐紝涓嶈��"姒傛嫭濡備笅"绛夊墠缂� /no_think锛�
 
 """
 ${text}
 ---`,
 
-  fix: (text) => `请修正以下文字中的错别字，直接输出修正后的完整文字，不要解释。重要：输出必须是纯中文，严禁出现任何英文单词或助词，严禁添加emoji表情符号 /no_think：
+  fix: (text) => `璇蜂慨姝ｄ互涓嬫枃瀛椾腑鐨勯敊鍒�瀛楋紝鐩存帴杈撳嚭淇�姝ｅ悗鐨勫畬鏁存枃瀛楋紝涓嶈�佽В閲娿�傞噸瑕侊細杈撳嚭蹇呴』鏄�绾�涓�鏂囷紝涓ョ�佸嚭鐜颁换浣曡嫳鏂囧崟璇嶆垨鍔╄瘝锛屼弗绂佹坊鍔爀moji琛ㄦ儏绗﹀彿 /no_think锛�
 
 """
 ${text}
 ---`,
 
-  golden: (text) => `请从以下文字中提取1-3句最有价值的金句。要求简短有力、有洞察力。每句一行，只输出金句。重要：输出必须是纯中文，严禁出现任何英文单词或助词，严禁词语重复，严禁添加emoji表情符号 /no_think：
+  golden: (text) => `璇蜂粠浠ヤ笅鏂囧瓧涓�鎻愬彇1-3鍙ユ渶鏈変环鍊肩殑閲戝彞銆傝�佹眰绠�鐭�鏈夊姏銆佹湁娲炲療鍔涖�傛瘡鍙ヤ竴琛岋紝鍙�杈撳嚭閲戝彞銆傞噸瑕侊細杈撳嚭蹇呴』鏄�绾�涓�鏂囷紝涓ョ�佸嚭鐜颁换浣曡嫳鏂囧崟璇嶆垨鍔╄瘝锛屼弗绂佽瘝璇�閲嶅�嶏紝涓ョ�佹坊鍔爀moji琛ㄦ儏绗﹀彿 /no_think锛�
 
 """
 ${text}
 ---`,
 
-  all: (text) => `请对以下复盘文字同时进行4种处理，用 |----| 分隔每个部分。重要：所有输出必须是纯中文，严禁出现任何英文单词或助词，严禁词语重复，严禁添加emoji表情符号 /no_think：
+  all: (text) => `璇峰�逛互涓嬪�嶇洏鏂囧瓧鍚屾椂杩涜��4绉嶅�勭悊锛岀敤 |----| 鍒嗛殧姣忎釜閮ㄥ垎銆傞噸瑕侊細鎵�鏈夎緭鍑哄繀椤绘槸绾�涓�鏂囷紝涓ョ�佸嚭鐜颁换浣曡嫳鏂囧崟璇嶆垨鍔╄瘝锛屼弗绂佽瘝璇�閲嶅�嶏紝涓ョ�佹坊鍔爀moji琛ㄦ儏绗﹀彿 /no_think锛�
 
 """
 ${text}
 ----
 
-##精简##：去除语气词口头禅后的文字
-##润色##：润色后的文字
-##总结##：一句话概括核心观点
-##金句##：1-3句最有价值的金句（每句一行）
+##绮剧畝##锛氬幓闄よ��姘旇瘝鍙ｅご绂呭悗鐨勬枃瀛�
+##娑﹁壊##锛氭鼎鑹插悗鐨勬枃瀛�
+##鎬荤粨##锛氫竴鍙ヨ瘽姒傛嫭鏍稿績瑙傜偣
+##閲戝彞##锛�1-3鍙ユ渶鏈変环鍊肩殑閲戝彞锛堟瘡鍙ヤ竴琛岋級
 
-格式要求：严格按 |----| 分隔，四部分依次输出，不要其他解释文字`
+鏍煎紡瑕佹眰锛氫弗鏍兼寜 |----| 鍒嗛殧锛屽洓閮ㄥ垎渚濇�¤緭鍑猴紝涓嶈�佸叾浠栬В閲婃枃瀛梎
 };
 
 async function runAI(num, action) {
   const originalText = document.getElementById('original'+num).value.trim();
   const polishedText = document.getElementById('polished'+num).value.trim();
   const text = originalText || polishedText;
-  if (!text) { showToast('请先填写内容', 'error'); return; }
+  if (!text) { showToast('璇峰厛濉�鍐欏唴瀹�', 'error'); return; }
 
   const customKey = getApiKey();
   const btnId = (action === 'fix') ? `btnFix${num}` : `btnAI${num}`;
@@ -1796,40 +1796,40 @@ async function runAI(num, action) {
       saveField(num, 'original');
       switchTab(num, 'original');
       updateAITabBadge(num, 'done');
-      showToast(`第${num}题 错别字已修正 ✓`, 'success');
+      showToast(`绗�${num}棰� 閿欏埆瀛楀凡淇�姝� 鉁揱, 'success');
     } else if (action === 'all') {
       const parts = result.split('|----|').map(s => s.trim()).filter(Boolean);
       if (parts.length >= 4) {
-        const combined = `【精简语气词】\n${parts[0]}\n\n【润色文本】\n${parts[1]}\n\n【智能总结】\n${parts[2]}\n\n【提取金句】\n${parts[3]}`;
+        const combined = `銆愮簿绠�璇�姘旇瘝銆慭n${parts[0]}\n\n銆愭鼎鑹叉枃鏈�銆慭n${parts[1]}\n\n銆愭櫤鑳芥�荤粨銆慭n${parts[2]}\n\n銆愭彁鍙栭噾鍙ャ�慭n${parts[3]}`;
         document.getElementById('polished' + num).value = combined;
         saveField(num, 'polished');
         switchTab(num, 'polished');
         updateAITabBadge(num, 'done');
-        showToast(`第${num}题 全优化完成 ✨`, 'success');
+        showToast(`绗�${num}棰� 鍏ㄤ紭鍖栧畬鎴� 鉁╜, 'success');
       } else {
         document.getElementById('polished' + num).value = result;
         saveField(num, 'polished');
         switchTab(num, 'polished');
       }
     } else {
-      const labels = { clean: '【精简】', polish: '【润色】', summary: '【总结】', golden: '【金句】' };
+      const labels = { clean: '銆愮簿绠�銆�', polish: '銆愭鼎鑹层��', summary: '銆愭�荤粨銆�', golden: '銆愰噾鍙ャ��' };
       const existing = document.getElementById('polished' + num).value;
       const newText = existing ? `${existing}\n\n${labels[action]}\n${result}` : `${labels[action]}\n${result}`;
       document.getElementById('polished' + num).value = newText;
       saveField(num, 'polished');
       switchTab(num, 'polished');
       updateAITabBadge(num, 'done');
-      showToast(`第${num}题 ${labels[action]} 完成 ✓`, 'success');
+      showToast(`绗�${num}棰� ${labels[action]} 瀹屾垚 鉁揱, 'success');
     }
   } catch(e) {
-    showToast('AI处理失败：' + e.message, 'error');
+    showToast('AI澶勭悊澶辫触锛�' + e.message, 'error');
   } finally {
     setLoading(btnId, false);
   }
 }
 
 // ============================================================
-// 日期 & 历史
+// 鏃ユ湡 & 鍘嗗彶
 // ============================================================
 function showDatePicker() {
   document.getElementById('datePicker').classList.add('show');
@@ -1849,7 +1849,7 @@ function showHistory() {
   const dates = Object.keys(records).sort().reverse();
   const listEl = document.getElementById('historyList');
   if (dates.length === 0) {
-    listEl.innerHTML = '<div class="history-empty">还没有复盘记录<br>从今天开始吧！</div>';
+    listEl.innerHTML = '<div class="history-empty">杩樻病鏈夊�嶇洏璁板綍<br>浠庝粖澶╁紑濮嬪惂锛�</div>';
   } else {
     listEl.innerHTML = dates.map(d => {
       const rec = records[d];
@@ -1859,8 +1859,8 @@ function showHistory() {
       }).filter(Boolean).join(' | ');
       const savedTime = rec.savedAt ? new Date(rec.savedAt).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}) : '';
       return `<div class="history-item" onclick="showDetail('${d}')">
-        <div class="history-item-date">${formatDateCN(d)} ${savedTime ? '⏰'+savedTime : ''}</div>
-        <div class="history-item-preview">${preview || '（空白）'}</div>
+        <div class="history-item-date">${formatDateCN(d)} ${savedTime ? '鈴�'+savedTime : ''}</div>
+        <div class="history-item-preview">${preview || '锛堢┖鐧斤級'}</div>
       </div>`;
     }).join('');
   }
@@ -1874,9 +1874,9 @@ function showDetail(dateStr) {
   const rec = records[dateStr] || {};
   const content = document.getElementById('detailContent');
   content.innerHTML = `
-    <button class="detail-back" onclick="closeDetail()">← 返回</button>
+    <button class="detail-back" onclick="closeDetail()">鈫� 杩斿洖</button>
     <div class="detail-header">
-      <h2>📖 ${formatDateCN(dateStr)}</h2>
+      <h2>馃摉 ${formatDateCN(dateStr)}</h2>
       <span>${dateStr}</span>
     </div>
     ${QUESTIONS.map((q,i) => {
@@ -1888,10 +1888,10 @@ function showDetail(dateStr) {
       <div class="detail-section" id="detailQ${num}">
         <div class="detail-q">${num}. ${q.text}</div>
         <div class="detail-tab-row">
-          <button class="detail-tab ${hasOriginal ? 'active' : ''}" onclick="detailTab(${num},'original',this)">📝 原文</button>
-          <button class="detail-tab ${!hasOriginal && hasPolished ? 'active' : ''}" onclick="detailTab(${num},'polished',this)">✨ AI润色版</button>
+          <button class="detail-tab ${hasOriginal ? 'active' : ''}" onclick="detailTab(${num},'original',this)">馃摑 鍘熸枃</button>
+          <button class="detail-tab ${!hasOriginal && hasPolished ? 'active' : ''}" onclick="detailTab(${num},'polished',this)">鉁� AI娑﹁壊鐗�</button>
         </div>
-        <div class="detail-text" id="detailText${num}">${hasOriginal ? escapeHtml(qd.original) : (hasPolished ? escapeHtml(qd.polished) : '<span class="empty-text">（未填写）</span>')}</div>
+        <div class="detail-text" id="detailText${num}">${hasOriginal ? escapeHtml(qd.original) : (hasPolished ? escapeHtml(qd.polished) : '<span class="empty-text">锛堟湭濉�鍐欙級</span>')}</div>
       </div>`;
     }).join('')}
   `;
@@ -1906,7 +1906,7 @@ function detailTab(num, tab, btn) {
   btn.parentElement.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
   const text = qd[tab] || '';
-  el.innerHTML = text.trim() ? escapeHtml(text) : '<span class="empty-text">（未填写）</span>';
+  el.innerHTML = text.trim() ? escapeHtml(text) : '<span class="empty-text">锛堟湭濉�鍐欙級</span>';
 }
 
 function escapeHtml(text) {
@@ -1916,7 +1916,7 @@ function escapeHtml(text) {
 function closeDetail() { document.getElementById('detailModal').classList.remove('show'); }
 
 // ============================================================
-// 设置
+// 璁剧疆
 // ============================================================
 function showSettings() {
   const savedKey = localStorage.getItem(API_KEY_STORAGE);
@@ -1932,10 +1932,10 @@ function updateApiStatus(key) {
   if (!el) return;
   if (!key || key.length < 10) {
     el.className = 'api-key-status ok';
-    el.innerHTML = '✅ 使用内置免费通道（开箱即用）';
+    el.innerHTML = '鉁� 浣跨敤鍐呯疆鍏嶈垂閫氶亾锛堝紑绠卞嵆鐢�锛�';
   } else {
     el.className = 'api-key-status ok';
-    el.innerHTML = '✅ 自定义Key已配置';
+    el.innerHTML = '鉁� 鑷�瀹氫箟Key宸查厤缃�';
   }
 }
 
@@ -1944,24 +1944,24 @@ function saveSettings() {
   const key = input ? input.value.trim() : '';
   if (key) {
     localStorage.setItem(API_KEY_STORAGE, key);
-    showToast('自定义 API Key 已保存 ✨', 'success');
+    showToast('鑷�瀹氫箟 API Key 宸蹭繚瀛� 鉁�', 'success');
   } else {
     localStorage.removeItem(API_KEY_STORAGE);
-    showToast('已恢复使用内置免费通道', 'success');
+    showToast('宸叉仮澶嶄娇鐢ㄥ唴缃�鍏嶈垂閫氶亾', 'success');
   }
   updateApiStatus(key);
   closeSettings();
 }
 
 // ============================================================
-// 初始化
+// 鍒濆�嬪寲
 // ============================================================
 window.onload = function() {
   renderQuestions();
   loadRecord(getTodayStr());
   applyBgSettings();
 
-  // 默认蓝天白云主题
+  // 榛樿�よ摑澶╃櫧浜戜富棰�
   if (!localStorage.getItem('fanpan_bg_settings')) {
     const settings = { type: 'color', colorId: 'bluesky' };
     localStorage.setItem('fanpan_bg_settings', JSON.stringify(settings));
@@ -1969,11 +1969,11 @@ window.onload = function() {
   }
 
   setTimeout(() => {
-    showToast('🎉 v3.7 全新界面！录音+AI开箱即用', 'success');
+    showToast('馃帀 v3.7 鍏ㄦ柊鐣岄潰锛佸綍闊�+AI寮�绠卞嵆鐢�', 'success');
   }, 1500);
 };
 
-// 快捷键
+// 蹇�鎹烽敭
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
     closeHistory(); closeDatePicker(); closeDetail(); closeSettings();
@@ -1983,7 +1983,7 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
-// 点击背景关闭弹窗
+// 鐐瑰嚮鑳屾櫙鍏抽棴寮圭獥
 ['settingsModal','historyModal','datePicker','detailModal','applyModal','bgModal','exportModal','shareModal'].forEach(id => {
   document.getElementById(id).addEventListener('click', function(e) {
     if (e.target === this) this.classList.remove('show');
@@ -1991,15 +1991,15 @@ document.addEventListener('keydown', function(e) {
 });
 
 // ============================================================
-// 背景主题功能
+// 鑳屾櫙涓婚�樺姛鑳�
 // ============================================================
 const BG_STORAGE_KEY = 'fanpan_bg_settings';
 const BG_COLORS = [
-  { id: 'bluesky', color: 'linear-gradient(180deg, #87ceeb 0%, #d6ecfa 50%, #f0f7fd 100%)', name: '☁️ 蓝天白云' },
-  { id: 'default', color: '#f5f7fa', name: '📝 默认白' },
-  { id: 'dark', color: '#0f0f1a', name: '🌙 深色' },
-  { id: 'warm', color: '#fef3e2', name: '🌅 暖光' },
-  { id: 'mint', color: '#f0fdf4', name: '🌿 薄荷' },
+  { id: 'bluesky', color: 'linear-gradient(180deg, #87ceeb 0%, #d6ecfa 50%, #f0f7fd 100%)', name: '鈽侊笍 钃濆ぉ鐧戒簯' },
+  { id: 'default', color: '#f5f7fa', name: '馃摑 榛樿�ょ櫧' },
+  { id: 'dark', color: '#0f0f1a', name: '馃寵 娣辫壊' },
+  { id: 'warm', color: '#fef3e2', name: '馃寘 鏆栧厜' },
+  { id: 'mint', color: '#f0fdf4', name: '馃尶 钖勮嵎' },
 ];
 
 function getBgSettings() {
@@ -2046,7 +2046,7 @@ function showBgSettings() {
   const preview = document.getElementById('bgPreview');
   if (settings.type === 'custom' && settings.customImage) {
     document.getElementById('bgPreviewImg').src = settings.customImage;
-    document.getElementById('bgPreviewLabel').textContent = '自定义图片';
+    document.getElementById('bgPreviewLabel').textContent = '鑷�瀹氫箟鍥剧墖';
     preview.style.display = 'block';
   } else {
     preview.style.display = 'none';
@@ -2069,14 +2069,14 @@ function selectBgColor(colorId) {
   });
   document.getElementById('bgPreview').style.display = 'none';
 
-  showToast('主题已更换 ✓', 'success');
+  showToast('涓婚�樺凡鏇存崲 鉁�', 'success');
 }
 
 function handleBgUpload(input) {
   const file = input.files[0];
   if (!file) return;
-  if (!file.type.startsWith('image/')) { showToast('请选择图片文件', 'error'); return; }
-  if (file.size > 5 * 1024 * 1024) { showToast('图片不能超过5MB', 'error'); return; }
+  if (!file.type.startsWith('image/')) { showToast('璇烽�夋嫨鍥剧墖鏂囦欢', 'error'); return; }
+  if (file.size > 5 * 1024 * 1024) { showToast('鍥剧墖涓嶈兘瓒呰繃5MB', 'error'); return; }
 
   const reader = new FileReader();
   reader.onload = function(e) {
@@ -2088,7 +2088,7 @@ function handleBgUpload(input) {
     document.getElementById('bgPreviewLabel').textContent = file.name;
     document.getElementById('bgPreview').style.display = 'block';
     document.querySelectorAll('.bg-color-item').forEach(el => el.classList.remove('active'));
-    showToast('自定义背景已应用 ✓', 'success');
+    showToast('鑷�瀹氫箟鑳屾櫙宸插簲鐢� 鉁�', 'success');
   };
   reader.readAsDataURL(file);
 }
@@ -2101,18 +2101,18 @@ function removeCustomBg() {
   document.querySelectorAll('.bg-color-item').forEach(el => {
     el.classList.toggle('active', el.getAttribute('onclick').includes(`'bluesky'`));
   });
-  showToast('已恢复蓝天白云主题', 'success');
+  showToast('宸叉仮澶嶈摑澶╃櫧浜戜富棰�', 'success');
 }
 
 // ============================================================
-// 导出功能
+// 瀵煎嚭鍔熻兘
 // ============================================================
 function exportText() {
   const dateStr = currentDate;
   const records = getRecords();
   const rec = records[dateStr] || {};
 
-  let content = `复盘笔记 - ${formatDateCN(dateStr)}\n${'='.repeat(40)}\n\n`;
+  let content = `澶嶇洏绗旇�� - ${formatDateCN(dateStr)}\n${'='.repeat(40)}\n\n`;
 
   QUESTIONS.forEach((q, i) => {
     const num = i + 1;
@@ -2120,26 +2120,26 @@ function exportText() {
     const original = qd.original || '';
     const polished = qd.polished || '';
 
-    content += `【问题${num}】${q.text}\n`;
+    content += `銆愰棶棰�${num}銆�${q.text}\n`;
     content += `-`.repeat(30) + '\n';
-    if (original.trim()) content += `📝 原文：\n${original}\n`;
-    if (polished.trim()) content += `\n✨ AI润色版：\n${polished}\n`;
-    if (!original.trim() && !polished.trim()) content += '（未填写）\n';
+    if (original.trim()) content += `馃摑 鍘熸枃锛歕n${original}\n`;
+    if (polished.trim()) content += `\n鉁� AI娑﹁壊鐗堬細\n${polished}\n`;
+    if (!original.trim() && !polished.trim()) content += '锛堟湭濉�鍐欙級\n';
     content += '\n';
   });
 
   content += `${'='.repeat(40)}\n`;
-  content += `生成时间：${new Date().toLocaleString('zh-CN')}\n`;
-  content += `复盘册子 v3.7`;
+  content += `鐢熸垚鏃堕棿锛�${new Date().toLocaleString('zh-CN')}\n`;
+  content += `澶嶇洏鍐屽瓙 v3.7`;
 
-  document.getElementById('exportModalTitle').textContent = '📄 导出文本预览';
+  document.getElementById('exportModalTitle').textContent = '馃搫 瀵煎嚭鏂囨湰棰勮��';
   document.getElementById('exportPreview').textContent = content;
   const confirmBtn = document.getElementById('exportConfirmBtn');
-  confirmBtn.textContent = '📥 下载 TXT';
+  confirmBtn.textContent = '馃摜 涓嬭浇 TXT';
   confirmBtn.onclick = function() {
-    downloadText(content, `复盘笔记_${dateStr}.txt`);
+    downloadText(content, `澶嶇洏绗旇�癬${dateStr}.txt`);
     closeExportModal();
-    showToast('文本已下载 ✓', 'success');
+    showToast('鏂囨湰宸蹭笅杞� 鉁�', 'success');
   };
   document.getElementById('exportModal').classList.add('show');
 }
@@ -2155,7 +2155,7 @@ function downloadText(content, filename) {
 }
 
 function exportImage() {
-  showToast('正在生成图片...', 'default');
+  showToast('姝ｅ湪鐢熸垚鍥剧墖...', 'default');
 
   const container = document.createElement('div');
   container.style.cssText = `position:fixed;left:-9999px;top:0;width:800px;padding:40px;background:linear-gradient(135deg,#e8f4fd 0%,#d6ecfa 100%);font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;color:#1a3a5c;`;
@@ -2164,16 +2164,16 @@ function exportImage() {
   const records = getRecords();
   const rec = records[dateStr] || {};
 
-  let html = `<div style="text-align:center;margin-bottom:30px;"><h1 style="font-size:28px;color:#0c2d4a;margin:0;">📖 复盘笔记</h1><p style="font-size:16px;color:#2b7cbf;margin:10px 0 0;">${formatDateCN(dateStr)}</p></div>`;
+  let html = `<div style="text-align:center;margin-bottom:30px;"><h1 style="font-size:28px;color:#0c2d4a;margin:0;">馃摉 澶嶇洏绗旇��</h1><p style="font-size:16px;color:#2b7cbf;margin:10px 0 0;">${formatDateCN(dateStr)}</p></div>`;
 
   QUESTIONS.forEach((q, i) => {
     const num = i + 1;
     const qd = rec['q' + num] || {};
     const text = qd.polished || qd.original || '';
-    html += `<div style="background:rgba(255,255,255,0.9);border-radius:12px;padding:20px;margin-bottom:16px;border:1px solid #b8d8f0;"><div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;"><span style="width:28px;height:28px;border-radius:50%;background:#4a90d9;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:bold;">${num}</span><span style="font-size:15px;font-weight:600;color:#0c2d4a;">${q.text}</span></div><div style="font-size:14px;line-height:1.8;color:#1a3a5c;white-space:pre-wrap;">${text.trim() || '<span style="color:#8899aa;font-style:italic;">（未填写）</span>'}</div></div>`;
+    html += `<div style="background:rgba(255,255,255,0.9);border-radius:12px;padding:20px;margin-bottom:16px;border:1px solid #b8d8f0;"><div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;"><span style="width:28px;height:28px;border-radius:50%;background:#4a90d9;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:bold;">${num}</span><span style="font-size:15px;font-weight:600;color:#0c2d4a;">${q.text}</span></div><div style="font-size:14px;line-height:1.8;color:#1a3a5c;white-space:pre-wrap;">${text.trim() || '<span style="color:#8899aa;font-style:italic;">锛堟湭濉�鍐欙級</span>'}</div></div>`;
   });
 
-  html += `<div style="text-align:center;margin-top:30px;padding-top:20px;border-top:1px solid #b8d8f0;"><p style="font-size:12px;color:#6b9ab8;margin:0;">复盘册子 v3.7 · ${new Date().toLocaleString('zh-CN')}</p></div>`;
+  html += `<div style="text-align:center;margin-top:30px;padding-top:20px;border-top:1px solid #b8d8f0;"><p style="font-size:12px;color:#6b9ab8;margin:0;">澶嶇洏鍐屽瓙 v3.7 路 ${new Date().toLocaleString('zh-CN')}</p></div>`;
 
   container.innerHTML = html;
   document.body.appendChild(container);
@@ -2182,7 +2182,7 @@ function exportImage() {
     const script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
     script.onload = () => doExportImage(container);
-    script.onerror = () => { document.body.removeChild(container); showToast('图片库加载失败，请检查网络', 'error'); };
+    script.onerror = () => { document.body.removeChild(container); showToast('鍥剧墖搴撳姞杞藉け璐ワ紝璇锋��鏌ョ綉缁�', 'error'); };
     document.head.appendChild(script);
   } else {
     doExportImage(container);
@@ -2221,7 +2221,7 @@ function doExportImage(container) {
 function closeExportModal() { document.getElementById('exportModal').classList.remove('show'); }
 
 // ============================================================
-// 分享功能
+// 鍒嗕韩鍔熻兘
 // ============================================================
 function showAIMenu(num) {
   const menu = document.getElementById('aiMenuOverlay');
@@ -2240,7 +2240,7 @@ function doAI(action) {
 
 function shareAllQuestions() {
   const dateStr = formatDateCN(currentDate);
-  const lines = [`📖 复盘笔记 · ${dateStr}`, ''];
+  const lines = [`馃摉 澶嶇洏绗旇�� 路 ${dateStr}`, ''];
   for (let i = 1; i <= 5; i++) {
     const qd = getQuestionData(i);
     const q = QUESTIONS[i - 1];
@@ -2248,18 +2248,18 @@ function shareAllQuestions() {
     const polished = qd.polished || '';
     const text = polished || original;
     if (text.trim()) {
-      lines.push(`━━━ 第${i}题：${q.text} ━━━`);
+      lines.push(`鈹佲攣鈹� 绗�${i}棰橈細${q.text} 鈹佲攣鈹乣);
       if (polished && polished !== original) {
-        lines.push(`✨ ${polished}`);
+        lines.push(`鉁� ${polished}`);
       } else {
-        lines.push(`📝 ${original}`);
+        lines.push(`馃摑 ${original}`);
       }
       lines.push('');
     }
   }
-  lines.push('复盘册子 v3.7');
+  lines.push('澶嶇洏鍐屽瓙 v3.7');
   currentShareText = lines.join('\n');
-  document.getElementById('shareModalTitle').textContent = `📤 全篇分享 · ${dateStr}`;
+  document.getElementById('shareModalTitle').textContent = `馃摛 鍏ㄧ瘒鍒嗕韩 路 ${dateStr}`;
   document.getElementById('sharePreview').textContent = currentShareText;
   document.getElementById('shareModal').classList.add('show');
 }
@@ -2276,19 +2276,19 @@ function shareQuestion(num) {
   const dateStr = formatDateCN(currentDate);
 
   const lines = [
-    `📖 复盘笔记 · ${dateStr}`,
-    `━━━ 第${num}题 ━━━`,
-    `❓ ${q.text}`,
+    `馃摉 澶嶇洏绗旇�� 路 ${dateStr}`,
+    `鈹佲攣鈹� 绗�${num}棰� 鈹佲攣鈹乣,
+    `鉂� ${q.text}`,
     ``,
-    `📝 原文：${original || '（未填写）'}`,
+    `馃摑 鍘熸枃锛�${original || '锛堟湭濉�鍐欙級'}`,
     ``,
-    `✨ AI润色：${polished || '（未润色）'}`,
+    `鉁� AI娑﹁壊锛�${polished || '锛堟湭娑﹁壊锛�'}`,
     ``,
-    `复盘册子 v3.7`
+    `澶嶇洏鍐屽瓙 v3.7`
   ].join('\n');
 
   currentShareText = lines;
-  document.getElementById('shareModalTitle').textContent = `📤 第${num}题 · ${q.hint}`;
+  document.getElementById('shareModalTitle').textContent = `馃摛 绗�${num}棰� 路 ${q.hint}`;
   document.getElementById('sharePreview').textContent = lines;
   document.getElementById('shareModal').classList.add('show');
 }
@@ -2301,7 +2301,7 @@ function closeShareModal() {
 function copyShareText() {
   navigator.clipboard.writeText(currentShareText).then(() => {
     closeShareModal();
-    showToast('已复制到剪贴板 ✓', 'success');
+    showToast('宸插�嶅埗鍒板壀璐存澘 鉁�', 'success');
   }).catch(() => {
     const ta = document.createElement('textarea');
     ta.value = currentShareText;
@@ -2310,7 +2310,7 @@ function copyShareText() {
     document.execCommand('copy');
     document.body.removeChild(ta);
     closeShareModal();
-    showToast('已复制到剪贴板 ✓', 'success');
+    showToast('宸插�嶅埗鍒板壀璐存澘 鉁�', 'success');
   });
 }
 
@@ -2325,15 +2325,15 @@ function downloadShareImage() {
   const num = currentShareNum;
   const qd = getQuestionData(num);
   const q = QUESTIONS[num - 1];
-  const text = (qd.polished || qd.original || '').trim() || '（未填写）';
+  const text = (qd.polished || qd.original || '').trim() || '锛堟湭濉�鍐欙級';
 
   const container = document.createElement('div');
   container.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:540px;padding:40px 32px;background:var(--bg);';
 
   container.innerHTML = `
     <div style="text-align:center;margin-bottom:32px;">
-      <div style="font-size:13px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">复盘册子</div>
-      <h1 style="font-size:28px;color:var(--text-strong);margin:0;font-weight:700;">第${num}题</h1>
+      <div style="font-size:13px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">澶嶇洏鍐屽瓙</div>
+      <h1 style="font-size:28px;color:var(--text-strong);margin:0;font-weight:700;">绗�${num}棰�</h1>
       <p style="font-size:15px;color:var(--accent);margin:10px 0 0;">${q.text}</p>
     </div>
     <div style="background:var(--card);border-radius:16px;padding:24px;border:1px solid var(--border);margin-bottom:24px;">
@@ -2341,7 +2341,7 @@ function downloadShareImage() {
       <div style="font-size:15px;line-height:1.9;color:var(--text-strong);white-space:pre-wrap;">${text}</div>
     </div>
     <div style="text-align:center;padding-top:16px;border-top:1px solid var(--border);">
-      <span style="font-size:11px;color:var(--muted);">📖 复盘册子 · ${formatDateCN(currentDate)}</span>
+      <span style="font-size:11px;color:var(--muted);">馃摉 澶嶇洏鍐屽瓙 路 ${formatDateCN(currentDate)}</span>
     </div>
   `;
   document.body.appendChild(container);
@@ -2350,7 +2350,7 @@ function downloadShareImage() {
     const script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
     script.onload = () => doShareImage(container, num);
-    script.onerror = () => { document.body.removeChild(container); showToast('图片库加载失败', 'error'); };
+    script.onerror = () => { document.body.removeChild(container); showToast('鍥剧墖搴撳姞杞藉け璐�', 'error'); };
     document.head.appendChild(script);
   } else {
     doShareImage(container, num);
@@ -2390,14 +2390,14 @@ function doShareImage(container, num) {
 
 function nativeShare() {
   if (navigator.share) {
-    navigator.share({ title: '复盘笔记', text: currentShareText, url: location.href })
+    navigator.share({ title: '澶嶇洏绗旇��', text: currentShareText, url: location.href })
       .then(() => closeShareModal())
       .catch(() => {
-        // 用户取消分享或失败，降级为复制文字
+        // 鐢ㄦ埛鍙栨秷鍒嗕韩鎴栧け璐ワ紝闄嶇骇涓哄�嶅埗鏂囧瓧
         copyShareText();
       });
   } else {
-    // 不支持原生分享，直接复制文字
+    // 涓嶆敮鎸佸師鐢熷垎浜�锛岀洿鎺ュ�嶅埗鏂囧瓧
     copyShareText();
   }
 }

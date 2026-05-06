@@ -5,2404 +5,900 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#4a90d9">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" "black-translucent">
 <meta name="apple-mobile-web-app-title" content="复盘册子">
-<link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
-<title>v3.8 | 复盘册子 3.4</title>
+<title>复盘册子 v3.9</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-:root {
-  --primary: #ffffff;
-  --accent: #4a90d9;
-  --accent2: #7c3aed;
-  --bg: #f5f7fa;
-  --card: #ffffff;
-  --text: #1a1a2e;
-  --text-strong: #0d0d1a;
-  --muted: #8899aa;
-  --border: #e8ecf0;
-  --input-bg: #f9fafb;
-  --success: #22c55e;
-  --warning: #f59e0b;
-  --shadow: 0 2px 12px rgba(0,0,0,0.06);
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#e8f4fd;--card:#fff;--text:#1a3a5c;--text-strong:#0c2d4a;
+  --muted:#5a8aa8;--accent:#1a6baa;--accent2:#3a8acc;
+  --border:#b8d8f0;--input-bg:#f0f6fc;--success:#16a34a;
+  --shadow:0 2px 12px rgba(26,107,170,0.08);
+}
+body{
+  font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;
+  background:var(--bg);color:var(--text);
+  min-height:100vh;padding-bottom:100px;
 }
 
-/* ===== 蓝天白云主题（默认） ===== */
-html[data-theme="bluesky"] {
-  --primary: #e0eef9;
-  --accent: #1a6baa;
-  --accent2: #3a8acc;
-  --bg: #cce4f5;
-  --card: #ffffff;
-  --text: #1a3a5c;
-  --text-strong: #0a1e35;
-  --muted: #5a8aa8;
-  --border: #a0c8e5;
-  --input-bg: #f0f6fc;
-  --success: #16a34a;
-  --shadow: 0 2px 16px rgba(26,107,170,0.1);
+/* ===== 极简顶栏 ===== */
+.header{
+  background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);
+  padding:10px 16px;display:flex;justify-content:space-between;align-items:center;
+  position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border);
 }
-
-/* ===== 深色主题 ===== */
-html[data-theme="dark"] {
-  --primary: #1a1a2e;
-  --accent: #e94560;
-  --accent2: #7c3aed;
-  --bg: #0f0f1a;
-  --card: #1a1a2e;
-  --text: #e0e0e0;
-  --text-strong: #ffffff;
-  --muted: #8899aa;
-  --border: #2a2a4a;
-  --input-bg: #141425;
-  --success: #22c55e;
-  --shadow: 0 2px 12px rgba(0,0,0,0.3);
+.header h1{font-size:17px;font-weight:700;color:var(--text-strong)}
+.header h1 span{color:var(--accent);font-size:11px;font-weight:400;margin-left:4px}
+.header-right{display:flex;align-items:center;gap:6px}
+.icon-btn{
+  height:30px;padding:0 10px;border-radius:15px;
+  background:transparent;border:1px solid var(--border);cursor:pointer;
+  display:flex;align-items:center;gap:3px;
+  font-size:12px;color:var(--text);transition:all .2s;font-family:inherit;
 }
-
-/* ===== 暖光主题 ===== */
-html[data-theme="warm"] {
-  --primary: #fff8f0;
-  --accent: #d97706;
-  --accent2: #c2410c;
-  --bg: #fef3e2;
-  --card: #fff8f0;
-  --text: #4a2c0a;
-  --text-strong: #2d1a05;
-  --muted: #9a7b5a;
-  --border: #f0d9b5;
-  --input-bg: #fff5eb;
-  --success: #16a34a;
-  --shadow: 0 2px 12px rgba(217,119,6,0.08);
+.icon-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.date-badge{
+  font-size:11px;color:#fff;font-weight:600;
+  background:var(--accent);padding:4px 12px;border-radius:12px;
 }
-
-/* ===== 薄荷主题 ===== */
-html[data-theme="mint"] {
-  --primary: #ecfdf5;
-  --accent: #059669;
-  --accent2: #0d9488;
-  --bg: #f0fdf4;
-  --card: #ffffff;
-  --text: #064e3b;
-  --text-strong: #022c22;
-  --muted: #6b8f7a;
-  --border: #a7f3d0;
-  --input-bg: #f0fdf4;
-  --success: #059669;
-  --shadow: 0 2px 12px rgba(5,150,105,0.08);
-}
-
-/* ===== 蓝天白云CSS装饰 ===== */
-.clouds-bg {
-  position: fixed; top: 0; left: 0; right: 0;
-  height: 200px; pointer-events: none; z-index: 0;
-  overflow: hidden; opacity: 0.6;
-}
-html:not([data-theme="bluesky"]) .clouds-bg { display: none; }
-.cloud {
-  position: absolute; background: #fff; border-radius: 50%;
-  filter: blur(1px); opacity: 0.8;
-}
-.cloud::before, .cloud::after {
-  content: ''; position: absolute; background: #fff; border-radius: 50%;
-}
-.cloud-1 { width: 80px; height: 30px; top: 30px; left: 10%; animation: floatCloud 60s linear infinite; }
-.cloud-1::before { width: 40px; height: 40px; top: -20px; left: 15px; }
-.cloud-1::after { width: 30px; height: 30px; top: -10px; left: 45px; }
-.cloud-2 { width: 100px; height: 35px; top: 60px; left: 50%; animation: floatCloud 80s linear infinite reverse; }
-.cloud-2::before { width: 50px; height: 50px; top: -25px; left: 20px; }
-.cloud-2::after { width: 35px; height: 35px; top: -15px; left: 55px; }
-.cloud-3 { width: 70px; height: 25px; top: 20px; left: 75%; animation: floatCloud 70s linear infinite; }
-.cloud-3::before { width: 35px; height: 35px; top: -18px; left: 12px; }
-.cloud-3::after { width: 25px; height: 25px; top: -8px; left: 38px; }
-.cloud-4 { width: 90px; height: 30px; top: 80px; left: 30%; animation: floatCloud 90s linear infinite reverse; }
-.cloud-4::before { width: 45px; height: 45px; top: -22px; left: 18px; }
-.cloud-4::after { width: 30px; height: 30px; top: -12px; left: 50px; }
-@keyframes floatCloud {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(100vw); }
-}
-
-body {
-  font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
-  background: var(--bg); color: var(--text);
-  min-height: 100vh; padding-bottom: 80px;
-  transition: background 0.3s, color 0.3s;
-}
-
-/* ===== 顶栏（参考笔记本：简洁清爽） ===== */
-.header {
-  background: var(--primary); padding: 12px 16px;
-  display: flex; justify-content: space-between; align-items: center;
-  border-bottom: 1px solid var(--border);
-  position: sticky; top: 0; z-index: 100;
-  box-shadow: var(--shadow);
-}
-.header h1 { font-size: 18px; font-weight: 700; color: var(--text-strong); }
-.header h1 span { color: var(--accent); font-size: 11px; font-weight: 400; margin-left: 6px; }
-.header-right { display: flex; align-items: center; gap: 6px; }
-.icon-btn {
-  height: 32px; padding: 0 10px; border-radius: 16px;
-  background: var(--input-bg); border: 1px solid var(--border); cursor: pointer;
-  display: flex; align-items: center; justify-content: center; gap: 4px;
-  font-size: 13px; transition: all 0.2s; color: var(--text); font-family: inherit;
-  white-space: nowrap;
-}
-.icon-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
-.date-display {
-  font-size: 12px; color: var(--accent); font-weight: 600;
-  cursor: pointer; padding: 6px 12px; border-radius: 16px;
-  border: 1px solid var(--accent); white-space: nowrap;
-  background: transparent;
-}
-.date-display:hover { background: var(--accent); color: #fff; }
 
 /* ===== 录音状态条 ===== */
-.recording-bar {
-  display: none; position: fixed; top: 0; left: 0; right: 0;
-  background: linear-gradient(90deg, #e94560, #7c3aed);
-  padding: 10px 18px; z-index: 200;
-  align-items: center; justify-content: space-between;
-  color: #fff; font-size: 14px; font-weight: 600;
-  animation: slideDown 0.3s ease;
+.rec-bar{
+  display:none;position:fixed;top:0;left:0;right:0;
+  background:linear-gradient(90deg,#e94560,#7c3aed);
+  padding:8px 16px;z-index:200;
+  align-items:center;justify-content:space-between;
+  color:#fff;font-size:13px;font-weight:600;
 }
-.recording-bar.show { display: flex; }
-@keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
-.rec-bar-left { display: flex; align-items: center; gap: 10px; }
-.rec-dot { width: 10px; height: 10px; border-radius: 50%; background: #fff; animation: blink 1s infinite; }
-@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
-.rec-stop-btn {
-  padding: 5px 16px; border-radius: 20px;
-  background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.5);
-  color: #fff; font-size: 13px; font-weight: 600;
-  cursor: pointer; font-family: inherit;
+.rec-bar.show{display:flex}
+.rec-dot{width:8px;height:8px;border-radius:50%;background:#fff;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.rec-stop{
+  padding:4px 14px;border-radius:16px;background:rgba(255,255,255,.2);
+  border:1px solid rgba(255,255,255,.5);color:#fff;font-size:12px;
+  cursor:pointer;font-family:inherit;
 }
-.rec-stop-btn:hover { background: rgba(255,255,255,0.35); }
 
 /* ===== 主内容 ===== */
-.main { max-width: 640px; margin: 0 auto; padding: 14px 12px 100px; position: relative; z-index: 1; }
-.section-label {
-  font-size: 12px; color: var(--muted); font-weight: 600;
-  letter-spacing: 0.5px;
-  margin-bottom: 12px; padding-left: 4px;
+.main{max-width:640px;margin:0 auto;padding:12px 14px}
+
+/* ===== 问题块（极简卡片） ===== */
+.q-block{
+  background:var(--card);border-radius:14px;
+  margin-bottom:12px;border:1px solid var(--border);
+  overflow:hidden;box-shadow:var(--shadow);
+  transition:border-color .2s;
+}
+.q-block:focus-within{border-color:var(--accent)}
+
+.q-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 14px 8px;
+}
+.q-head-left{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.q-num{
+  width:24px;height:24px;border-radius:50%;
+  background:var(--accent);color:#fff;
+  font-size:12px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.q-label{font-size:14px;font-weight:700;color:var(--text-strong)}
+.q-hint{font-size:11px;color:var(--muted);margin-left:2px}
+.q-head-right{display:flex;align-items:center;gap:4px;flex-shrink:0}
+
+/* 大录音按钮 */
+.voice-big{
+  width:40px;height:40px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
+  transition:all .2s;box-shadow:0 2px 8px rgba(26,106,170,.25);
+}
+.voice-big:hover{transform:scale(1.08);filter:brightness(1.1)}
+.voice-big.recording{
+  background:linear-gradient(135deg,#e94560,#ff3d5a);
+  animation:pulse-rec 1s infinite;
+}
+@keyframes pulse-rec{
+  0%,100%{box-shadow:0 0 0 0 rgba(233,69,96,.4)}
+  50%{box-shadow:0 0 0 10px rgba(233,69,96,0)}
 }
 
-/* ===== 问题块（参考笔记本：卡片式、简洁） ===== */
-.q-block {
-  background: var(--card); border-radius: 16px;
-  margin-bottom: 14px; border: 1px solid var(--border);
-  overflow: hidden; transition: all 0.3s;
-  box-shadow: var(--shadow);
+.play-small{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--success);border:none;cursor:pointer;
+  display:none;align-items:center;justify-content:center;
+  font-size:12px;flex-shrink:0;color:#fff;
 }
-.q-block:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(74,144,217,0.1); }
-.q-block.recording-active { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(233,69,96,0.2); }
+.play-small.show{display:flex}
 
-.q-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 16px 10px;
+/* 文本输入区（无Tab，直接一个textarea） */
+.answer-area{
+  width:100%;min-height:80px;
+  background:transparent;border:none;
+  color:var(--text-strong);font-size:15px;line-height:1.85;
+  padding:4px 14px 12px;resize:none;outline:none;
+  font-family:inherit;
 }
-.q-header-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
-.q-number {
-  width: 28px; height: 28px; border-radius: 50%;
-  background: var(--accent); color: #fff;
-  font-size: 13px; font-weight: 700;
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-}
-.q-label { font-size: 15px; font-weight: 700; color: var(--text-strong); }
-.q-hint { font-size: 11px; color: var(--muted); font-weight: 400; margin-left: 4px; }
-.q-header-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.answer-area::placeholder{color:var(--muted);font-size:13px}
 
-/* 语音+播放按钮组 */
-.voice-btn-group { display: flex; gap: 4px; }
+/* AI工具条（极简，融入底部） */
+.ai-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:6px 14px 10px;border-top:1px solid var(--border);
+}
+.ai-btn{
+  padding:4px 10px;border-radius:12px;
+  background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.2);
+  color:#7c3aed;cursor:pointer;font-size:11px;font-weight:600;
+  font-family:inherit;transition:all .15s;display:flex;align-items:center;gap:3px;
+}
+.ai-btn:hover{background:rgba(124,58,237,.12);border-color:#7c3aed}
+.ai-btn:disabled{opacity:.4;cursor:not-allowed}
+.ai-btn .spin{display:inline-block;width:10px;height:10px;
+  border:2px solid rgba(124,58,237,.3);border-top-color:#7c3aed;
+  border-radius:50%;animation:spin .7s linear infinite;display:none}
+.ai-btn.loading .spin{display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-/* 分享按钮 */
-.share-btn-text {
-  padding: 5px 10px; border-radius: 14px;
-  background: var(--input-bg); border: 1px solid var(--border); cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; transition: all 0.2s;
-  color: var(--text); font-size: 12px; font-weight: 600;
-  font-family: inherit; white-space: nowrap;
+.fix-btn{
+  padding:4px 10px;border-radius:12px;
+  background:rgba(22,163,74,.06);border:1px solid rgba(22,163,74,.2);
+  color:#16a34a;cursor:pointer;font-size:11px;font-weight:600;
+  font-family:inherit;transition:all .15s;
 }
-.share-btn-text:hover { transform: scale(1.05); background: var(--accent); color: #fff; border-color: var(--accent); }
+.fix-btn:hover{background:rgba(22,163,74,.12);border-color:#16a34a}
 
-/* 语音按钮 */
-.voice-btn-text {
-  padding: 5px 10px; border-radius: 14px;
-  background: var(--accent); border: none; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; transition: all 0.2s;
-  color: #fff; font-size: 12px; font-weight: 600;
-  font-family: inherit; white-space: nowrap;
+.save-dot{
+  text-align:right;padding:0 14px 4px;
+  font-size:10px;color:var(--muted);min-height:14px;
 }
-.voice-btn-text:hover { transform: scale(1.05); filter: brightness(1.1); }
-.voice-btn-text.recording { background: #ff3d5a; animation: pulse 1s infinite; }
-@keyframes pulse {
-  0%,100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(233,69,96,0.4); }
-  50% { transform: scale(1.08); box-shadow: 0 0 0 8px rgba(233,69,96,0); }
-}
+.save-dot.ok{color:var(--success)}
 
-/* 播放录音按钮 */
-.play-btn {
-  padding: 5px 10px; border-radius: 14px;
-  background: var(--success); border: none; cursor: pointer;
-  display: none; align-items: center; justify-content: center;
-  flex-shrink: 0; transition: all 0.2s;
-  color: #fff; font-size: 12px; font-weight: 600;
-  font-family: inherit; white-space: nowrap;
+/* ===== 底部操作栏（固定） ===== */
+.bottom-bar{
+  position:fixed;bottom:0;left:0;right:0;
+  background:rgba(255,255,255,.92);backdrop-filter:blur(12px);
+  border-top:1px solid var(--border);
+  padding:10px 20px;padding-bottom:max(10px,env(safe-area-inset-bottom));
+  display:flex;gap:8px;justify-content:center;
+  max-width:640px;margin:0 auto;z-index:90;
 }
-.play-btn.has-audio { display: flex; }
-.play-btn:hover { filter: brightness(1.1); }
+.btn-bottom{
+  flex:1;max-width:140px;padding:10px;border-radius:10px;border:none;
+  font-size:13px;font-weight:600;cursor:pointer;text-align:center;
+  transition:all .2s;font-family:inherit;
+}
+.btn-ghost{background:var(--input-bg);color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{filter:brightness(1.1)}
 
-/* ===== 双Tab区域 ===== */
-.tab-bar {
-  display: flex; gap: 0; padding: 0 16px;
-  border-bottom: 1px solid var(--border);
+/* ===== 弹窗 ===== */
+.overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.4);z-index:200;
+  align-items:flex-end;justify-content:center;
 }
-.tab-btn {
-  flex: 1; padding: 10px 8px;
-  border: none; background: transparent;
-  color: var(--muted); font-size: 13px; font-weight: 600;
-  cursor: pointer; font-family: inherit;
-  border-bottom: 2px solid transparent;
-  transition: all 0.2s;
+.overlay.show{display:flex}
+.panel{
+  width:100%;max-width:640px;
+  background:var(--card);border-radius:18px 18px 0 0;
+  padding:20px;padding-bottom:max(20px,env(safe-area-inset-bottom));
+  animation:slideUp .25s ease;
 }
-.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
-.tab-btn:hover { color: var(--text); }
-.tab-btn .badge {
-  display: inline-block; font-size: 9px; padding: 1px 5px;
-  border-radius: 8px; margin-left: 4px; vertical-align: middle;
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.panel-title{
+  font-size:15px;font-weight:700;color:var(--text-strong);
+  margin-bottom:16px;text-align:center;
 }
-.tab-btn .badge.ai-done { background: var(--success); color: #fff; }
-.tab-btn .badge.ai-loading { background: var(--warning); color: #000; animation: blink 1s infinite; }
-
-/* 文本区域（输入色淡、文字色深） */
-.tab-panel { display: none; }
-.tab-panel.active { display: block; }
-.answer-area {
-  width: 100%; min-height: 120px;
-  background: var(--input-bg); border: none;
-  color: var(--text-strong); font-size: 15px; line-height: 1.9;
-  padding: 12px 16px 8px; resize: none; outline: none;
-  font-family: inherit;
+.panel-item{
+  width:100%;padding:13px 16px;
+  border:1px solid var(--border);border-radius:12px;
+  background:transparent;color:var(--text);
+  font-size:14px;font-weight:600;cursor:pointer;
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:6px;font-family:inherit;transition:all .15s;
 }
-.answer-area::placeholder { color: var(--muted); font-size: 14px; }
-.answer-area:focus { background: var(--input-bg); box-shadow: inset 0 0 0 1px var(--border); }
-
-/* AI工具栏 */
-.ai-toolbar {
-  display: flex; align-items: center;
-  padding: 8px 12px; gap: 6px;
-  overflow-x: auto; -webkit-overflow-scrolling: touch;
-  border-top: 1px solid var(--border);
+.panel-item:hover{background:rgba(26,106,170,.05);border-color:var(--accent)}
+.panel-cancel{
+  width:100%;padding:11px;border-radius:12px;border:none;
+  background:var(--input-bg);color:var(--muted);
+  font-size:14px;font-weight:600;cursor:pointer;
+  font-family:inherit;margin-top:4px;
 }
-.ai-toolbar::-webkit-scrollbar { display: none; }
-.ai-main-btn {
-  flex: 1; justify-content: center;
-  padding: 8px 16px; font-size: 13px;
-  border-color: var(--accent2); color: var(--accent2);
-  background: rgba(124,58,237,0.06);
-}
-.ai-main-btn:hover { background: rgba(124,58,237,0.15); }
-.ai-fix-btn {
-  border-color: var(--success); color: var(--success);
-}
-/* AI菜单弹窗 */
-.ai-menu-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,0.4); z-index: 300;
-  align-items: flex-end; justify-content: center;
-}
-.ai-menu-overlay.show { display: flex; }
-.ai-menu {
-  width: 100%; max-width: 640px;
-  background: var(--card); border-radius: 20px 20px 0 0;
-  padding: 20px; padding-bottom: max(20px, env(safe-area-inset-bottom));
-  animation: slideUp 0.25s ease;
-}
-.ai-menu-title {
-  font-size: 15px; font-weight: 700; color: var(--text-strong);
-  margin-bottom: 16px; text-align: center;
-}
-.ai-menu-item {
-  width: 100%; padding: 14px 18px;
-  border: 1px solid var(--border); border-radius: 12px;
-  background: transparent; color: var(--text);
-  font-size: 14px; font-weight: 600;
-  cursor: pointer; display: flex; align-items: center; gap: 10px;
-  margin-bottom: 8px; font-family: inherit;
-  transition: all 0.15s;
-}
-.ai-menu-item:hover { background: rgba(74,144,217,0.08); border-color: var(--accent); }
-.ai-menu-item .ai-icon { font-size: 18px; }
-.ai-menu-cancel {
-  width: 100%; padding: 12px; border: none; border-radius: 12px;
-  background: var(--input-bg); color: var(--muted);
-  font-size: 14px; font-weight: 600;
-  cursor: pointer; font-family: inherit; margin-top: 4px;
-}
-.ai-menu-cancel:hover { color: var(--text); }
-@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-.ai-action-btn {
-  flex-shrink: 0; padding: 6px 12px;
-  border-radius: 16px; border: 1px solid var(--border);
-  background: transparent; color: var(--text);
-  font-size: 12px; font-weight: 600;
-  cursor: pointer; display: flex; align-items: center; gap: 4px;
-  transition: all 0.2s; font-family: inherit; white-space: nowrap;
-}
-.ai-action-btn:hover { border-color: var(--accent2); color: var(--accent2); background: rgba(124,58,237,0.06); }
-.ai-action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.ai-action-btn .spinner {
-  width: 10px; height: 10px;
-  border: 2px solid rgba(0,0,0,0.15);
-  border-top-color: var(--accent2); border-radius: 50%;
-  animation: spin 0.7s linear infinite; display: none;
-}
-.ai-action-btn.loading .spinner { display: inline-block; }
-.ai-action-btn.loading .btn-label { opacity: 0.7; }
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.save-hint {
-  text-align: right; padding: 2px 16px 8px;
-  font-size: 10px; color: var(--muted); min-height: 16px;
-}
-.save-hint.show { color: var(--success); }
-
-/* ===== 底部栏 ===== */
-.bottom-bar {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  background: var(--primary); border-top: 1px solid var(--border);
-  padding: 10px 20px; padding-bottom: max(10px, env(safe-area-inset-bottom));
-  display: flex; gap: 10px; justify-content: center;
-  max-width: 640px; margin: 0 auto; z-index: 90;
-  box-shadow: 0 -2px 12px rgba(0,0,0,0.04);
-}
-.bottom-btn {
-  flex: 1; max-width: 160px; padding: 10px;
-  border-radius: 12px; border: none;
-  font-size: 13px; font-weight: 600;
-  cursor: pointer; text-align: center;
-  transition: all 0.2s; font-family: inherit;
-}
-.btn-history { background: var(--input-bg); color: var(--text); border: 1px solid var(--border); }
-.btn-history:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
-.btn-today { background: var(--accent); color: #fff; }
-.btn-today:hover { filter: brightness(1.1); }
-
-/* ===== 弹窗通用 ===== */
-.modal-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,0.4); z-index: 200;
-  padding: 20px; overflow-y: auto;
-  align-items: flex-start; justify-content: center;
-}
-.modal-overlay.show { display: flex; }
-.modal {
-  background: var(--card); border-radius: 18px;
-  width: 100%; max-width: 480px; margin-top: 50px;
-  border: 1px solid var(--border); overflow: hidden;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.12);
-}
-.modal-header {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 18px 18px 14px; border-bottom: 1px solid var(--border);
-}
-.modal-header h2 { font-size: 16px; color: var(--text-strong); }
-.close-btn {
-  width: 32px; height: 32px; border-radius: 50%;
-  background: var(--input-bg); border: 1px solid var(--border);
-  color: var(--text); font-size: 18px;
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-}
-.close-btn:hover { background: var(--accent); color: #fff; }
-.modal-body { padding: 18px; }
-
-/* 设置弹窗 */
-.settings-group { margin-bottom: 18px; }
-.settings-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text-strong); margin-bottom: 6px; }
-.settings-group .desc { font-size: 12px; color: var(--muted); margin-bottom: 8px; line-height: 1.5; }
-.api-key-input {
-  width: 100%; padding: 11px 12px;
-  background: var(--input-bg); border: 1px solid var(--border);
-  border-radius: 10px; color: var(--text);
-  font-size: 14px; font-family: monospace; outline: none;
-}
-.api-key-input:focus { border-color: var(--accent); }
-.api-key-input::placeholder { color: var(--muted); font-family: inherit; }
-.api-key-status { margin-top: 6px; font-size: 11px; display: flex; align-items: center; gap: 5px; }
-.api-key-status.ok { color: var(--success); }
-.api-key-status.err { color: #ef4444; }
-.save-settings-btn {
-  width: 100%; padding: 12px;
-  background: var(--accent); border: none;
-  border-radius: 10px; color: #fff;
-  font-size: 14px; font-weight: 700;
-  cursor: pointer; font-family: inherit;
-}
-.save-settings-btn:hover { filter: brightness(1.1); }
-.settings-divider { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
-.api-link { font-size: 12px; color: var(--accent); text-decoration: none; }
-.api-link:hover { text-decoration: underline; }
-.usage-tips {
-  background: var(--input-bg); border: 1px solid var(--border);
-  border-radius: 10px; padding: 12px; margin-top: 14px;
-}
-.usage-tips h4 { font-size: 12px; color: var(--accent); margin-bottom: 6px; }
-.usage-tips ul { font-size: 11px; color: var(--muted); padding-left: 14px; line-height: 1.8; }
-
-/* 历史弹窗 */
-.history-list { padding: 14px 18px 36px; }
-.history-item {
-  padding: 12px; border-radius: 12px; margin-bottom: 6px;
-  background: var(--input-bg); border: 1px solid var(--border);
-  cursor: pointer; transition: all 0.2s;
-}
-.history-item:hover { background: rgba(74,144,217,0.06); border-color: var(--accent); }
-.history-item-date { font-size: 13px; font-weight: 600; color: var(--text-strong); margin-bottom: 4px; }
-.history-item-preview { font-size: 11px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.history-empty { text-align: center; padding: 36px 20px; color: var(--muted); font-size: 13px; }
-
-/* 日期选择器 */
-.date-picker-modal {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,0.4); z-index: 300;
-  align-items: center; justify-content: center;
-}
-.date-picker-modal.show { display: flex; }
-.date-picker-box {
-  background: var(--card); border-radius: 14px;
-  padding: 18px; width: 90%; max-width: 280px;
-  border: 1px solid var(--border);
-}
-.date-picker-box h3 { color: var(--text-strong); font-size: 15px; margin-bottom: 12px; text-align: center; }
-.date-input {
-  width: 100%; padding: 10px; background: var(--input-bg);
-  border: 1px solid var(--border); border-radius: 8px;
-  color: var(--text); font-size: 14px; font-family: inherit;
-  text-align: center; margin-bottom: 12px;
-}
-.date-picker-btns { display: flex; gap: 8px; }
-.date-picker-btns button {
-  flex: 1; padding: 9px; border-radius: 8px; border: none;
-  font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;
-}
-.btn-cancel { background: var(--input-bg); color: var(--text); border: 1px solid var(--border); }
-.btn-confirm { background: var(--accent); color: #fff; }
-
-/* 历史详情 */
-.detail-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 250; overflow-y: auto; }
-.detail-modal.show { display: block; }
-.detail-content { max-width: 640px; margin: 0 auto; padding: 18px 12px 60px; }
-.detail-back {
-  display: flex; align-items: center; gap: 6px;
-  color: var(--accent); font-size: 13px;
-  cursor: pointer; margin-bottom: 14px;
-  background: none; border: none; font-family: inherit; padding: 0;
-}
-.detail-header {
-  background: var(--card); border-radius: 14px;
-  padding: 12px 16px; margin-bottom: 12px;
-  border: 1px solid var(--border); box-shadow: var(--shadow);
-  display: flex; justify-content: space-between; align-items: center;
-}
-.detail-header h2 { font-size: 15px; color: var(--text-strong); }
-.detail-header span { font-size: 11px; color: var(--accent); }
-.detail-section {
-  background: var(--card); border-radius: 12px;
-  padding: 12px 14px; margin-bottom: 8px;
-  border: 1px solid var(--border);
-}
-.detail-q { font-size: 13px; font-weight: 600; color: var(--text-strong); margin-bottom: 6px; }
-.detail-tab-row { display: flex; gap: 4px; margin-bottom: 6px; }
-.detail-tab {
-  padding: 3px 10px; border-radius: 10px;
-  font-size: 10px; font-weight: 600;
-  border: 1px solid var(--border); background: transparent;
-  color: var(--muted); cursor: pointer; font-family: inherit;
-}
-.detail-tab.active { border-color: var(--accent); color: var(--accent); }
-.detail-text { font-size: 12px; line-height: 1.8; color: var(--text); white-space: pre-wrap; }
-.empty-text { color: var(--muted); font-style: italic; }
 
 /* Toast */
-.toast {
-  position: fixed; top: 70px; left: 50%;
-  transform: translateX(-50%) translateY(-20px);
-  background: var(--card); border: 1px solid var(--border);
-  color: var(--text); padding: 8px 18px;
-  border-radius: 24px; font-size: 13px; font-weight: 500;
-  z-index: 9999; opacity: 0; transition: all 0.3s;
-  pointer-events: none; white-space: nowrap;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+.toast{
+  position:fixed;top:60px;left:50%;
+  transform:translateX(-50%) translateY(-20px);
+  background:var(--card);border:1px solid var(--border);
+  color:var(--text);padding:7px 16px;
+  border-radius:20px;font-size:12px;font-weight:500;
+  z-index:9999;opacity:0;transition:all .3s;
+  pointer-events:none;white-space:nowrap;
+  box-shadow:0 4px 16px rgba(0,0,0,.1);
 }
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-.toast.success { border-color: var(--success); }
-.toast.error { border-color: #ef4444; }
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.success{border-color:var(--success)}
+.toast.error{border-color:#ef4444}
 
-/* ===== 背景主题 ===== */
-.bg-settings-btn {
-  height: 32px; padding: 0 10px; border-radius: 16px;
-  background: var(--input-bg); border: 1px solid var(--border); cursor: pointer;
-  display: flex; align-items: center; justify-content: center; gap: 4px;
-  font-size: 13px; transition: all 0.2s; color: var(--text); font-family: inherit;
-  white-space: nowrap;
+/* 图片查看器 */
+.img-viewer{
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  background:rgba(0,0,0,.88);z-index:99999;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:20px;
 }
-.bg-settings-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
-
-.bg-modal {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,0.4); z-index: 200;
-  padding: 20px; overflow-y: auto;
-  align-items: flex-start; justify-content: center;
-}
-.bg-modal.show { display: flex; }
-.bg-modal-content {
-  background: var(--card); border-radius: 18px;
-  width: 100%; max-width: 400px; margin-top: 50px;
-  border: 1px solid var(--border); overflow: hidden;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.12);
-}
-.bg-modal-header {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 18px 18px 14px; border-bottom: 1px solid var(--border);
-}
-.bg-modal-header h2 { font-size: 16px; color: var(--text-strong); }
-.bg-modal-body { padding: 18px; }
-
-.bg-section { margin-bottom: 20px; }
-.bg-section-title { font-size: 13px; font-weight: 600; color: var(--text-strong); margin-bottom: 10px; }
-
-.bg-color-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-}
-.bg-color-item {
-  aspect-ratio: 1.6; border-radius: 12px;
-  border: 2px solid var(--border); cursor: pointer;
-  transition: all 0.2s; position: relative;
-  display: flex; align-items: flex-end; justify-content: center;
-  padding-bottom: 6px;
-}
-.bg-color-item:hover { transform: scale(1.05); border-color: var(--accent); }
-.bg-color-item.active { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(74,144,217,0.2); }
-.bg-color-item .theme-name {
-  font-size: 10px; font-weight: 600; color: #fff;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-}
-
-.bg-upload-area {
-  border: 2px dashed var(--border); border-radius: 12px;
-  padding: 20px; text-align: center; cursor: pointer;
-  transition: all 0.2s;
-}
-.bg-upload-area:hover { border-color: var(--accent); background: rgba(74,144,217,0.04); }
-.bg-upload-icon { font-size: 32px; margin-bottom: 8px; }
-.bg-upload-text { font-size: 13px; color: var(--muted); }
-.bg-upload-hint { font-size: 11px; color: var(--muted); margin-top: 6px; }
-
-.bg-preview {
-  margin-top: 12px; border-radius: 10px;
-  border: 1px solid var(--border); overflow: hidden;
-}
-.bg-preview-img { width: 100%; height: 80px; object-fit: cover; }
-.bg-preview-bar {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 8px 12px; background: var(--input-bg);
-}
-.bg-preview-label { font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
-.bg-preview-remove { font-size: 11px; color: var(--accent); cursor: pointer; background: none; border: none; font-family: inherit; }
-
-/* ===== 导出功能 ===== */
-.export-bar {
-  position: fixed; bottom: 56px; left: 0; right: 0;
-  background: var(--primary); border-top: 1px solid var(--border);
-  padding: 8px 20px; padding-bottom: max(8px, env(safe-area-inset-bottom));
-  display: flex; gap: 8px; justify-content: center;
-  max-width: 640px; margin: 0 auto; z-index: 85;
-}
-.export-btn {
-  flex: 1; max-width: 140px; padding: 8px;
-  border-radius: 10px; border: 1px solid var(--border);
-  background: transparent; color: var(--text);
-  font-size: 12px; font-weight: 600;
-  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
-  transition: all 0.2s; font-family: inherit;
-}
-.export-btn:hover { border-color: var(--accent); color: var(--accent); }
-.export-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-.export-btn.primary:hover { filter: brightness(1.1); }
-
-/* ===== 分享弹窗 ===== */
-.share-modal {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,0.4); z-index: 210;
-  padding: 20px; overflow-y: auto;
-  align-items: flex-start; justify-content: center;
-}
-.share-modal.show { display: flex; }
-.share-modal-content {
-  background: var(--card); border-radius: 18px;
-  width: 100%; max-width: 420px; margin-top: 50px;
-  border: 1px solid var(--border); overflow: hidden;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.12);
-}
-.share-modal-header {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 18px 18px 14px; border-bottom: 1px solid var(--border);
-}
-.share-modal-header h2 { font-size: 16px; color: var(--text-strong); }
-.share-modal-body { padding: 18px; }
-.share-preview {
-  background: var(--input-bg); border: 1px solid var(--border);
-  border-radius: 12px; padding: 16px;
-  font-size: 13px; line-height: 1.8; color: var(--text);
-  white-space: pre-wrap; max-height: 300px; overflow-y: auto;
-  margin-bottom: 14px;
-}
-.share-actions { display: flex; flex-direction: column; gap: 8px; }
-.share-action-btn {
-  padding: 12px; border-radius: 12px; border: 1px solid var(--border);
-  background: var(--input-bg); color: var(--text);
-  font-size: 14px; font-weight: 600; cursor: pointer;
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-  transition: all 0.2s; font-family: inherit;
-}
-.share-action-btn:hover { border-color: var(--accent); color: var(--accent); }
-.share-action-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-.share-action-btn.primary:hover { filter: brightness(1.1); }
-
-/* ===== 导出弹窗 ===== */
-.export-modal {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,0.4); z-index: 250;
-  padding: 20px; overflow-y: auto;
-  align-items: flex-start; justify-content: center;
-}
-.export-modal.show { display: flex; }
-.export-modal-content {
-  background: var(--card); border-radius: 18px;
-  width: 100%; max-width: 480px; margin-top: 50px;
-  border: 1px solid var(--border); overflow: hidden;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.12);
-}
-.export-modal-header {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 18px 18px 14px; border-bottom: 1px solid var(--border);
-}
-.export-modal-header h2 { font-size: 16px; color: var(--text-strong); }
-.export-modal-body { padding: 18px; }
-.export-preview {
-  background: var(--input-bg); border: 1px solid var(--border);
-  border-radius: 10px; padding: 14px;
-  max-height: 300px; overflow-y: auto;
-  font-size: 13px; line-height: 1.8; color: var(--text);
-  white-space: pre-wrap; margin-bottom: 14px;
-}
-.export-actions { display: flex; gap: 10px; }
-.export-action-btn {
-  flex: 1; padding: 12px;
-  border-radius: 10px; border: none;
-  font-size: 14px; font-weight: 600;
-  cursor: pointer; font-family: inherit;
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-}
-.export-action-btn.primary { background: var(--accent); color: #fff; }
-.export-action-btn.primary:hover { filter: brightness(1.1); }
-.export-action-btn.secondary { background: var(--input-bg); color: var(--text); border: 1px solid var(--border); }
-.export-action-btn.secondary:hover { background: var(--border); }
-
-/* 选择应用弹窗 */
-.apply-modal {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,0.4); z-index: 280;
-  align-items: center; justify-content: center;
-}
-.apply-modal.show { display: flex; }
-.apply-box {
-  background: var(--card); border-radius: 14px;
-  padding: 18px; width: 90%; max-width: 320px;
-  border: 1px solid var(--border);
-}
-.apply-box h3 { color: var(--text-strong); font-size: 15px; margin-bottom: 14px; text-align: center; }
-.apply-btns { display: flex; flex-direction: column; gap: 8px; }
-.apply-btn {
-  padding: 11px; border-radius: 10px; border: 1px solid var(--border);
-  background: transparent; color: var(--text);
-  font-size: 13px; font-weight: 600; cursor: pointer;
-  font-family: inherit; text-align: center; transition: all 0.2s;
-}
-.apply-btn:hover { border-color: var(--accent); color: var(--accent); }
-.apply-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-.apply-btn.primary:hover { filter: brightness(1.1); }
-
-/* 音频播放器 */
-.audio-player-mini {
-  display: none; padding: 6px 16px;
-  background: var(--input-bg); border-top: 1px solid var(--border);
-  align-items: center; gap: 8px; font-size: 12px; color: var(--muted);
-}
-.audio-player-mini.has-audio { display: flex; }
-.audio-player-mini button {
-  padding: 3px 8px; border-radius: 10px;
-  background: var(--accent); color: #fff; border: none;
-  font-size: 11px; cursor: pointer; font-family: inherit;
-}
-.audio-player-mini button:hover { filter: brightness(1.1); }
-.audio-player-mini .audio-time { font-size: 11px; }
+.img-viewer img{max-width:90%;max-height:70%;border-radius:12px}
+.img-viewer .tip{color:#aaa;font-size:13px;margin-top:12px}
 </style>
 </head>
 <body>
 
-<!-- 蓝天白云装饰 -->
-<div class="clouds-bg">
-  <div class="cloud cloud-1"></div>
-  <div class="cloud cloud-2"></div>
-  <div class="cloud cloud-3"></div>
-  <div class="cloud cloud-4"></div>
-</div>
-
 <!-- 录音状态条 -->
-<div class="recording-bar" id="recordingBar">
-  <div class="rec-bar-left">
+<div class="rec-bar" id="recBar">
+  <div style="display:flex;align-items:center;gap:8px">
     <div class="rec-dot"></div>
-    <span id="recModeLabel">正在录音</span>
+    <span id="recLabel">正在录音</span>
     <span id="recTimer">00:00</span>
-    <span style="font-size:11px;opacity:0.7;" id="recQuestion"></span>
   </div>
-  <button class="rec-stop-btn" onclick="stopVoice()">⏹ 停止</button>
+  <button class="rec-stop" onclick="stopVoice()">停止</button>
 </div>
 
 <!-- 顶栏 -->
 <div class="header">
-  <h1>📖 复盘册子 <span>v3.0</span></h1>
+  <h1>复盘册子 <span>v3.9</span></h1>
   <div class="header-right">
-    <button class="icon-btn" onclick="shareAllQuestions()" title="分享全篇">📤 分享</button>
-    <button class="bg-settings-btn" onclick="showBgSettings()">🎨 主题</button>
-    <button class="icon-btn" onclick="showSettings()">⚙️ 设置</button>
-    <div class="date-display" id="dateDisplay" onclick="showDatePicker()"></div>
+    <button class="icon-btn" onclick="showHistory()">历史</button>
+    <div class="date-badge" id="dateDisplay" onclick="showDatePicker()"></div>
   </div>
 </div>
 
 <!-- 主内容 -->
-<div class="main">
-  <div class="section-label">📋 每日复盘 · 录音自动转文字+AI润色</div>
-  <div id="questionsContainer"></div>
-</div>
+<div class="main" id="questionsContainer"></div>
 
-<!-- 导出栏 -->
-<div class="export-bar">
-  <button class="export-btn" onclick="exportText()">📄 导出文本</button>
-  <button class="export-btn primary" onclick="exportImage()">🖼️ 导出图片</button>
-</div>
-
-<!-- 底部栏 -->
+<!-- 底部操作栏 -->
 <div class="bottom-bar">
-  <button class="bottom-btn btn-history" onclick="showHistory()">📋 历史</button>
-  <button class="bottom-btn btn-today" onclick="goToday()">📅 今天</button>
-</div>
-
-<!-- 设置弹窗 -->
-<div class="modal-overlay" id="settingsModal">
-  <div class="modal">
-    <div class="modal-header">
-      <h2>⚙️ 设置</h2>
-      <button class="close-btn" onclick="closeSettings()">×</button>
-    </div>
-    <div class="modal-body">
-      <div class="settings-group">
-        <label>🤖 AI功能（开箱即用）</label>
-        <div class="desc">
-          ✅ AI润色、语音转文字等功能<strong>无需注册</strong>，打开即用！<br>
-          内置免费通道，新用户直接可用。<br>
-          <span style="font-size:11px;color:var(--muted);">如需使用自己的API Key，可在下方填写</span>
-        </div>
-        <details style="margin-top:8px;">
-          <summary style="font-size:12px;color:var(--accent);cursor:pointer;">高级设置：自定义API Key</summary>
-          <div style="margin-top:8px;">
-            <input type="password" class="api-key-input" id="apiKeyInput" placeholder="留空使用内置免费通道" autocomplete="off">
-            <div class="api-key-status" id="apiKeyStatus"></div>
-            <div style="font-size:11px;color:var(--muted);margin-top:6px;">
-              支持：硅基流动(SiliconFlow) / DeepSeek / OpenAI 兼容API<br>
-              <a class="api-link" href="https://cloud.siliconflow.cn" target="_blank">硅基流动注册 →</a>
-            </div>
-          </div>
-        </details>
-      </div>
-      <button class="save-settings-btn" onclick="saveSettings()">保存设置</button>
-      <button class="save-settings-btn" style="background:var(--input-bg);color:var(--text);margin-top:8px;border:1px solid var(--border);" onclick="testMic()">🎤 测试录音功能</button>
-      <div id="micTestResult" style="font-size:12px;padding:8px 0;display:none;white-space:pre-line;"></div>
-      <hr class="settings-divider">
-      <div class="settings-group" style="margin-bottom:0">
-        <label>💡 功能说明</label>
-        <div class="usage-tips">
-          <h4>🎙️ 语音输入（双模式自动切换）</h4>
-          <ul>
-            <li>🖥️ 电脑Chrome：实时转写，边说边出字</li>
-            <li>📱 手机/其他浏览器：录音后云端识别</li>
-            <li>点击🎤开始，再点⏹停止，停止后自动AI润色</li>
-            <li>🔊 录音音频自动保存，可随时回放</li>
-          </ul>
-          <h4 style="margin-top:10px">🤖 AI功能</h4>
-          <ul>
-            <li>✂️ 精简 — 去除语气词口头禅</li>
-            <li>✍️ 润色 — 口语变书面</li>
-            <li>🧠 总结 — 一句话核心观点</li>
-            <li>💎 金句 — 提取最有价值的话</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
+  <button class="btn-bottom btn-ghost" onclick="exportText()">导出文本</button>
+  <button class="btn-bottom btn-primary" onclick="exportImage()">导出图片</button>
 </div>
 
 <!-- 历史弹窗 -->
-<div class="modal-overlay" id="historyModal">
-  <div class="modal" style="margin-top:40px">
-    <div class="modal-header">
-      <h2>📚 复盘历史</h2>
-      <button class="close-btn" onclick="closeHistory()">×</button>
-    </div>
-    <div class="history-list" id="historyList"></div>
+<div class="overlay" id="historyOverlay" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="panel">
+    <div class="panel-title">复盘历史</div>
+    <div id="historyList"></div>
+    <button class="panel-cancel" onclick="document.getElementById('historyOverlay').classList.remove('show')">关闭</button>
   </div>
 </div>
 
 <!-- 日期选择器 -->
-<div class="date-picker-modal" id="datePicker">
-  <div class="date-picker-box">
-    <h3>选择日期</h3>
-    <input type="date" class="date-input" id="dateInput">
-    <div class="date-picker-btns">
-      <button class="btn-cancel" onclick="closeDatePicker()">取消</button>
-      <button class="btn-confirm" onclick="confirmDate()">确定</button>
+<div class="overlay" id="dateOverlay" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="panel">
+    <div class="panel-title">选择日期</div>
+    <input type="date" id="dateInput" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:14px;text-align:center;font-family:inherit;margin-bottom:12px">
+    <div style="display:flex;gap:8px">
+      <button class="panel-cancel" style="flex:1" onclick="document.getElementById('dateOverlay').classList.remove('show')">取消</button>
+      <button class="panel-item" style="flex:1;justify-content:center;border-color:var(--accent);color:var(--accent)" onclick="confirmDate()">确定</button>
     </div>
   </div>
 </div>
 
-<!-- 历史详情 -->
-<div class="detail-modal" id="detailModal">
-  <div class="detail-content" id="detailContent"></div>
-</div>
-
-<!-- AI结果应用弹窗 -->
-<div class="apply-modal" id="applyModal">
-  <div class="apply-box">
-    <h3>应用到</h3>
-    <div class="apply-btns" id="applyBtns"></div>
-  </div>
-</div>
-
-<!-- Toast -->
-<div class="toast" id="toast"></div>
-
-<!-- 背景设置弹窗 -->
-<div class="bg-modal" id="bgModal">
-  <div class="bg-modal-content">
-    <div class="bg-modal-header">
-      <h2>🎨 背景主题</h2>
-      <button class="close-btn" onclick="closeBgSettings()">×</button>
-    </div>
-    <div class="bg-modal-body">
-      <div class="bg-section">
-        <div class="bg-section-title">选择主题</div>
-        <div class="bg-color-grid" id="bgColorGrid"></div>
-      </div>
-      <div class="bg-section">
-        <div class="bg-section-title">自定义图片背景</div>
-        <div class="bg-upload-area" onclick="document.getElementById('bgFileInput').click()">
-          <div class="bg-upload-icon">📷</div>
-          <div class="bg-upload-text">点击上传图片</div>
-          <div class="bg-upload-hint">支持 JPG、PNG，建议尺寸 1080×1920</div>
-        </div>
-        <input type="file" id="bgFileInput" accept="image/*" style="display:none" onchange="handleBgUpload(this)">
-        <div class="bg-preview" id="bgPreview" style="display:none">
-          <img class="bg-preview-img" id="bgPreviewImg">
-          <div class="bg-preview-bar">
-            <span class="bg-preview-label" id="bgPreviewLabel">自定义图片</span>
-            <button class="bg-preview-remove" onclick="removeCustomBg()">移除</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- 分享弹窗 -->
-<div class="share-modal" id="shareModal">
-  <div class="share-modal-content">
-    <div class="share-modal-header">
-      <h2 id="shareModalTitle">📤 分享</h2>
-      <button class="close-btn" onclick="closeShareModal()">×</button>
-    </div>
-    <div class="share-modal-body">
-      <div class="share-preview" id="sharePreview"></div>
-      <div class="share-actions">
-        <button class="share-action-btn" onclick="copyShareText()">📋 复制文字</button>
-        <button class="share-action-btn" onclick="confirmSaveImage()">🖼️ 保存图片</button>
-        <button class="share-action-btn primary" onclick="nativeShare()">📱 分享</button>
-      </div>
-    </div>
+<!-- AI菜单 -->
+<div class="overlay" id="aiOverlay" onclick="if(event.target===this)closeAIMenu()">
+  <div class="panel">
+    <div class="panel-title">AI润色</div>
+    <button class="panel-item" onclick="doAI('polish')">润色优化</button>
+    <button class="panel-item" onclick="doAI('clean')">精简语气词</button>
+    <button class="panel-item" onclick="doAI('summary')">智能总结</button>
+    <button class="panel-item" onclick="doAI('golden')">提取金句</button>
+    <button class="panel-item" onclick="doAI('all')" style="border-color:#7c3aed;color:#7c3aed">全优化（四合一）</button>
+    <button class="panel-cancel" onclick="closeAIMenu()">取消</button>
   </div>
 </div>
 
 <!-- 导出预览弹窗 -->
-<div class="export-modal" id="exportModal">
-  <div class="export-modal-content">
-    <div class="export-modal-header">
-      <h2 id="exportModalTitle">📄 导出预览</h2>
-      <button class="close-btn" onclick="closeExportModal()">×</button>
-    </div>
-    <div class="export-modal-body">
-      <div class="export-preview" id="exportPreview"></div>
-      <div class="export-actions">
-        <button class="export-action-btn secondary" onclick="closeExportModal()">取消</button>
-        <button class="export-action-btn primary" id="exportConfirmBtn">📥 下载</button>
-      </div>
+<div class="overlay" id="exportOverlay" onclick="if(event.target===this)closeExport()">
+  <div class="panel" style="max-width:480px;border-radius:18px;margin:0 20px;max-height:70vh;overflow-y:auto">
+    <div class="panel-title" id="exportTitle">导出预览</div>
+    <div id="exportPreview" style="background:var(--input-bg);border-radius:10px;padding:14px;font-size:13px;line-height:1.8;color:var(--text);white-space:pre-wrap;max-height:40vh;overflow-y:auto"></div>
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button class="panel-cancel" style="flex:1" onclick="closeExport()">取消</button>
+      <button class="panel-item" style="flex:1;justify-content:center;background:var(--accent);color:#fff;border-color:var(--accent)" id="exportConfirmBtn">下载</button>
     </div>
   </div>
 </div>
 
-<!-- AI润色菜单 -->
-<div class="ai-menu-overlay" id="aiMenuOverlay">
-  <div class="ai-menu">
-    <div class="ai-menu-title">✨ AI润色功能</div>
-    <button class="ai-menu-item" onclick="doAI('clean')"><span class="ai-icon">✂️</span> 精简语气词</button>
-    <button class="ai-menu-item" onclick="doAI('polish')"><span class="ai-icon">✍️</span> 润色优化</button>
-    <button class="ai-menu-item" onclick="doAI('summary')"><span class="ai-icon">🧠</span> 智能总结</button>
-    <button class="ai-menu-item" onclick="doAI('golden')"><span class="ai-icon">💎</span> 提取金句</button>
-    <button class="ai-menu-item" onclick="doAI('all')" style="border-color:var(--accent2);color:var(--accent2);"><span class="ai-icon">✨</span> 全优化（四合一）</button>
-    <button class="ai-menu-cancel" onclick="closeAIMenu()">取消</button>
+<!-- 分享预览弹窗 -->
+<div class="overlay" id="shareOverlay" onclick="if(event.target===this)closeShare()">
+  <div class="panel" style="max-width:420px;border-radius:18px;margin:0 20px">
+    <div class="panel-title" id="shareTitle">分享</div>
+    <div id="sharePreview" style="background:var(--input-bg);border-radius:10px;padding:14px;font-size:13px;line-height:1.8;color:var(--text);white-space:pre-wrap;max-height:30vh;overflow-y:auto"></div>
+    <div style="display:flex;flex-direction:column;gap:6px;margin-top:12px">
+      <button class="panel-item" onclick="copyShareText()">复制文字</button>
+      <button class="panel-item" onclick="saveShareImage()" style="border-color:var(--accent);color:var(--accent)">保存图片</button>
+    </div>
   </div>
 </div>
+
+<div class="toast" id="toast"></div>
 
 <script>
 // ============================================================
-// 常量 & 状态
+// 数据 & 配置
 // ============================================================
-const QUESTIONS = [
-  { text: '目标是什么？', hint: '目标' },
-  { text: '我做对了什么？', hint: '沉淀' },
-  { text: '我做错了什么？', hint: '问题' },
-  { text: '当时怎么想的？为什么会这样？', hint: '原因' },
-  { text: '重新来怎么做？', hint: '改进' },
-  { text: '下次具体怎么做？', hint: '行动' }
+const QUESTIONS=[
+  {text:'目标是什么？',hint:'目标'},
+  {text:'我做对了什么？',hint:'沉淀'},
+  {text:'我做错了什么？',hint:'问题'},
+  {text:'当时怎么想的？为什么会这样？',hint:'原因'},
+  {text:'重新来怎么做？',hint:'改进'},
+  {text:'下次具体怎么做？',hint:'行动'}
 ];
-
-const STORAGE_KEY = 'fanpan_records_v3';
-const API_KEY_STORAGE = 'fanpan_api_key';
-const AUDIO_STORAGE = 'fanpan_audio_';
-const DEFAULT_API_KEY = 'sk-bmpjwdksyuqvqtdullaehtxwnfvclpffkjvlpglkqhuphtig';
-
-// ===== 多通道免费AI（免注册，自动轮换） =====
-const AI_CHANNELS = [
-  { url: 'https://api.siliconflow.cn/v1/chat/completions', model: 'Qwen/Qwen2.5-7B-Instruct', key: DEFAULT_API_KEY },
-  { url: 'https://api.siliconflow.cn/v1/chat/completions', model: 'THUDM/glm-4-flash', key: DEFAULT_API_KEY },
+const STORAGE_KEY='fanpan_v39';
+const AUDIO_KEY='fanpan_audio_';
+const DEFAULT_AI_KEY='sk-bmpjwdksyuqvqtdullaehtxwnfvclpffkjvlpglkqhuphtig';
+const AI_CH=[
+  {url:'https://api.siliconflow.cn/v1/chat/completions',model:'Qwen/Qwen2.5-7B-Instruct',key:DEFAULT_AI_KEY},
+  {url:'https://api.siliconflow.cn/v1/chat/completions',model:'THUDM/glm-4-flash',key:DEFAULT_AI_KEY},
 ];
-// ─── 语音识别配置 ────────────────────────────────────────────
-// 本地 faster-whisper 服务器（优先，隐私+免费+中文准）
-const WHISPER_LOCAL_URL = 'http://localhost:8765/transcribe';
-// 云端 SiliconFlow（降级备用）
-const WHISPER_URL = 'https://api.siliconflow.cn/v1/audio/transcriptions';
-const WHISPER_MODEL = 'FunAudioLLM/SenseVoiceSmall';
-let currentChannel = 0; // 当前通道索引
+const WHISPER_URL='https://api.siliconflow.cn/v1/audio/transcriptions';
+const WHISPER_MODEL='FunAudioLLM/SenseVoiceSmall';
+let chIdx=0;
 
-// 手机检测
-function isMobile() {
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-}
-
-// MediaRecorder变量（手机录音用）
-let mediaRecorder = null;
-let audioChunks = [];
-
-// 录音音频保存
-let audioBlobs = {}; // { 'q1_2026-05-04': blob }
-let currentPlayingAudio = null;
-
-let currentDate = getTodayStr();
-let currentRecording = null;
-let recognition = null;
-let recordingTimer = null;
-let recordingSeconds = 0;
-let isRecording = false;
-let fullTranscript = '';
-let interimText = '';
-
-// AI处理状态
-let aiProcessing = {};
+let currentDate=getTodayStr(),isRecording=false,currentQ=null;
+let mediaRecorder=null,audioChunks=[],audioBlobs={};
+let recordingTimer=null,recSec=0;
+let recognition=null,fullTranscript='',interimText='';
+let voiceRestarts=0,lastVoiceStart=0;
+let playingAudio=null;
 
 // ============================================================
 // 工具函数
 // ============================================================
-function getTodayStr() {
-  const d = new Date();
-  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+function getTodayStr(){
+  const d=new Date();
+  return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
 }
-function pad(n) { return String(n).padStart(2,'0'); }
+function pad(n){return String(n).padStart(2,'0')}
+function formatDateCN(s){
+  const d=new Date(s+'T00:00:00');
+  const w=['周日','周一','周二','周三','周四','周五','周六'];
+  return (d.getMonth()+1)+'月'+d.getDate()+'日 '+w[d.getDay()];
+}
+function showToast(m,t){
+  const el=document.getElementById('toast');
+  el.textContent=m;el.className='toast show '+(t||'');
+  clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),2200);
+}
+function fmtTime(s){return pad(Math.floor(s/60))+':'+pad(s%60)}
+function isMobile(){return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)}
 
-function formatDateCN(dateStr) {
-  const d = new Date(dateStr + 'T00:00:00');
-  const weekdays = ['周日','周一','周二','周三','周四','周五','周六'];
-  return `${d.getMonth()+1}月${d.getDate()}日 ${weekdays[d.getDay()]}`;
+function getRecords(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')}catch(e){return{}}}
+function saveRecords(r){localStorage.setItem(STORAGE_KEY,JSON.stringify(r))}
+
+function saveField(num){
+  const v=document.getElementById('a'+num).value;
+  const r=getRecords();
+  if(!r[currentDate])r[currentDate]={};
+  if(!r[currentDate]['q'+num])r[currentDate]['q'+num]='';
+  r[currentDate]['q'+num]=v;
+  r[currentDate].savedAt=new Date().toISOString();
+  saveRecords(r);
+  showSaveDot(num);
 }
 
-function showToast(msg, type='default') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast show ' + type;
-  clearTimeout(t._timer);
-  t._timer = setTimeout(() => t.classList.remove('show'), 2500);
-}
-
-function formatTime(sec) {
-  const m = Math.floor(sec / 60);
-  const s = sec % 60;
-  return `${pad(m)}:${pad(s)}`;
-}
-
-function updateTimerDisplay() {
-  const timerEl = document.getElementById('recTimer');
-  if (timerEl) timerEl.textContent = formatTime(recordingSeconds);
+function showSaveDot(num){
+  const el=document.getElementById('sd'+num);
+  if(!el)return;
+  el.textContent='已保存';el.className='save-dot ok';
+  clearTimeout(el._t);el._t=setTimeout(()=>{el.textContent='';el.className='save-dot'},1800);
 }
 
 // ============================================================
-// 动态生成问题块
+// 渲染问题列表
 // ============================================================
-function renderQuestions() {
-  const container = document.getElementById('questionsContainer');
-  container.innerHTML = QUESTIONS.map((q, i) => {
-    const num = i + 1;
-    return `
-    <div class="q-block" id="qblock${num}">
-      <div class="q-header">
-        <div class="q-header-left">
-          <div class="q-number">${num}</div>
-          <div class="q-label">${q.text}<span class="q-hint">(${q.hint})</span></div>
-        </div>
-        <div class="q-header-right">
-          <button class="share-btn-text" id="shareBtn${num}" onclick="shareQuestion(${num})" title="分享">📤 分享</button>
-          <div class="voice-btn-group">
-            <button class="voice-btn-text" id="voiceBtn${num}" onclick="toggleVoice(${num})" title="点击开始/停止录音">🎤 录音</button>
-            <button class="play-btn" id="playBtn${num}" onclick="playAudio(${num})" title="播放录音">🔊 播放</button>
-          </div>
-        </div>
-      </div>
-      <div class="tab-bar">
-        <button class="tab-btn active" id="tabOriginal${num}" onclick="switchTab(${num},'original')">📝 原文</button>
-        <button class="tab-btn" id="tabPolished${num}" onclick="switchTab(${num},'polished')">✨ AI润色版</button>
-      </div>
-      <div class="tab-panel active" id="panelOriginal${num}">
-        <textarea class="answer-area" id="original${num}" placeholder="点击「🎤 录音」，或直接输入…" oninput="saveField(${num},'original')"></textarea>
-      </div>
-      <div class="tab-panel" id="panelPolished${num}">
-        <textarea class="answer-area" id="polished${num}" placeholder="AI润色结果将显示在这里…" oninput="saveField(${num},'polished')"></textarea>
-      </div>
-      <div class="audio-player-mini" id="audioPlayer${num}">
-        <button onclick="playAudio(${num})">▶️ 播放</button>
-        <span class="audio-time" id="audioTime${num}"></span>
-        <button onclick="deleteAudio(${num})" style="background:var(--muted);">🗑️</button>
-      </div>
-      <div class="ai-toolbar" style="justify-content:space-between;">
-        <button class="ai-action-btn ai-main-btn" id="btnAI${num}" onclick="showAIMenu(${num})">
-          <span class="spinner"></span><span class="btn-label">✨ AI润色</span>
-        </button>
-        <button class="ai-action-btn ai-fix-btn" id="btnFix${num}" onclick="runAI(${num},'fix')" title="自动修正错别字">
-          <span class="spinner"></span><span class="btn-label">🔍 错别字</span>
-        </button>
-      </div>
-      <div class="save-hint" id="save${num}"></div>
-    </div>`;
+function render(){
+  const c=document.getElementById('questionsContainer');
+  c.innerHTML=QUESTIONS.map((q,i)=>{
+    const n=i+1;
+    return '<div class="q-block" id="qb'+n+'">'+
+      '<div class="q-head">'+
+        '<div class="q-head-left">'+
+          '<div class="q-num">'+n+'</div>'+
+          '<div><div class="q-label">'+q.text+'</div></div>'+
+        '</div>'+
+        '<div class="q-head-right">'+
+          '<button class="play-small" id="pb'+n+'" onclick="playAudio('+n+')">播放</button>'+
+          '<button class="voice-big" id="vb'+n+'" onclick="toggleVoice('+n+')">🎤</button>'+
+        '</div>'+
+      '</div>'+
+      '<textarea class="answer-area" id="a'+n+
+        '" placeholder="点击🎤录音，或直接输入…" oninput="saveField('+n+')"></textarea>'+
+      '<div class="ai-bar">'+
+        '<button class="ai-btn" id="ab'+n+'" onclick="openAI('+n+')"><span class="spin"></span> AI润色</button>'+
+        '<button class="fix-btn" id="fb'+n+'" onclick="runFix('+n+')">错别字</button>'+
+      '</div>'+
+      '<div class="save-dot" id="sd'+n+'"></div>'+
+    '</div>';
   }).join('');
 }
 
 // ============================================================
-// Tab 切换
+// 加载 & 切换日期
 // ============================================================
-function switchTab(num, tab) {
-  document.getElementById('tabOriginal'+num).classList.toggle('active', tab==='original');
-  document.getElementById('tabPolished'+num).classList.toggle('active', tab==='polished');
-  document.getElementById('panelOriginal'+num).classList.toggle('active', tab==='original');
-  document.getElementById('panelPolished'+num).classList.toggle('active', tab==='polished');
-}
-
-// ============================================================
-// 存储
-// ============================================================
-function getRecords() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
-  catch(e) { return {}; }
-}
-function saveRecords(records) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
-}
-
-function getQuestionData(num) {
-  const records = getRecords();
-  const rec = records[currentDate] || {};
-  return rec['q'+num] || { original: '', polished: '' };
-}
-
-function saveField(num, field) {
-  const val = document.getElementById(field+num).value;
-  const records = getRecords();
-  if (!records[currentDate]) records[currentDate] = {};
-  if (!records[currentDate]['q'+num]) records[currentDate]['q'+num] = { original: '', polished: '' };
-  records[currentDate]['q'+num][field] = val;
-  records[currentDate].savedAt = new Date().toISOString();
-  saveRecords(records);
-  showSaveHint(num);
-}
-
-function saveAnswer(num) {
-  const orig = document.getElementById('original'+num).value;
-  const pol = document.getElementById('polished'+num).value;
-  const records = getRecords();
-  if (!records[currentDate]) records[currentDate] = {};
-  records[currentDate]['q'+num] = { original: orig, polished: pol };
-  records[currentDate].savedAt = new Date().toISOString();
-  saveRecords(records);
-}
-
-function showSaveHint(num) {
-  const el = document.getElementById('save'+num);
-  el.textContent = '✓ 已保存'; el.classList.add('show');
-  clearTimeout(el._t);
-  el._t = setTimeout(() => el.classList.remove('show'), 2000);
-}
-
-function loadRecord(dateStr) {
-  currentDate = dateStr;
-  const records = getRecords();
-  const rec = records[dateStr] || {};
-  for (let i = 1; i <= 5; i++) {
-    const qd = rec['q'+i] || { original: '', polished: '' };
-    document.getElementById('original'+i).value = qd.original || '';
-    document.getElementById('polished'+i).value = qd.polished || '';
-    switchTab(i, 'original');
-    updateAITabBadge(i, null);
+function loadDay(d){
+  currentDate=d;
+  const r=getRecords()[d]||{};
+  for(let i=1;i<=6;i++){
+    document.getElementById('a'+i).value=r['q'+i]||'';
+    updatePlayBtn(i);
   }
-  document.getElementById('dateDisplay').textContent = formatDateCN(dateStr);
-  // 更新音频播放按钮
-  for (let i = 1; i <= 5; i++) updateAudioUI(i);
+  document.getElementById('dateDisplay').textContent=formatDateCN(d);
+}
+function goToday(){loadDay(getTodayStr())}
+
+function showDatePicker(){
+  document.getElementById('dateInput').value=currentDate;
+  document.getElementById('dateInput').max=getTodayStr();
+  document.getElementById('dateOverlay').classList.add('show');
+}
+function confirmDate(){
+  const v=document.getElementById('dateInput').value;
+  if(v)loadDay(v);
+  document.getElementById('dateOverlay').classList.remove('show');
 }
 
-function saveCurrentAndLoad(dateStr) {
-  for (let i = 1; i <= 5; i++) saveAnswer(i);
-  loadRecord(dateStr);
+// ============================================================
+// 录音
+// ============================================================
+function stopVoice(){
+  isRecording=false;
+  if(mediaRecorder&&mediaRecorder.state!=='inactive'){mediaRecorder.stop();return}
+  if(recognition){try{recognition.stop()}catch(e){}recognition=null}
+  if(recordingTimer){clearInterval(recordingTimer);recordingTimer=null}
+  if(currentQ){
+    document.getElementById('vb'+currentQ).classList.remove('recording');
+    saveField(currentQ);
+  }
+  document.getElementById('recBar').classList.remove('show');
+  currentQ=null;recSec=0;voiceRestarts=0;
 }
 
-function goToday() { saveCurrentAndLoad(getTodayStr()); }
+function toggleVoice(n){
+  if(isRecording&&currentQ===n){stopVoice();return}
+  if(isRecording){stopVoice();setTimeout(()=>startVoice(n),400);return}
+  startVoice(n);
+}
 
-// ============================================================
-// 音频保存与回放
-// ============================================================
-function audioKey(num) { return AUDIO_STORAGE + 'q' + num + '_' + currentDate; }
+function startVoice(n){
+  if(isMobile()){startMobileRec(n);return}
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){showToast('请用Chrome浏览器打开','error');return}
+  if(navigator.userAgent.toLowerCase().indexOf('micromessenger')>-1){
+    showToast('微信不支持语音，请用浏览器打开','error');return;
+  }
 
-function saveAudioBlob(num, blob) {
-  const key = audioKey(num);
-  audioBlobs[key] = blob;
-  // 尝试存入IndexedDB（localStorage太小存不了音频）
-  try {
-    const reader = new FileReader();
-    reader.onload = function() {
-      try { localStorage.setItem(key + '_meta', JSON.stringify({ size: blob.size, type: blob.type, date: currentDate })); } catch(e) {}
+  isRecording=true;currentQ=n;
+  fullTranscript=document.getElementById('a'+n).value||'';
+  interimText='';recSec=0;voiceRestarts=0;
+  document.getElementById('vb'+n).classList.add('recording');
+  document.getElementById('recBar').classList.add('show');
+  document.getElementById('recLabel').textContent='第'+n+'题';
+  updateRecTimer();
+  recordingTimer=setInterval(()=>{recSec++;updateRecTimer()},1000);
+  setTimeout(startRecog,400);
+}
+
+function updateRecTimer(){
+  const el=document.getElementById('recTimer');
+  if(el)el.textContent=fmtTime(recSec);
+}
+
+async function startMobileRec(n){
+  try{
+    const s=await navigator.mediaDevices.getUserMedia({audio:true});
+    mediaRecorder=new MediaRecorder(s,{mimeType:'audio/webm'});
+    audioChunks=[];
+    mediaRecorder.ondataavailable=e=>{if(e.data.size>0)audioChunks.push(e.data)};
+    mediaRecorder.onstop=async()=>{
+      const num=currentRecorderNum;mediaRecorder=null;isRecording=false;
+      const blob=new Blob(audioChunks,{type:'audio/webm'});
+      saveAudioBlob(num,blob);
+      if(recordingTimer){clearInterval(recordingTimer);recordingTimer=null}
+      document.getElementById('recBar').classList.remove('show');
+      if(num){document.getElementById('vb'+num).classList.remove('recording')}
+      try{
+        const text=await transcribeAudio(blob);
+        const ta=document.getElementById('a'+num);
+        ta.value=(ta.value?ta.value+' ':'')+text;
+        saveField(num);
+        showToast('转写完成','success');
+        if(text.trim().length>3)autoPolish(num,text.trim());
+      }catch(e){showToast('转写失败:'+e.message,'error')}
+      s.getTracks().forEach(t=>t.stop());
+      currentQ=num=null;recSec=0;voiceRestarts=0;
     };
-    reader.readAsArrayBuffer(blob);
-  } catch(e) {}
-  updateAudioUI(num);
-}
-
-function updateAudioUI(num) {
-  const key = audioKey(num);
-  const hasAudio = !!audioBlobs[key];
-  const playBtn = document.getElementById('playBtn' + num);
-  const audioPlayer = document.getElementById('audioPlayer' + num);
-  if (playBtn) playBtn.classList.toggle('has-audio', hasAudio);
-  if (audioPlayer) audioPlayer.classList.toggle('has-audio', hasAudio);
-  // 尝试从meta获取时长
-  try {
-    const meta = JSON.parse(localStorage.getItem(key + '_meta') || 'null');
-    if (meta && audioPlayer) {
-      document.getElementById('audioTime' + num).textContent = (meta.size / 1024).toFixed(0) + 'KB';
-    }
-  } catch(e) {}
-}
-
-async function playAudio(num) {
-  const key = audioKey(num);
-  const blob = audioBlobs[key];
-  if (!blob) { showToast('暂无录音', 'error'); return; }
-  
-  // 停止当前播放
-  if (currentPlayingAudio) {
-    currentPlayingAudio.pause();
-    currentPlayingAudio = null;
-  }
-  
-  const url = URL.createObjectURL(blob);
-  const audio = new Audio(url);
-  currentPlayingAudio = audio;
-  audio.play().catch(e => showToast('播放失败: ' + e.message, 'error'));
-  audio.onended = function() {
-    currentPlayingAudio = null;
-    URL.revokeObjectURL(url);
-  };
-  showToast('🔊 播放录音中...', 'success');
-}
-
-function deleteAudio(num) {
-  const key = audioKey(num);
-  delete audioBlobs[key];
-  try { localStorage.removeItem(key + '_meta'); } catch(e) {}
-  updateAudioUI(num);
-  showToast('录音已删除', 'success');
-}
-
-// ============================================================
-// AI Tab Badge 状态
-// ============================================================
-function updateAITabBadge(num, status) {
-  const tabBtn = document.getElementById('tabPolished'+num);
-  const old = tabBtn.querySelector('.badge');
-  if (old) old.remove();
-  if (status === 'loading') {
-    tabBtn.insertAdjacentHTML('beforeend', '<span class="badge ai-loading">⏳</span>');
-  } else if (status === 'done') {
-    tabBtn.insertAdjacentHTML('beforeend', '<span class="badge ai-done">✓</span>');
-  }
-}
-
-// ============================================================
-// 语音输入（长时间连续录音）v3.0 — 带音频保存
-// ============================================================
-let voiceRestartCount = 0;
-let voiceLastStartTime = 0;
-const MAX_VOICE_RESTARTS = 5;
-const MIN_RESTART_INTERVAL = 2000;
-
-function stopVoice() {
-  console.log('[Voice] Stopping recording...');
-  isRecording = false;
-  
-  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-    mediaRecorder.stop();
-    return;
-  }
-  
-  if (recognition) {
-    try { recognition.stop(); } catch(e) {}
-    recognition = null;
-  }
-  
-  if (recordingTimer) {
-    clearInterval(recordingTimer);
-    recordingTimer = null;
-  }
-  
-  if (currentRecording) {
-    document.getElementById('voiceBtn' + currentRecording).classList.remove('recording');
-    document.getElementById('qblock' + currentRecording).classList.remove('recording-active');
-  }
-  document.getElementById('recordingBar').classList.remove('show');
-  
-  if (currentRecording) {
-    saveField(currentRecording, 'original');
-  }
-  
-  currentRecording = null;
-  recordingSeconds = 0;
-  voiceRestartCount = 0;
-}
-
-function toggleVoice(num) {
-  if (isRecording && currentRecording === num) {
-    stopVoice();
-  } else if (isRecording && currentRecording !== num) {
-    stopVoice();
-    setTimeout(function() { startVoice(num); }, 500);
-  } else {
-    startVoice(num);
-  }
-}
-
-function startVoice(num) {
-  if (isMobile()) {
-    startMobileRecording(num);
-    return;
-  }
-  
-  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) {
-    showToast('你的浏览器不支持语音输入，请用 Chrome 打开', 'error');
-    return;
-  }
-  var ua = navigator.userAgent.toLowerCase();
-  if (ua.indexOf('micromessenger') !== -1) {
-    showToast('微信内置浏览器不支持语音，请点右上角"..."用浏览器打开', 'error');
-    return;
-  }
-
-  isRecording = true;
-  currentRecording = num;
-  fullTranscript = document.getElementById('original' + num).value || '';
-  interimText = '';
-  recordingSeconds = 0;
-  voiceRestartCount = 0;
-
-  document.getElementById('voiceBtn' + num).classList.add('recording');
-  document.getElementById('qblock' + num).classList.add('recording-active');
-  document.getElementById('recordingBar').classList.add('show');
-  document.getElementById('recQuestion').textContent = '第' + num + '题';
-  switchTab(num, 'original');
-
-  updateTimerDisplay();
-  recordingTimer = setInterval(function() { recordingSeconds++; updateTimerDisplay(); }, 1000);
-
-  setTimeout(function() { startRecognition(); }, 500);
-}
-
-// 手机录音开始
-async function startMobileRecording(num) {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
-    audioChunks = [];
-    
-    mediaRecorder.ondataavailable = function(e) {
-      if (e.data.size > 0) audioChunks.push(e.data);
-    };
-    
-    mediaRecorder.onstop = async function() {
-      const num = currentRecording;
-      mediaRecorder = null;
-      isRecording = false;
-      
-      const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-      
-      // 保存音频blob用于回放
-      if (num) saveAudioBlob(num, audioBlob);
-      
-      if (recordingTimer) {
-        clearInterval(recordingTimer);
-        recordingTimer = null;
-      }
-      
-      document.getElementById('recordingBar').classList.remove('show');
-      if (num) {
-        document.getElementById('voiceBtn' + num).classList.remove('recording');
-        document.getElementById('qblock' + num).classList.remove('recording-active');
-      }
-      
-      try {
-        const text = await transcribeAudio(audioBlob);
-        const ta = document.getElementById('original' + num);
-        const currentText = ta.value || '';
-        const newText = currentText + (currentText ? ' ' : '') + text;
-        ta.value = newText;
-        saveField(num, 'original');
-        showToast('✅ 转写完成，录音已保存', 'success');
-        
-        if (newText.trim().length > 3) {
-          autoPolish(num, newText.trim());
-        }
-      } catch(e) {
-        showToast('转写失败: ' + e.message + '（录音已保存可回放）', 'error');
-      }
-      
-      stream.getTracks().forEach(function(t) { t.stop(); });
-      
-      currentRecording = null;
-      recordingSeconds = 0;
-      voiceRestartCount = 0;
-    };
-    
+    // 用外部变量保存当前题目编号（因为onstop闭包里currentQ可能被清零）
+    window.currentRecorderNum=n;
     mediaRecorder.start(250);
-    
-    isRecording = true;
-    currentRecording = num;
-    recordingSeconds = 0;
-    
-    document.getElementById('voiceBtn' + num).classList.add('recording');
-    document.getElementById('qblock' + num).classList.add('recording-active');
-    document.getElementById('recordingBar').classList.add('show');
-    document.getElementById('recQuestion').textContent = '第' + num + '题 📱手机录音';
-    switchTab(num, 'original');
-    updateTimerDisplay();
-    recordingTimer = setInterval(function() { recordingSeconds++; updateTimerDisplay(); }, 1000);
-    
-    showToast('📱 录音中...点击停止完成转写', 'success');
-  } catch(e) {
-    showToast('录音失败: ' + e.message, 'error');
-  }
+    isRecording=true;currentQ=n;recSec=0;
+    document.getElementById('vb'+n).classList.add('recording');
+    document.getElementById('recBar').classList.add('show');
+    document.getElementById('recLabel').textContent='第'+n+'题 手机录音';
+    updateRecTimer();
+    recordingTimer=setInterval(()=>{recSec++;updateRecTimer()},1000);
+  }catch(e){showToast('录音失败:'+e.message,'error')}
 }
 
-function startRecognition() {
-  var now = Date.now();
-  if (now - voiceLastStartTime < MIN_RESTART_INTERVAL) {
-    voiceRestartCount++;
-    if (voiceRestartCount >= MAX_VOICE_RESTARTS) {
-      showToast('语音识别启动失败，请刷新页面重试', 'error');
-      stopVoice();
-      return;
+function startRecog(){
+  const now=Date.now();
+  if(now-lastVoiceStart<2000){
+    voiceRestarts++;
+    if(voiceRestarts>=5){showToast('语音启动失败，请刷新重试','error');stopVoice();return}
+  }else{voiceRestarts=0}
+  lastVoiceStart=now;
+  if(recognition){try{recognition.stop()}catch(e){}recognition=null}
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  recognition=new SR();
+  recognition.lang='zh-CN';recognition.continuous=true;
+  recognition.interimResults=true;recognition.maxAlternatives=1;
+  recognition.onresult=function(ev){
+    voiceRestarts=0;let nf='',ci='';
+    for(let i=ev.resultIndex;i<ev.results.length;i++){
+      if(ev.results[i].isFinal)nf+=ev.results[i][0].transcript;
+      else ci+=ev.results[i][0].transcript;
     }
-  } else {
-    voiceRestartCount = 0;
-  }
-  voiceLastStartTime = now;
-
-  if (recognition) { try { recognition.stop(); } catch(e) {} recognition = null; }
-
-  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  recognition = new SR();
-  recognition.lang = 'zh-CN';
-  recognition.continuous = true;
-  recognition.interimResults = true;
-  recognition.maxAlternatives = 1;
-
-  recognition.onresult = function(event) {
-    voiceRestartCount = 0;
-    var newFinal = '', curInterim = '';
-    for (var i = event.resultIndex; i < event.results.length; i++) {
-      if (event.results[i].isFinal) {
-        newFinal += event.results[i][0].transcript;
-      } else {
-        curInterim += event.results[i][0].transcript;
-      }
-    }
-    if (newFinal) {
-      fullTranscript += newFinal;
-      var ta = document.getElementById('original' + currentRecording);
-      ta.value = fullTranscript;
-      saveField(currentRecording, 'original');
-    }
-    interimText = curInterim;
-    if (currentRecording) {
-      var ta2 = document.getElementById('original' + currentRecording);
-      ta2.value = fullTranscript + (interimText ? '|' + interimText : '');
-    }
+    if(nf){fullTranscript+=nf;document.getElementById('a'+currentQ).value=fullTranscript;saveField(currentQ)}
+    interimText=ci;
+    if(currentQ)document.getElementById('a'+currentQ).value=fullTranscript+(interimText?'|'+interimText:'');
   };
-
-  recognition.onend = function() {
-    if (isRecording && currentRecording) {
-      var delay = 800 + Math.random() * 500;
-      setTimeout(function() {
-        if (isRecording && currentRecording) startRecognition();
-      }, delay);
-    }
+  recognition.onend=()=>{
+    if(isRecording&&currentQ)setTimeout(()=>{if(isRecording&&currentQ)startRecog()},700+Math.random()*400);
   };
-
-  recognition.onerror = function(event) {
-    var fatal = ['not-allowed', 'service-not-allowed', 'audio-capture', 'network'];
-    if (fatal.indexOf(event.error) !== -1) {
-      var msgs = {
-        'not-allowed': '请允许麦克风权限后重试',
-        'service-not-allowed': '语音服务不可用，请用Chrome浏览器打开',
-        'audio-capture': '未检测到麦克风，请检查设备',
-        'network': '网络错误，请检查网络连接'
-      };
-      showToast(msgs[event.error] || '语音识别出错', 'error');
-      stopVoice();
-      return;
+  recognition.onerror=function(ev){
+    const fatal=['not-allowed','service-not-allowed','audio-capture','network'];
+    if(fatal.indexOf(ev.error)!==-1){
+      const m={not-allowed:'请允许麦克风权限','service-not-allowed:'请用Chrome浏览器',
+        audio-capture:'未检测到麦克风',network:'网络错误'};
+      showToast(m[ev.error]||'语音出错','error');stopVoice();return;
     }
-    if (event.error === 'no-speech') {
-      if (isRecording && currentRecording) {
-        setTimeout(function() { if (isRecording && currentRecording) startRecognition(); }, 1500);
-      }
-      return;
-    }
-    if (event.error === 'aborted') return;
-    if (isRecording && currentRecording) {
-      setTimeout(function() { if (isRecording && currentRecording) startRecognition(); }, 2000);
-    }
+    if(ev.error==='no-speech'){if(isRecording&&currentQ)setTimeout(()=>{if(isRecording&&currentQ)startRecog()},1200);return}
+    if(ev.error==='aborted')return;
+    if(isRecording&&currentQ)setTimeout(()=>{if(isRecording&&currentQ)startRecog()},1500);
   };
-
-  try {
-    recognition.start();
-  } catch(e) {
-    if (isRecording && currentRecording) {
-      setTimeout(function() { startRecognition(); }, 2000);
-    }
-  }
+  try{recognition.start()}catch(e){if(isRecording&&currentQ)setTimeout(()=>startRecog(),1500)}
 }
 
 // ============================================================
-// 自动AI润色
+// 音频保存 & 回放
 // ============================================================
-async function autoPolish(num, text) {
-  updateAITabBadge(num, 'loading');
-  aiProcessing[num] = 'loading';
-
-  try {
-    const prompt = `请润色以下复盘文字，使其更流畅、清晰、有条理，但保持原意不变。
-严格要求：
-1. 禁止出现任何英文单词或英文助词（okay/no/yeah等）
-2. 禁止词语重复（如连续出现两个相同的词如"非常""非常"）
-3. 禁止添加任何emoji表情符号，只输出纯文字
-4. 直接输出润色后的文字，不要任何解释 /no_think：
-
-"""
-${text}
----`;
-    const result = await callAI(prompt);
-    document.getElementById('polished'+num).value = result;
-    saveField(num, 'polished');
-    updateAITabBadge(num, 'done');
-    aiProcessing[num] = 'done';
-    switchTab(num, 'polished');
-    showToast(`第${num}题 AI润色完成 ✓`, 'success');
-  } catch(e) {
-    updateAITabBadge(num, null);
-    aiProcessing[num] = null;
-    showToast('AI润色失败：' + e.message, 'error');
-  }
+function saveAudioBlob(num,blob){
+  const k=AUDIO_KEY+'q'+num+'_'+currentDate;
+  audioBlobs[k]=blob;
+  try{
+    const r=new FileReader();
+    r.onload=()=>{try{localStorage.setItem(k+'_meta',JSON.stringify({size:blob.size}))}catch(e){}};
+    r.readAsArrayBuffer(blob);
+  }catch(e){}
+  updatePlayBtn(num);
+}
+function updatePlayBtn(num){
+  const k=AUDIO_KEY+'q'+num+'_'+currentDate;
+  const has=!!audioBlobs[k];
+  const el=document.getElementById('pb'+num);
+  if(el)el.classList.toggle('show',has);
+}
+function playAudio(num){
+  const k=AUDIO_KEY+'q'+num+'_'+currentDate;
+  const blob=audioBlobs[k];
+  if(!blob){showToast('暂无录音','error');return}
+  if(playingAudio){playingAudio.pause();playingAudio=null}
+  const url=URL.createObjectURL(blob);
+  const a=new Audio(url);playingAudio=a;
+  a.play().catch(e=>showToast('播放失败','error'));
+  a.onended=()=>{playingAudio=null;URL.revokeObjectURL(url)};
 }
 
 // ============================================================
-// AI API 多通道调用（免注册核心逻辑）
+// 转写
 // ============================================================
-async function callAI(prompt, customKey) {
-  // 如果用户配置了自定义Key，优先使用
-  if (customKey) {
-    return await callAISingle(AI_CHANNELS[0].url, AI_CHANNELS[0].model, customKey, prompt);
-  }
-  
-  // 多通道轮换，一个失败试下一个
-  let lastError = null;
-  for (let i = 0; i < AI_CHANNELS.length; i++) {
-    const ch = AI_CHANNELS[(currentChannel + i) % AI_CHANNELS.length];
-    try {
-      const result = await callAISingle(ch.url, ch.model, ch.key, prompt);
-      currentChannel = (currentChannel + i) % AI_CHANNELS.length; // 记住成功的通道
-      return result;
-    } catch(e) {
-      lastError = e;
-      console.warn(`[AI] Channel ${(currentChannel + i) % AI_CHANNELS.length} failed:`, e.message);
-      continue;
-    }
-  }
-  throw lastError || new Error('所有AI通道均失败');
-}
-
-async function callAISingle(url, model, apiKey, prompt) {
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${apiKey}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      model: model,
-      messages: [{ role: 'user', content: prompt }],
-      stream: false,
-      max_tokens: 2048
-    })
+async function transcribeAudio(blob){
+  showToast('云端转写中…','default');
+  const fd=new FormData();
+  fd.append('file',blob,'rec.webm');
+  fd.append('model',WHISPER_MODEL);
+  const resp=await fetch(WHISPER_URL,{
+    method:'POST',headers:{'Authorization':'Bearer '+DEFAULT_AI_KEY},body:fd
   });
-  if (!response.ok) {
-    const err = await response.json().catch(() => ({}));
-    throw new Error(err.error?.message || `请求失败 ${response.status}`);
-  }
-  const data = await response.json();
-  let content = data.choices[0].message.content.trim();
-  // 清洗AI输出中的思考标签和多余内容
-  content = content.replace(/<nothink>[\s\S]*?<\/nothink>/gi, '');
-  content = content.replace(/<think>[\s\S]*?<\/think>/gi, '');
-  content = content.replace(/```[\s\S]*?```/g, '');
-  content = content.replace(/^#{1,6}\s+/gm, '');
-  content = content.trim();
-  return content;
+  if(!resp.ok){const e=await resp.json().catch(()=>{});throw new Error(e.error?.message||'转写失败'+resp.status)}
+  const data=await resp.json();
+  return data.text||'';
 }
 
-function getApiKey() {
-  return localStorage.getItem(API_KEY_STORAGE) || '';
-}
-
-// 手机云端录音转写
-async function transcribeAudio(audioBlob, apiKey) {
-  // ─── 第一步：尝试本地 faster-whisper ───────────────────────────
-  const formDataLocal = new FormData();
-  formDataLocal.append('file', audioBlob, 'recording.webm');
-
-  try {
-    showToast('🔊 本地转写中...（首次运行需下载模型，请稍候）', 'success');
-    const localRes = await fetch(WHISPER_LOCAL_URL, { method: 'POST', body: formDataLocal });
-    if (localRes.ok) {
-      const localData = await localRes.json();
-      if (localData.text) {
-        showToast('✅ 本地转写成功', 'success');
-        return localData.text;
-      }
-      // 有响应但无文字，降级
-      console.warn('[转写] 本地返回空内容，降级到云端');
-    } else {
-      const errText = await localRes.text().catch(() => '');
-      console.warn('[转写] 本地服务器异常:', localRes.status, errText);
-    }
-  } catch (e) {
-    // 本地服务器未启动或网络问题，正常降级
-    console.warn('[转写] 本地服务器连接失败:', e.message);
+// ============================================================
+// AI 功能
+// ============================================================
+async function callAI(prompt,customKey){
+  if(customKey)return await callAISingle(AI_CH[0].url,AI_CH[0].model,customKey,prompt);
+  let lastErr=null;
+  for(let i=0;i<AI_CH.length;i++){
+    const c=AI_CH[(chIdx+i)%AI_CH.length];
+    try{const r=await callAISingle(c.url,c.model,c.key,prompt);chIdx=(chIdx+i)%AI_CH.length;return r}
+    catch(e){lastErr=e;continue}
   }
-
-  // ─── 第二步：降级到云端 SiliconFlow ───────────────────────────
-  showToast('🔄 本地转写不可用，云端转写中...', 'success');
-  if (!apiKey) apiKey = DEFAULT_API_KEY;
-  const formData = new FormData();
-  formData.append('file', audioBlob, 'recording.webm');
-  formData.append('model', WHISPER_MODEL);
-
-  const response = await fetch(WHISPER_URL, {
-    method: 'POST',
-    headers: { 'Authorization': `Bearer ${apiKey}` },
-    body: formData
+  throw lastErr||new Error('AI通道均失败');
+}
+async function callAISingle(url,model,key,prompt){
+  const r=await fetch(url,{
+    method:'POST',
+    headers:{'Authorization':'Bearer '+key,'Content-Type':'application/json'},
+    body:JSON.stringify({model:model,messages:[{role:'user',content:prompt}],stream:false,max_tokens:2048})
   });
-
-  if (!response.ok) {
-    const err = await response.json().catch(() => ({}));
-    throw new Error(err.error?.message || `转写失败 ${response.status}`);
-  }
-
-  const data = await response.json();
-  return data.text || '';
+  if(!r.ok){const e=await r.json().catch(()=>{});throw new Error(e.error?.message||'请求失败'+r.status)}
+  let content=r.json().choices[0].message.content.trim();
+  content=content.replace(/<nothink>[\s\S]*?<\/nothink>/gi,'');
+  content=content.replace(/<\/?think>/gi,'');
+  return content.trim();
 }
 
-// 测试录音功能
-async function testMic() {
-  const el = document.getElementById('micTestResult');
-  el.style.display = 'block';
-  el.style.color = 'var(--warning)';
-  el.textContent = '🔍 正在检测...';
-
-  if (isMobile()) {
-    el.textContent = '📱 检测到手机\n';
-  } else {
-    el.textContent = '🖥️ 检测到电脑\n';
-  }
-
-  const isHTTPS = location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-  if (!isHTTPS) {
-    el.style.color = '#ef4444';
-    el.textContent += '❌ 必须用HTTPS才能录音（当前是' + location.protocol + '）';
-    return;
-  }
-  el.textContent += '✅ HTTPS ✓\n';
-
-  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-    el.style.color = '#ef4444';
-    el.textContent += '❌ 浏览器不支持getUserMedia\n';
-    return;
-  }
-  el.textContent += '✅ getUserMedia ✓\n';
-
-  if (typeof MediaRecorder !== 'undefined') {
-    el.textContent += '✅ MediaRecorder ✓\n';
-  }
-
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    stream.getTracks().forEach(t => t.stop());
-    el.textContent += '✅ 麦克风权限 ✓\n';
-  } catch(e) {
-    el.style.color = '#ef4444';
-    el.textContent = '❌ 麦克风不可用：' + e.name;
-    return;
-  }
-
-  el.style.color = 'var(--success)';
-  el.textContent += '\n🎉 录音功能正常！';
-}
-
-function setLoading(btnId, loading) {
-  const btn = document.getElementById(btnId);
-  if (!btn) return;
-  if (loading) { btn.classList.add('loading'); btn.disabled = true; }
-  else { btn.classList.remove('loading'); btn.disabled = false; }
-}
-
-// ============================================================
-// AI 功能（工具栏按钮）
-// ============================================================
-const AI_PROMPTS = {
-  clean: (text) => `请帮我精简以下文字中的语气词、重复词和无意义的口头禅（如"嗯、啊、这个、那个、就是、的话、然后、其实"等），保持原意不变，直接输出处理后的文字。重要：输出必须是纯中文，严禁出现任何英文单词或助词（如ok、okay、yeah、no、sure、well等），严禁词语重复，严禁添加emoji表情符号，不要解释 /no_think：
-
-"""
-${text}
----`,
-
-  polish: (text) => `请帮我润色优化以下复盘文字，提升表达质量，使其更流畅、清晰、有条理。重要：输出必须是纯中文，严禁出现任何英文单词或助词（如ok、okay、yeah、no、sure、well等），严禁词语重复，严禁添加emoji表情符号，直接输出结果，不要解释 /no_think：
-
-"""
-${text}
----`,
-
-  summary: (text) => `请帮我提炼以下文字的核心观点，用简洁的一句话概括。重要：输出必须是纯中文，严禁出现任何英文单词或助词，严禁词语重复，严禁添加emoji表情符号，直接输出结果，不要"概括如下"等前缀 /no_think：
-
-"""
-${text}
----`,
-
-  fix: (text) => `请修正以下文字中的错别字，直接输出修正后的完整文字，不要解释。重要：输出必须是纯中文，严禁出现任何英文单词或助词，严禁添加emoji表情符号 /no_think：
-
-"""
-${text}
----`,
-
-  golden: (text) => `请从以下文字中提取1-3句最有价值的金句。要求简短有力、有洞察力。每句一行，只输出金句。重要：输出必须是纯中文，严禁出现任何英文单词或助词，严禁词语重复，严禁添加emoji表情符号 /no_think：
-
-"""
-${text}
----`,
-
-  all: (text) => `请对以下复盘文字同时进行4种处理，用 |----| 分隔每个部分。重要：所有输出必须是纯中文，严禁出现任何英文单词或助词，严禁词语重复，严禁添加emoji表情符号 /no_think：
-
-"""
-${text}
-----
-
-##精简##：去除语气词口头禅后的文字
-##润色##：润色后的文字
-##总结##：一句话概括核心观点
-##金句##：1-3句最有价值的金句（每句一行）
-
-格式要求：严格按 |----| 分隔，四部分依次输出，不要其他解释文字`
+const AI_PROMPTS={
+  polish:t=>`请润色以下文字，使其更流畅清晰有条理，保持原意不变。
+要求：纯中文输出，严禁英文单词/emoji/重复词语，直接输出结果不要解释 /no_think：
+"""${t}---`,
+  clean:t=>`请去除以下文字中的语气词和口头禅（嗯、啊、这个、那个、就是、的话、然后等），保持原意不变。
+要求：纯中文，严禁英文/emoji/重复，直接输出 /no_think：
+"""${t}---`,
+  summary:t=>`请用一句话概括以下文字的核心观点。纯中文，严禁英文/emoji/重复，直接输出不要前缀 /no_think：
+"""${t}---`,
+  golden:t=>`请从以下文字中提取1-3句最有价值的金句，每句一行。纯中文，严禁英文/emoji/重复 /no_think：
+"""${t}---`,
+  fix:t=>`请修正以下文字的错别字，直接输出修正后的完整文字。纯中文，严禁英文/emoji /no_think：
+"""${t}---`,
+  all:t=>`请对以下文字做4种处理，用 |----| 分隔：
+##精简## 去除语气词
+##润色## 润色优化
+##总结## 一句话核心观点
+##金句## 1-3句金句
+纯中文，严禁英文/emoji/重复 /no_think：
+"""${t}---`
 };
 
-async function runAI(num, action) {
-  const originalText = document.getElementById('original'+num).value.trim();
-  const polishedText = document.getElementById('polished'+num).value.trim();
-  const text = originalText || polishedText;
-  if (!text) { showToast('请先填写内容', 'error'); return; }
+function openAI(num){
+  const menu=document.getElementById('aiOverlay');
+  menu.classList.add('show');menu.dataset.num=num;
+}
+function closeAIMenu(){document.getElementById('aiOverlay').classList.remove('show')}
+function doAI(action){
+  const menu=document.getElementById('aiOverlay');
+  const n=parseInt(menu.dataset.num);closeAIMenu();
+  runAI(n,action);
+}
 
-  const customKey = getApiKey();
-  const btnId = (action === 'fix') ? `btnFix${num}` : `btnAI${num}`;
-  setLoading(btnId, true);
-
-  try {
-    const prompt = AI_PROMPTS[action](text);
-    const result = await callAI(prompt, customKey || undefined);
-
-    if (action === 'fix') {
-      document.getElementById('original' + num).value = result;
-      saveField(num, 'original');
-      switchTab(num, 'original');
-      updateAITabBadge(num, 'done');
-      showToast(`第${num}题 错别字已修正 ✓`, 'success');
-    } else if (action === 'all') {
-      const parts = result.split('|----|').map(s => s.trim()).filter(Boolean);
-      if (parts.length >= 4) {
-        const combined = `【精简语气词】\n${parts[0]}\n\n【润色文本】\n${parts[1]}\n\n【智能总结】\n${parts[2]}\n\n【提取金句】\n${parts[3]}`;
-        document.getElementById('polished' + num).value = combined;
-        saveField(num, 'polished');
-        switchTab(num, 'polished');
-        updateAITabBadge(num, 'done');
-        showToast(`第${num}题 全优化完成 ✨`, 'success');
-      } else {
-        document.getElementById('polished' + num).value = result;
-        saveField(num, 'polished');
-        switchTab(num, 'polished');
-      }
-    } else {
-      const labels = { clean: '【精简】', polish: '【润色】', summary: '【总结】', golden: '【金句】' };
-      const existing = document.getElementById('polished' + num).value;
-      const newText = existing ? `${existing}\n\n${labels[action]}\n${result}` : `${labels[action]}\n${result}`;
-      document.getElementById('polished' + num).value = newText;
-      saveField(num, 'polished');
-      switchTab(num, 'polished');
-      updateAITabBadge(num, 'done');
-      showToast(`第${num}题 ${labels[action]} 完成 ✓`, 'success');
+async function runAI(num,action){
+  const text=document.getElementById('a'+num).value.trim();
+  if(!text){showToast('请先填写内容','error');return}
+  const btn=document.getElementById('ab'+num);
+  btn.classList.add('loading');btn.disabled=true;
+  try{
+    const prompt=AI_PROMPTS[action](text);
+    const result=await callAI(prompt);
+    if(action==='fix'||action==='clean'){
+      document.getElementById('a'+num).value=result;saveField(num);
+      showToast('完成','success');
+    }else if(action==='all'){
+      const parts=result.split('|----|').map(s=>s.trim()).filter(Boolean);
+      document.getElementById('a'+num).value=parts.length>=4
+        ?'【精简】\n'+parts[0]+'\n\n【润色】\n'+parts[1]+'\n\n【总结】\n'+parts[2]+'\n\n【金句】\n'+parts[3]
+        :result;
+      saveField(num);showToast('全优化完成','success');
+    }else{
+      const l={polish:'【润色】',summary:'【总结】',golden:'【金句】'};
+      const cur=document.getElementById('a'+num).value;
+      document.getElementById('a'+num).value=cur?cur+'\n\n'+l[action]+'\n'+result:l[action]+'\n'+result;
+      saveField(num);showToast('完成','success');
     }
-  } catch(e) {
-    showToast('AI处理失败：' + e.message, 'error');
-  } finally {
-    setLoading(btnId, false);
-  }
+  }catch(e){showToast('AI失败:'+e.message,'error')}
+  finally{btn.classList.remove('loading');btn.disabled=false}
+}
+
+async function runFix(num){
+  const text=document.getElementById('a'+num).value.trim();
+  if(!text){showToast('请先填写内容','error');return}
+  const btn=document.getElementById('fb'+num);
+  btn.disabled=true;btn.textContent='…';
+  try{
+    const r=await callAI(AI_PROMpts.fix(text));
+    document.getElementById('a'+num).value=r;saveField(num);
+    showToast('已修正','success');
+  }catch(e){showToast('修正失败:'+e.message,'error')}
+  finally{btn.disabled=false;btn.textContent='错别字'}
+}
+
+async function autoPolish(num,text){
+  try{
+    const p=`请润色以下复盘文字，更流畅清晰有条理，保持原意不变。
+要求：纯中文，严禁英文单词/emoji/重复词语，直接输出不要解释 /no_think：
+"""${text}---`;
+    const r=await callAI(p);
+    const cur=document.getElementById('a'+num).value;
+    // 在原文后追加润色结果（用分隔线标记）
+    if(cur.indexOf('【润色】')===-1){
+      document.getElementById('a'+num).value=cur+'\n\n─── AI润色 ───\n'+r;
+    }
+    saveField(num);
+  }catch(e){/* 静默失败 */}
 }
 
 // ============================================================
-// 日期 & 历史
+// 历史
 // ============================================================
-function showDatePicker() {
-  document.getElementById('datePicker').classList.add('show');
-  document.getElementById('dateInput').value = currentDate;
-  document.getElementById('dateInput').max = getTodayStr();
+function showHistory(){
+  for(let i=1;i<=6;i++){const v=document.getElementById('a'+i).value;if(v){const r=getRecords();if(!r[currentDate])r[currentDate]={};r[currentDate]['q'+i]=v;r[currentDate].savedAt=new Date().toISOString();saveRecords(r)}}
+  const r=getRecords();const dates=Object.keys(r).sort().reverse();
+  const el=document.getElementById('historyList');
+  if(!dates.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:13px">还没有记录<br>从今天开始吧</div>';return}
+  el.innerHTML=dates.map(d=>{
+    const rec=r[d];const pre=QUESTIONS.map((q,i)=>(rec['q'+(i+1)]||'').substring(0,18)).filter(Boolean).join(' / ');
+    const t=rec.savedAt?new Date(rec.savedAt).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}):'';
+    return '<div class="panel-item" onclick="loadDay(\''+d+'\');document.getElementById(\'historyOverlay\').classList.remove(\'show\')" style="margin-bottom:4px">'+
+      '<span>'+formatDateCN(d)+(t?' '+t:'')+'</span>'+
+      '</div>'+
+      (pre?'<div style="font-size:11px;color:var(--muted);padding:2px 16px 8px;margin-top:-4px">'+pre||(empty)+'</div>':'');
+  }).join('');
+  document.getElementById('historyOverlay').classList.add('show');
 }
-function closeDatePicker() { document.getElementById('datePicker').classList.remove('show'); }
-function confirmDate() {
-  const val = document.getElementById('dateInput').value;
-  if (val) saveCurrentAndLoad(val);
-  closeDatePicker();
-}
-
-function showHistory() {
-  for (let i=1; i<=5; i++) saveAnswer(i);
-  const records = getRecords();
-  const dates = Object.keys(records).sort().reverse();
-  const listEl = document.getElementById('historyList');
-  if (dates.length === 0) {
-    listEl.innerHTML = '<div class="history-empty">还没有复盘记录<br>从今天开始吧！</div>';
-  } else {
-    listEl.innerHTML = dates.map(d => {
-      const rec = records[d];
-      const preview = QUESTIONS.map((q,i) => {
-        const qd = rec['q'+(i+1)] || {};
-        return (qd.original || qd.polished || '').substring(0,20);
-      }).filter(Boolean).join(' | ');
-      const savedTime = rec.savedAt ? new Date(rec.savedAt).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}) : '';
-      return `<div class="history-item" onclick="showDetail('${d}')">
-        <div class="history-item-date">${formatDateCN(d)} ${savedTime ? '⏰'+savedTime : ''}</div>
-        <div class="history-item-preview">${preview || '（空白）'}</div>
-      </div>`;
-    }).join('');
-  }
-  document.getElementById('historyModal').classList.add('show');
-}
-function closeHistory() { document.getElementById('historyModal').classList.remove('show'); }
-
-function showDetail(dateStr) {
-  closeHistory();
-  const records = getRecords();
-  const rec = records[dateStr] || {};
-  const content = document.getElementById('detailContent');
-  content.innerHTML = `
-    <button class="detail-back" onclick="closeDetail()">← 返回</button>
-    <div class="detail-header">
-      <h2>📖 ${formatDateCN(dateStr)}</h2>
-      <span>${dateStr}</span>
-    </div>
-    ${QUESTIONS.map((q,i) => {
-      const num = i+1;
-      const qd = rec['q'+num] || {};
-      const hasOriginal = qd.original && qd.original.trim();
-      const hasPolished = qd.polished && qd.polished.trim();
-      return `
-      <div class="detail-section" id="detailQ${num}">
-        <div class="detail-q">${num}. ${q.text}</div>
-        <div class="detail-tab-row">
-          <button class="detail-tab ${hasOriginal ? 'active' : ''}" onclick="detailTab(${num},'original',this)">📝 原文</button>
-          <button class="detail-tab ${!hasOriginal && hasPolished ? 'active' : ''}" onclick="detailTab(${num},'polished',this)">✨ AI润色版</button>
-        </div>
-        <div class="detail-text" id="detailText${num}">${hasOriginal ? escapeHtml(qd.original) : (hasPolished ? escapeHtml(qd.polished) : '<span class="empty-text">（未填写）</span>')}</div>
-      </div>`;
-    }).join('')}
-  `;
-  content._detailData = rec;
-  document.getElementById('detailModal').classList.add('show');
-}
-
-function detailTab(num, tab, btn) {
-  const rec = document.getElementById('detailContent')._detailData || {};
-  const qd = rec['q'+num] || {};
-  const el = document.getElementById('detailText'+num);
-  btn.parentElement.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  const text = qd[tab] || '';
-  el.innerHTML = text.trim() ? escapeHtml(text) : '<span class="empty-text">（未填写）</span>';
-}
-
-function escapeHtml(text) {
-  return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
-}
-
-function closeDetail() { document.getElementById('detailModal').classList.remove('show'); }
 
 // ============================================================
-// 设置
+// 导出文本
 // ============================================================
-function showSettings() {
-  const savedKey = localStorage.getItem(API_KEY_STORAGE);
-  const input = document.getElementById('apiKeyInput');
-  if (input) input.value = savedKey || '';
-  updateApiStatus(savedKey || '');
-  document.getElementById('settingsModal').classList.add('show');
+function exportText(){
+  const r=getRecords()[currentDate]||{};
+  let t='复盘笔记 - '+formatDateCN(currentDate)+'\n'+('=').repeat(36)+'\n\n';
+  QUESTIONS.forEach((q,i)=>{
+    const n=i+1;const v=r['q'+n]||'';
+    t+='【第'+n+'题】'+q.text+'\n'+'-'.repeat(28)+'\n';
+    if(v.trim())t+=v+'\n';else t+='（未填写）\n';
+    t+='\n';
+  });
+  t+=('=').repeat(36)+'\n生成时间：'+new Date().toLocaleString('zh-CN')+'\n复盘册子 v3.9';
+  document.getElementById('exportTitle').textContent='导出文本';
+  document.getElementById('exportPreview').textContent=t;
+  document.getElementById('exportConfirmBtn').onclick=()=>{
+    downloadTxt(t,'复盘笔记_'+currentDate+'.txt');
+    closeExport();showToast('已下载','success');
+  };
+  document.getElementById('exportOverlay').classList.add('show');
 }
-function closeSettings() { document.getElementById('settingsModal').classList.remove('show'); }
+function downloadTxt(content,name){
+  const b=new Blob([content],{type:'text/plain;charset=utf-8'});
+  const u=URL.createObjectURL(b);
+  const a=document.createElement('a');a.href=u;a.download=name;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  URL.revokeObjectURL(u);
+}
 
-function updateApiStatus(key) {
-  const el = document.getElementById('apiKeyStatus');
-  if (!el) return;
-  if (!key || key.length < 10) {
-    el.className = 'api-key-status ok';
-    el.innerHTML = '✅ 使用内置免费通道（开箱即用）';
-  } else {
-    el.className = 'api-key-status ok';
-    el.innerHTML = '✅ 自定义Key已配置';
-  }
+// ============================================================
+// 导出图片（通篇）
+// ============================================================
+function exportImage(){
+  showToast('生成图片中…');
+  const r=getRecords()[currentDate]||{};
+  const c=document.createElement('div');
+  c.style.cssText='position:fixed;left:-9999px;top:0;width:720px;padding:36px 32px;background:linear-gradient(180deg,#87ceeb 0%,#d6ecfa 50%,#f0f7fd 100%);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#0c2d4a;';
+  let h='<div style="text-align:center;margin-bottom:28px"><h1 style="font-size:26px;color:#0c2d4a;margin:0;font-weight:700">复盘笔记</h1><p style="font-size:15px;color:#2b7cbf;margin:6px 0 0">'+formatDateCN(currentDate)+'</p></div>';
+  QUESTIONS.forEach((q,i)=>{
+    const n=i+1;const v=(r['q'+n]||'').trim()||'（未填写）';
+    h+='<div style="background:rgba(255,255,255,.92);border-radius:12px;padding:18px;margin-bottom:12px;border:1px solid #b8d8f0">'+
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">'+
+      '<span style="width:24px;height:24px;border-radius:50%;background:#4a90d9;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold">'+n+'</span>'+
+      '<span style="font-size:14px;font-weight:600;color:#0c2d4a">'+q.text+'</span></div>'+
+      '<div style="font-size:14px;line-height:1.85;color:#1a3a5c;white-space:pre-wrap">'+escHtml(v)+'</div></div>';
+  });
+  h+='<div style="text-align:center;margin-top:24px;padding-top:16px;border-top:1px solid #b8d8f0"><p style="font-size:11px;color:#6b9ab8;margin:0">复盘册子 v3.9 · '+new Date().toLocaleString('zh-CN')+'</p></div>';
+  c.innerHTML=h;document.body.appendChild(c);
+  if(typeof html2canvas==='undefined'){
+    const s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+    s.onload={()=>doImgExport(c);s.onerror()=>{document.body.removeChild(c);showToast('加载失败','error')}};
+    document.head.appendChild(s);
+  }else{doImgExport(c)}
 }
+function doImgExport(c){
+  html2canvas(c,{backgroundColor:'#d6ecfa',scale:2,useCORS:true,logging:false}).then(canvas=>{
+    document.body.removeChild(c);
+    const url=canvas.toDataURL('image/png');
+    if(isMobile()){
+      closeExport();
+      const v=document.createElement('div');v.className='img-viewer';
+      v.innerHTML='<div class="tip">长按下方图片保存到相册</div><img src="'+url+'"><div class="tip">点击空白处关闭</div>';
+      v.onclick=e=>{if(e.target===v)v.remove()};
+      document.body.appendChild(v);
+      showToast('长按保存图片');
+    }else{
+      const a=document.createElement('a');a.href=url;a.download='复盘笔记_'+currentDate+'.png';
+      document.body.appendChild(a);a.click();document.body.removeChild(a);
+      showToast('图片已下载','success');
+    }
+  }).catch(err=>{document.body.removeChild(c);showToast('生成失败:'+err.message,'error')});
+}
+function closeExport(){document.getElementById('exportOverlay').classList.remove('show')}
 
-function saveSettings() {
-  const input = document.getElementById('apiKeyInput');
-  const key = input ? input.value.trim() : '';
-  if (key) {
-    localStorage.setItem(API_KEY_STORAGE, key);
-    showToast('自定义 API Key 已保存 ✨', 'success');
-  } else {
-    localStorage.removeItem(API_KEY_STORAGE);
-    showToast('已恢复使用内置免费通道', 'success');
-  }
-  updateApiStatus(key);
-  closeSettings();
+// ============================================================
+// 分享
+// ============================================================
+let shareText='';
+function shareQuestion(num){
+  const q=QUESTIONS[num-1];const v=document.getElementById('a'+num).value||'';
+  shareText='复盘笔记 · '+formatDateCN(currentDate)+'\n━━ 第'+num+'题 ━━\n❓ '+q.text+'\n\n'+(v||'（未填写）')+'\n\n复盘册子 v3.9';
+  document.getElementById('shareTitle').textContent='第'+num+'题·'+q.hint;
+  document.getElementById('sharePreview').textContent=shareText;
+  document.getElementById('shareOverlay').classList.add('show');
 }
+function copyShareText(){
+  navigator.clipboard.writeText(shareText).then(()=>{
+    closeShare();showToast('已复制','success');
+  }).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=shareText;
+    document.body.appendChild(ta);ta.select();document.execCommand('copy');
+    document.body.removeChild(ta);closeShare();showToast('已复制','success');
+  });
+}
+function saveShareImage(){
+  const num=parseInt(document.getElementById('aiOverlay').dataset.num||'0');
+  // 复用导出图片逻辑但只导出单题
+  const q=num?QUESTIONS[num-1]:null;
+  const v=num?(document.getElementById('a'+num).value||''):'';
+  if(!q)return;
+  const c=document.createElement('div');
+  c.style.cssText='position:fixed;left:-9999px;top:0;width:540px;padding:36px 28px;background:linear-gradient(180deg,#87ceeb 0%,#d6ecfa 100%);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#0c2d4a;';
+  c.innerHTML='<div style="text-align:center;margin-bottom:28px"><div style="font-size:12px;color:var(--muted);letter-spacing:2px">复盘册子</div><h1 style="font-size:26px;color:#0c2d4a;margin:0">第'+num+'题</h1><p style="font-size:15px;color:#2b7cbf;margin:6px 0 0">'+q.text+'</p></div>'+
+    '<div style="background:rgba(255,255,255,.92);border-radius:14px;padding:22px;border:1px solid #b8d8f0">'+
+    '<div style="font-size:14px;line-height:1.9;color:#1a3a5c;white-space:pre-wrap">'+escHtml(v||'（未填写）')+'</div></div>'+
+    '<div style="text-align:center;margin-top:20px;padding-top:14px;border-top:1px solid #b8d8f0"><span style="font-size:11px;color:#6b9ab8">复盘册子 v3.9 · '+formatDateCN(currentDate)+'</span></div>';
+  document.body.appendChild(c);
+  if(typeof html2canvas==='undefined'){
+    const s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+    s.onload()=>doShareImg(c);s.onerror()=>{document.body.removeChild(c);showToast('加载失败','error')};
+    document.head.appendChild(s);
+  }else{doShareImg(c)}
+}
+function doShareImg(c){
+  html2canvas(c,{backgroundColor:null,scale:2,useCORS:true}).then(canvas=>{
+    document.body.removeChild(c);
+    const url=canvas.toDataURL('image/png');
+    closeShare();
+    if(isMobile()){
+      const v=document.createElement('div');v.className='img-viewer';
+      v.innerHTML='<div class="tip">长按保存</div><img src="'+url+'"><div class="tip">点击关闭</div>';
+      v.onclick=e=>{if(e.target===v)v.remove()};
+      document.body.appendChild(v);
+    }else{
+      const a=document.createElement('a');a.href=url;a.download='复盘_'+currentDate+'.png';
+      document.body.appendChild(a);a.click();document.body.removeChild(a);
+    }
+  });
+}
+function closeShare(){document.getElementById('shareOverlay').classList.remove('show')}
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}
 
 // ============================================================
 // 初始化
 // ============================================================
-window.onload = function() {
-  renderQuestions();
-  loadRecord(getTodayStr());
-  applyBgSettings();
-
-  // 默认蓝天白云主题
-  if (!localStorage.getItem('fanpan_bg_settings')) {
-    const settings = { type: 'color', colorId: 'bluesky' };
-    localStorage.setItem('fanpan_bg_settings', JSON.stringify(settings));
-    applyBgSettings();
-  }
-
-  setTimeout(() => {
-    showToast('🎉 v3.0 全新界面！录音+AI开箱即用', 'success');
-  }, 1500);
+window.onload=function(){
+  render();
+  loadDay(getTodayStr());
 };
-
-// 快捷键
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') {
-    closeHistory(); closeDatePicker(); closeDetail(); closeSettings();
-    document.getElementById('applyModal').classList.remove('show');
-    document.getElementById('bgModal').classList.remove('show');
-    closeShareModal(); closeExportModal(); closeAIMenu();
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('show'));
+    closeAIMenu();closeShare();closeExport();
   }
 });
-
-// 点击背景关闭弹窗
-['settingsModal','historyModal','datePicker','detailModal','applyModal','bgModal','exportModal','shareModal'].forEach(id => {
-  document.getElementById(id).addEventListener('click', function(e) {
-    if (e.target === this) this.classList.remove('show');
-  });
-});
-
-// ============================================================
-// 背景主题功能
-// ============================================================
-const BG_STORAGE_KEY = 'fanpan_bg_settings';
-const BG_COLORS = [
-  { id: 'bluesky', color: 'linear-gradient(180deg, #87ceeb 0%, #d6ecfa 50%, #f0f7fd 100%)', name: '☁️ 蓝天白云' },
-  { id: 'default', color: '#f5f7fa', name: '📝 默认白' },
-  { id: 'dark', color: '#0f0f1a', name: '🌙 深色' },
-  { id: 'warm', color: '#fef3e2', name: '🌅 暖光' },
-  { id: 'mint', color: '#f0fdf4', name: '🌿 薄荷' },
-];
-
-function getBgSettings() {
-  try { return JSON.parse(localStorage.getItem(BG_STORAGE_KEY) || '{}'); }
-  catch(e) { return {}; }
-}
-
-function saveBgSettings(settings) {
-  localStorage.setItem(BG_STORAGE_KEY, JSON.stringify(settings));
-}
-
-function applyBgSettings() {
-  const settings = getBgSettings();
-  const root = document.documentElement;
-  root.style.backgroundImage = '';
-  root.style.backgroundColor = '';
-  root.removeAttribute('data-theme');
-
-  if (settings.type === 'custom' && settings.customImage) {
-    root.style.backgroundImage = `url(${settings.customImage})`;
-    root.style.backgroundSize = 'cover';
-    root.style.backgroundPosition = 'center';
-    root.style.backgroundAttachment = 'fixed';
-  } else if (settings.type === 'color' && settings.colorId) {
-    root.setAttribute('data-theme', settings.colorId);
-  } else {
-    root.setAttribute('data-theme', 'bluesky');
-  }
-}
-
-function showBgSettings() {
-  const modal = document.getElementById('bgModal');
-  const grid = document.getElementById('bgColorGrid');
-  const settings = getBgSettings();
-
-  grid.innerHTML = BG_COLORS.map(c => `
-    <div class="bg-color-item ${settings.type === 'color' && settings.colorId === c.id ? 'active' : ''}"
-         style="background: ${c.color}"
-         onclick="selectBgColor('${c.id}')">
-      <span class="theme-name">${c.name}</span>
-    </div>
-  `).join('');
-
-  const preview = document.getElementById('bgPreview');
-  if (settings.type === 'custom' && settings.customImage) {
-    document.getElementById('bgPreviewImg').src = settings.customImage;
-    document.getElementById('bgPreviewLabel').textContent = '自定义图片';
-    preview.style.display = 'block';
-  } else {
-    preview.style.display = 'none';
-  }
-
-  modal.classList.add('show');
-}
-
-function closeBgSettings() {
-  document.getElementById('bgModal').classList.remove('show');
-}
-
-function selectBgColor(colorId) {
-  const settings = { type: 'color', colorId: colorId };
-  saveBgSettings(settings);
-  applyBgSettings();
-
-  document.querySelectorAll('.bg-color-item').forEach(el => {
-    el.classList.toggle('active', el.getAttribute('onclick').includes(`'${colorId}'`));
-  });
-  document.getElementById('bgPreview').style.display = 'none';
-
-  showToast('主题已更换 ✓', 'success');
-}
-
-function handleBgUpload(input) {
-  const file = input.files[0];
-  if (!file) return;
-  if (!file.type.startsWith('image/')) { showToast('请选择图片文件', 'error'); return; }
-  if (file.size > 5 * 1024 * 1024) { showToast('图片不能超过5MB', 'error'); return; }
-
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const base64 = e.target.result;
-    const settings = { type: 'custom', customImage: base64 };
-    saveBgSettings(settings);
-    applyBgSettings();
-    document.getElementById('bgPreviewImg').src = base64;
-    document.getElementById('bgPreviewLabel').textContent = file.name;
-    document.getElementById('bgPreview').style.display = 'block';
-    document.querySelectorAll('.bg-color-item').forEach(el => el.classList.remove('active'));
-    showToast('自定义背景已应用 ✓', 'success');
-  };
-  reader.readAsDataURL(file);
-}
-
-function removeCustomBg() {
-  const settings = { type: 'color', colorId: 'bluesky' };
-  saveBgSettings(settings);
-  applyBgSettings();
-  document.getElementById('bgPreview').style.display = 'none';
-  document.querySelectorAll('.bg-color-item').forEach(el => {
-    el.classList.toggle('active', el.getAttribute('onclick').includes(`'bluesky'`));
-  });
-  showToast('已恢复蓝天白云主题', 'success');
-}
-
-// ============================================================
-// 导出功能
-// ============================================================
-function exportText() {
-  const dateStr = currentDate;
-  const records = getRecords();
-  const rec = records[dateStr] || {};
-
-  let content = `复盘笔记 - ${formatDateCN(dateStr)}\n${'='.repeat(40)}\n\n`;
-
-  QUESTIONS.forEach((q, i) => {
-    const num = i + 1;
-    const qd = rec['q' + num] || {};
-    const original = qd.original || '';
-    const polished = qd.polished || '';
-
-    content += `【问题${num}】${q.text}\n`;
-    content += `-`.repeat(30) + '\n';
-    if (original.trim()) content += `📝 原文：\n${original}\n`;
-    if (polished.trim()) content += `\n✨ AI润色版：\n${polished}\n`;
-    if (!original.trim() && !polished.trim()) content += '（未填写）\n';
-    content += '\n';
-  });
-
-  content += `${'='.repeat(40)}\n`;
-  content += `生成时间：${new Date().toLocaleString('zh-CN')}\n`;
-  content += `复盘册子 v3.1`;
-
-  document.getElementById('exportModalTitle').textContent = '📄 导出文本预览';
-  document.getElementById('exportPreview').textContent = content;
-  const confirmBtn = document.getElementById('exportConfirmBtn');
-  confirmBtn.textContent = '📥 下载 TXT';
-  confirmBtn.onclick = function() {
-    downloadText(content, `复盘笔记_${dateStr}.txt`);
-    closeExportModal();
-    showToast('文本已下载 ✓', 'success');
-  };
-  document.getElementById('exportModal').classList.add('show');
-}
-
-function downloadText(content, filename) {
-  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = filename;
-  document.body.appendChild(a); a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-
-function exportImage() {
-  showToast('正在生成图片...', 'default');
-
-  const container = document.createElement('div');
-  container.style.cssText = `position:fixed;left:-9999px;top:0;width:800px;padding:40px;background:linear-gradient(135deg,#e8f4fd 0%,#d6ecfa 100%);font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;color:#1a3a5c;`;
-
-  const dateStr = currentDate;
-  const records = getRecords();
-  const rec = records[dateStr] || {};
-
-  let html = `<div style="text-align:center;margin-bottom:30px;"><h1 style="font-size:28px;color:#0c2d4a;margin:0;">📖 复盘笔记</h1><p style="font-size:16px;color:#2b7cbf;margin:10px 0 0;">${formatDateCN(dateStr)}</p></div>`;
-
-  QUESTIONS.forEach((q, i) => {
-    const num = i + 1;
-    const qd = rec['q' + num] || {};
-    const text = qd.polished || qd.original || '';
-    html += `<div style="background:rgba(255,255,255,0.9);border-radius:12px;padding:20px;margin-bottom:16px;border:1px solid #b8d8f0;"><div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;"><span style="width:28px;height:28px;border-radius:50%;background:#4a90d9;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:bold;">${num}</span><span style="font-size:15px;font-weight:600;color:#0c2d4a;">${q.text}</span></div><div style="font-size:14px;line-height:1.8;color:#1a3a5c;white-space:pre-wrap;">${text.trim() || '<span style="color:#8899aa;font-style:italic;">（未填写）</span>'}</div></div>`;
-  });
-
-  html += `<div style="text-align:center;margin-top:30px;padding-top:20px;border-top:1px solid #b8d8f0;"><p style="font-size:12px;color:#6b9ab8;margin:0;">复盘册子 v3.1 · ${new Date().toLocaleString('zh-CN')}</p></div>`;
-
-  container.innerHTML = html;
-  document.body.appendChild(container);
-
-  if (typeof html2canvas === 'undefined') {
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
-    script.onload = () => doExportImage(container);
-    script.onerror = () => { document.body.removeChild(container); showToast('图片库加载失败，请检查网络', 'error'); };
-    document.head.appendChild(script);
-  } else {
-    doExportImage(container);
-  }
-}
-
-function doExportImage(container) {
-  html2canvas(container, { backgroundColor: '#d6ecfa', scale: 2, useCORS: true, logging: false }).then(canvas => {
-    document.body.removeChild(container);
-    const url = canvas.toDataURL('image/png');
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if (isMobile) {
-      closeExportModal();
-      var viewer = document.createElement('div');
-      viewer.id = 'imgViewerFull';
-      viewer.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;';
-      viewer.innerHTML = '<div style="color:#fff;font-size:15px;margin-bottom:15px;text-align:center;">OK! Full review picture generated<br><br>Long-press below to save to album</div>' +
-        '<img src="' + url + '" style="max-width:90%;max-height:70%;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.5);">' +
-        '<div style="color:#aaa;font-size:13px;margin-top:15px;">Tap dark area to close</div>';
-      viewer.addEventListener('click', function(e) { if(e.target === viewer) viewer.remove(); });
-      document.body.appendChild(viewer);
-      showToast('Long press to save photo');
-    } else {
-      var a = document.createElement('a');
-      a.href = url; a.download = 'review_' + currentDate + '.png';
-      document.body.appendChild(a); a.click();
-      document.body.removeChild(a);
-      showToast('Image downloaded OK');
-    }  }).catch(err => {
-    document.body.removeChild(container);
-    showToast('图片生成失败：' + err.message, 'error');
-  });
-}
-
-function closeExportModal() { document.getElementById('exportModal').classList.remove('show'); }
-
-// ============================================================
-// 分享功能
-// ============================================================
-function showAIMenu(num) {
-  const menu = document.getElementById('aiMenuOverlay');
-  menu.classList.add('show');
-  menu.dataset.num = num;
-}
-function closeAIMenu() {
-  document.getElementById('aiMenuOverlay').classList.remove('show');
-}
-function doAI(action) {
-  const menu = document.getElementById('aiMenuOverlay');
-  const num = parseInt(menu.dataset.num);
-  closeAIMenu();
-  runAI(num, action);
-}
-
-function shareAllQuestions() {
-  const dateStr = formatDateCN(currentDate);
-  const lines = [`📖 复盘笔记 · ${dateStr}`, ''];
-  for (let i = 1; i <= 5; i++) {
-    const qd = getQuestionData(i);
-    const q = QUESTIONS[i - 1];
-    const original = qd.original || '';
-    const polished = qd.polished || '';
-    const text = polished || original;
-    if (text.trim()) {
-      lines.push(`━━━ 第${i}题：${q.text} ━━━`);
-      if (polished && polished !== original) {
-        lines.push(`✨ ${polished}`);
-      } else {
-        lines.push(`📝 ${original}`);
-      }
-      lines.push('');
-    }
-  }
-  lines.push('复盘册子 v3.1');
-  currentShareText = lines.join('\n');
-  document.getElementById('shareModalTitle').textContent = `📤 全篇分享 · ${dateStr}`;
-  document.getElementById('sharePreview').textContent = currentShareText;
-  document.getElementById('shareModal').classList.add('show');
-}
-
-let currentShareNum = null;
-let currentShareText = '';
-
-function shareQuestion(num) {
-  currentShareNum = num;
-  const qd = getQuestionData(num);
-  const q = QUESTIONS[num - 1];
-  const original = qd.original || '';
-  const polished = qd.polished || '';
-  const dateStr = formatDateCN(currentDate);
-
-  const lines = [
-    `📖 复盘笔记 · ${dateStr}`,
-    `━━━ 第${num}题 ━━━`,
-    `❓ ${q.text}`,
-    ``,
-    `📝 原文：${original || '（未填写）'}`,
-    ``,
-    `✨ AI润色：${polished || '（未润色）'}`,
-    ``,
-    `复盘册子 v3.1`
-  ].join('\n');
-
-  currentShareText = lines;
-  document.getElementById('shareModalTitle').textContent = `📤 第${num}题 · ${q.hint}`;
-  document.getElementById('sharePreview').textContent = lines;
-  document.getElementById('shareModal').classList.add('show');
-}
-
-function closeShareModal() {
-  document.getElementById('shareModal').classList.remove('show');
-  currentShareNum = null;
-}
-
-function copyShareText() {
-  navigator.clipboard.writeText(currentShareText).then(() => {
-    closeShareModal();
-    showToast('已复制到剪贴板 ✓', 'success');
-  }).catch(() => {
-    const ta = document.createElement('textarea');
-    ta.value = currentShareText;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    closeShareModal();
-    showToast('已复制到剪贴板 ✓', 'success');
-  });
-}
-
-function confirmSaveImage() {
-  if (!currentShareNum && !currentShareText) return;
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  const msg = isMobile
-    ? '🖼️ 是否保存图片到手机？\n\n图片会保存到系统相册或下载目录，可在「文件管理」或「相册」中查看。'
-    : '🖼️ 是否保存图片到本地？\n\n图片会保存到浏览器默认下载目录。';
-  if (confirm(msg)) {
-    downloadShareImage();
-  }
-}
-
-function downloadShareImage() {
-  if (!currentShareNum && !currentShareText) return;
-  const num = currentShareNum;
-  const qd = getQuestionData(num);
-  const q = QUESTIONS[num - 1];
-  const text = (qd.polished || qd.original || '').trim() || '（未填写）';
-
-  const container = document.createElement('div');
-  container.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:540px;padding:40px 32px;background:var(--bg);';
-
-  container.innerHTML = `
-    <div style="text-align:center;margin-bottom:32px;">
-      <div style="font-size:13px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">复盘册子</div>
-      <h1 style="font-size:28px;color:var(--text-strong);margin:0;font-weight:700;">第${num}题</h1>
-      <p style="font-size:15px;color:var(--accent);margin:10px 0 0;">${q.text}</p>
-    </div>
-    <div style="background:var(--card);border-radius:16px;padding:24px;border:1px solid var(--border);margin-bottom:24px;">
-      <div style="font-size:13px;color:var(--muted);margin-bottom:12px;font-weight:600;">${q.hint}</div>
-      <div style="font-size:15px;line-height:1.9;color:var(--text-strong);white-space:pre-wrap;">${text}</div>
-    </div>
-    <div style="text-align:center;padding-top:16px;border-top:1px solid var(--border);">
-      <span style="font-size:11px;color:var(--muted);">📖 复盘册子 · ${formatDateCN(currentDate)}</span>
-    </div>
-  `;
-  document.body.appendChild(container);
-
-  if (typeof html2canvas === 'undefined') {
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
-    script.onload = () => doShareImage(container, num);
-    script.onerror = () => { document.body.removeChild(container); showToast('图片库加载失败', 'error'); };
-    document.head.appendChild(script);
-  } else {
-    doShareImage(container, num);
-  }
-}
-
-function doShareImage(container, num) {
-  html2canvas(container, { backgroundColor: null, scale: 2, useCORS: true }).then(canvas => {
-    document.body.removeChild(container);
-    const url = canvas.toDataURL('image/png');
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if (isMobile) {
-      closeShareModal();
-      var viewer = document.createElement('div');
-      viewer.id = 'imgViewer';
-      viewer.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;';
-      viewer.innerHTML = '<div style="color:#fff;font-size:15px;margin-bottom:15px;text-align:center;">OK! Picture generated<br><br>Long-press image below to save</div>' +
-        '<img src="' + url + '" style="max-width:90%;max-height:70%;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.5);">' +
-        '<div style="color:#aaa;font-size:13px;margin-top:15px;">Tap dark area to close</div>';
-      viewer.addEventListener('click', function(e) { if(e.target === viewer) viewer.remove(); });
-      document.body.appendChild(viewer);
-      showToast('Long press to save photo');
-    } else {
-      var a = document.createElement('a');
-      a.href = url; a.download = 'review_' + num + '_' + currentDate + '.png';
-      document.body.appendChild(a); a.click();
-      document.body.removeChild(a);
-      closeShareModal();
-      showToast('Image saved to downloads');
-    }
-    showToast('图片生成失败', 'error');
-  });
-}
-
-function nativeShare() {
-  if (navigator.share) {
-    navigator.share({ title: '复盘笔记', text: currentShareText, url: location.href })
-      .then(() => closeShareModal())
-      .catch(() => {
-        // 用户取消分享或失败，降级为复制文字
-        copyShareText();
-      });
-  } else {
-    // 不支持原生分享，直接复制文字
-    copyShareText();
-  }
-}
-
-// ============================================================
-// PWA Service Worker
-// ============================================================
-document.getElementById('aiMenuOverlay').addEventListener('click', function(e) {
-  if (e.target === this) closeAIMenu();
-});
-
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
-  });
-}
 </script>
 </body>
 </html>

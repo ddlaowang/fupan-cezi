@@ -710,7 +710,7 @@ async function runFix(num){
   const btn=document.getElementById('fb'+num);
   btn.disabled=true;btn.textContent='…';
   try{
-    const r=await callAI(AI_PROMpts.fix(text));
+    const r=await callAI(AI_PROMPTS.fix(text));
     document.getElementById('a'+num).value=r;saveField(num);
     showToast('已修正','success');
   }catch(e){showToast('修正失败:'+e.message,'error')}

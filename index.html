@@ -562,8 +562,7 @@ function startRecog(){
   recognition.onerror=function(ev){
     const fatal=['not-allowed','service-not-allowed','audio-capture','network'];
     if(fatal.indexOf(ev.error)!==-1){
-      const m={not-allowed:'请允许麦克风权限','service-not-allowed:'请用Chrome浏览器',
-        audio-capture:'未检测到麦克风',network:'网络错误'};
+      const m={'not-allowed':'请允许麦克风权限','service-not-allowed':'请用Chrome浏览器','audio-capture':'未检测到麦克风','network':'网络错误'};
       showToast(m[ev.error]||'语音出错','error');stopVoice();return;
     }
     if(ev.error==='no-speech'){if(isRecording&&currentQ)setTimeout(()=>{if(isRecording&&currentQ)startRecog()},1200);return}
@@ -803,7 +802,7 @@ function exportImage(){
   if(typeof html2canvas==='undefined'){
     const s=document.createElement('script');
     s.src='https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
-    s.onload={()=>doImgExport(c);s.onerror()=>{document.body.removeChild(c);showToast('加载失败','error')}};
+    s.onload=()=>doImgExport(c);s.onerror=()=>{document.body.removeChild(c);showToast('加载失败','error')};
     document.head.appendChild(s);
   }else{doImgExport(c)}
 }
@@ -863,7 +862,7 @@ function saveShareImage(){
   if(typeof html2canvas==='undefined'){
     const s=document.createElement('script');
     s.src='https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
-    s.onload()=>doShareImg(c);s.onerror()=>{document.body.removeChild(c);showToast('加载失败','error')};
+    s.onload=()=>doShareImg(c);s.onerror=()=>{document.body.removeChild(c);showToast('加载失败','error')};
     document.head.appendChild(s);
   }else{doShareImg(c)}
 }

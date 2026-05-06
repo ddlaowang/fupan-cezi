@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="复盘册子">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
-<title>复盘册子 3.4</title>
+<title>v3.8 | 复盘册子 3.4</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
@@ -2181,12 +2181,25 @@ function doExportImage(container) {
   html2canvas(container, { backgroundColor: '#d6ecfa', scale: 2, useCORS: true, logging: false }).then(canvas => {
     document.body.removeChild(container);
     const url = canvas.toDataURL('image/png');
-    const a = document.createElement('a');
-    a.href = url; a.download = `复盘笔记_${currentDate}.png`;
-    document.body.appendChild(a); a.click();
-    document.body.removeChild(a);
-    showToast('图片已下载 ✓', 'success');
-  }).catch(err => {
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (isMobile) {
+      closeExportModal();
+      var viewer = document.createElement('div');
+      viewer.id = 'imgViewerFull';
+      viewer.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;';
+      viewer.innerHTML = '<div style="color:#fff;font-size:15px;margin-bottom:15px;text-align:center;">OK! Full review picture generated<br><br>Long-press below to save to album</div>' +
+        '<img src="' + url + '" style="max-width:90%;max-height:70%;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.5);">' +
+        '<div style="color:#aaa;font-size:13px;margin-top:15px;">Tap dark area to close</div>';
+      viewer.addEventListener('click', function(e) { if(e.target === viewer) viewer.remove(); });
+      document.body.appendChild(viewer);
+      showToast('Long press to save photo');
+    } else {
+      var a = document.createElement('a');
+      a.href = url; a.download = 'review_' + currentDate + '.png';
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      showToast('Image downloaded OK');
+    }  }).catch(err => {
     document.body.removeChild(container);
     showToast('图片生成失败：' + err.message, 'error');
   });
@@ -2340,16 +2353,26 @@ function doShareImage(container, num) {
   html2canvas(container, { backgroundColor: null, scale: 2, useCORS: true }).then(canvas => {
     document.body.removeChild(container);
     const url = canvas.toDataURL('image/png');
-    const a = document.createElement('a');
-    a.href = url; a.download = `复盘笔记_第${num}题_${currentDate}.png`;
-    document.body.appendChild(a); a.click();
-    document.body.removeChild(a);
-    closeShareModal();
-    const isMobile2 = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    showToast(isMobile2 ? '图片已保存，请在相册或文件管理中查看 📱' : '图片已保存到下载目录 📂', 'success');
-  }).catch(err => {
-    document.body.removeChild(container);
-    closeShareModal();
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (isMobile) {
+      closeShareModal();
+      var viewer = document.createElement('div');
+      viewer.id = 'imgViewer';
+      viewer.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;';
+      viewer.innerHTML = '<div style="color:#fff;font-size:15px;margin-bottom:15px;text-align:center;">OK! Picture generated<br><br>Long-press image below to save</div>' +
+        '<img src="' + url + '" style="max-width:90%;max-height:70%;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.5);">' +
+        '<div style="color:#aaa;font-size:13px;margin-top:15px;">Tap dark area to close</div>';
+      viewer.addEventListener('click', function(e) { if(e.target === viewer) viewer.remove(); });
+      document.body.appendChild(viewer);
+      showToast('Long press to save photo');
+    } else {
+      var a = document.createElement('a');
+      a.href = url; a.download = 'review_' + num + '_' + currentDate + '.png';
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      closeShareModal();
+      showToast('Image saved to downloads');
+    }
     showToast('图片生成失败', 'error');
   });
 }

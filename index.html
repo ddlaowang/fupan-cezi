@@ -432,8 +432,7 @@ function render(){
           '<button class="voice-big" id="vb'+n+'" onclick="toggleVoice('+n+')">🎤</button>'+
         '</div>'+
       '</div>'+
-      '<textarea class="answer-area" id="a'+n+
-        '" placeholder="点击🎤录音，或直接输入…" oninput="saveField('+n+')"></textarea>'+
+      '<div class="answer-area" id="a'+n+'" contenteditable="true" data-placeholder="\u70b9\u51fb\ud83c\udfa4\u5f55\u97f3\uff0c\u6216\u76f4\u63a5\u8f93\u5165\u2026" oninput="saveField('+n+')"></div>'+
       '<div class="ai-bar">'+
         '<button class="ai-btn" id="ab'+n+'" onclick="openAI('+n+')"><span class="spin"></span> AI润色</button>'+
         '<button class="fix-btn" id="fb'+n+'" onclick="runFix('+n+')">错别字</button>'+

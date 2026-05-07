@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" "black-translucent">
 <meta name="apple-mobile-web-app-title" content="复盘册子">
-<title>复盘册子 v3.9.4</title>
+<title>复盘册子 v3.9.5</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -61,7 +61,23 @@ body{
 }
 
 /* ===== 主内容 ===== */
-.main{max-width:640px;margin:0 auto;padding:12px 14px}
+.main{max-width:640px;margin:0 auto;padding:12px 14px}/* contenteditable input */
+.answer-area:empty:before{content:attr(data-placeholder);color:#aaa;}
+.answer-area:focus{border-bottom:2px solid(var(--accent));}
+
+.q-input{
+  width:100%;min-height:80px;padding:12px;
+  border:1px solid var(--border);border-radius:8px;
+  font-size:15px;line-height:1.6;outline:none;
+  background:var(--card);color:var(--text);
+  box-sizing:border-box;word-break:break-all;
+}
+.q-input:empty:before{
+  content:attr(data-placeholder);color:#aaa;
+}
+.q-input:focus{border-color:var(--accent);}
+
+
 
 /* ===== 问题块（极简卡片） ===== */
 .q-block{
@@ -119,7 +135,7 @@ body{
   width:100%;min-height:80px;
   background:transparent;border:none;
   color:var(--text-strong);font-size:15px;line-height:1.85;
-  padding:4px 14px 12px;resize:none;outline:none;
+  padding:4px 14px 12px;outline:none;
   font-family:inherit;
 }
 .answer-area::placeholder{color:var(--muted);font-size:13px}
@@ -250,7 +266,7 @@ body{
 
 <!-- 顶栏 -->
 <div class="header">
-  <h1>复盘册子 <span>v3.9.4</span></h1>
+  <h1>复盘册子 <span>v3.9.5</span></h1>
   <div class="header-right">
     <button class="icon-btn" onclick="showHistory()">历史</button>
     <div class="date-badge" id="dateDisplay" onclick="showDatePicker()"></div>
@@ -338,7 +354,7 @@ const QUESTIONS=[
   {text:'重新来怎么做？',hint:'改进'},
   {text:'下次具体怎么做？',hint:'行动'}
 ];
-const STORAGE_KEY='fanpan_v3.9.4';
+const STORAGE_KEY='fanpan_v3.9.5';
 const AUDIO_KEY='fanpan_audio_';
 const DEFAULT_AI_KEY='sk-bmpjwdksyuqvqtdullaehtxwnfvclpffkjvlpglkqhuphtig';
 const AI_CH=[
@@ -434,7 +450,7 @@ function loadDay(d){
   currentDate=d;
   const r=getRecords()[d]||{};
   for(let i=1;i<=6;i++){
-    document.getElementById('a'+i).value=r['q'+i]||'';
+    {const e=document.getElementById('a'+i);if(e){if(e.tagName==='TEXTAREA'){e.value=r['q'+i]||'';}else{e.innerText=r['q'+i]||'';}}}
     updatePlayBtn(i);
   }
   document.getElementById('dateDisplay').textContent=formatDateCN(d);
@@ -737,7 +753,7 @@ async function autoPolish(num,text){
 // 历史
 // ============================================================
 function showHistory(){
-  for(let i=1;i<=6;i++){const v=document.getElementById('a'+i).value;if(v){const r=getRecords();if(!r[currentDate])r[currentDate]={};r[currentDate]['q'+i]=v;r[currentDate].savedAt=new Date().toISOString();saveRecords(r)}}
+  for(let i=1;i<=6;i++){const v=document((document.getElementById('a'+i).tagName==='TEXTAREA')?document.getElementById('a'+i).value:document.getElementById('a'+i).innerText);if(v){const r=getRecords();if(!r[currentDate])r[currentDate]={};r[currentDate]['q'+i]=v;r[currentDate].savedAt=new Date().toISOString();saveRecords(r)}}
   const r=getRecords();const dates=Object.keys(r).sort().reverse();
   const el=document.getElementById('historyList');
   if(!dates.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:13px">还没有记录<br>从今天开始吧</div>';return}
@@ -764,7 +780,7 @@ function exportText(){
     if(v.trim())t+=v+'\n';else t+='（未填写）\n';
     t+='\n';
   });
-  t+=('=').repeat(36)+'\n生成时间：'+new Date().toLocaleString('zh-CN')+'\n复盘册子 v3.9.4';
+  t+=('=').repeat(36)+'\n生成时间：'+new Date().toLocaleString('zh-CN')+'\n复盘册子 v3.9.5';
   document.getElementById('exportTitle').textContent='导出文本';
   document.getElementById('exportPreview').textContent=t;
   document.getElementById('exportConfirmBtn').onclick=()=>{
@@ -798,7 +814,7 @@ function exportImage(){
       '<span style="font-size:14px;font-weight:600;color:#0c2d4a">'+q.text+'</span></div>'+
       '<div style="font-size:14px;line-height:1.85;color:#1a3a5c;white-space:pre-wrap">'+escHtml(v)+'</div></div>';
   });
-  h+='<div style="text-align:center;margin-top:24px;padding-top:16px;border-top:1px solid #b8d8f0"><p style="font-size:11px;color:#6b9ab8;margin:0">复盘册子 v3.9.4 · '+new Date().toLocaleString('zh-CN')+'</p></div>';
+  h+='<div style="text-align:center;margin-top:24px;padding-top:16px;border-top:1px solid #b8d8f0"><p style="font-size:11px;color:#6b9ab8;margin:0">复盘册子 v3.9.5 · '+new Date().toLocaleString('zh-CN')+'</p></div>';
   c.innerHTML=h;document.body.appendChild(c);
   if(typeof html2canvas==='undefined'){
     const s=document.createElement('script');
@@ -833,7 +849,7 @@ function closeExport(){document.getElementById('exportOverlay').classList.remove
 let shareText='';
 function shareQuestion(num){
   const q=QUESTIONS[num-1];const v=document.getElementById('a'+num).value||'';
-  shareText='复盘笔记 · '+formatDateCN(currentDate)+'\n━━ 第'+num+'题 ━━\n❓ '+q.text+'\n\n'+(v||'（未填写）')+'\n\n复盘册子 v3.9.4';
+  shareText='复盘笔记 · '+formatDateCN(currentDate)+'\n━━ 第'+num+'题 ━━\n❓ '+q.text+'\n\n'+(v||'（未填写）')+'\n\n复盘册子 v3.9.5';
   document.getElementById('shareTitle').textContent='第'+num+'题·'+q.hint;
   document.getElementById('sharePreview').textContent=shareText;
   document.getElementById('shareOverlay').classList.add('show');
@@ -858,7 +874,7 @@ function saveShareImage(){
   c.innerHTML='<div style="text-align:center;margin-bottom:28px"><div style="font-size:12px;color:var(--muted);letter-spacing:2px">复盘册子</div><h1 style="font-size:26px;color:#0c2d4a;margin:0">第'+num+'题</h1><p style="font-size:15px;color:#2b7cbf;margin:6px 0 0">'+q.text+'</p></div>'+
     '<div style="background:rgba(255,255,255,.92);border-radius:14px;padding:22px;border:1px solid #b8d8f0">'+
     '<div style="font-size:14px;line-height:1.9;color:#1a3a5c;white-space:pre-wrap">'+escHtml(v||'（未填写）')+'</div></div>'+
-    '<div style="text-align:center;margin-top:20px;padding-top:14px;border-top:1px solid #b8d8f0"><span style="font-size:11px;color:#6b9ab8">复盘册子 v3.9.4 · '+formatDateCN(currentDate)+'</span></div>';
+    '<div style="text-align:center;margin-top:20px;padding-top:14px;border-top:1px solid #b8d8f0"><span style="font-size:11px;color:#6b9ab8">复盘册子 v3.9.5 · '+formatDateCN(currentDate)+'</span></div>';
   document.body.appendChild(c);
   if(typeof html2canvas==='undefined'){
     const s=document.createElement('script');

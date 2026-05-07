@@ -397,7 +397,9 @@ function getRecords(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'
 function saveRecords(r){localStorage.setItem(STORAGE_KEY,JSON.stringify(r))}
 
 function saveField(num){
-  const v=document.getElementById('a'+num).value;
+  const e=document.getElementById('a'+num);
+  if(!e)return;
+  const v=e.tagName==='TEXTAREA'?e.value.trim():e.innerText.trim();
   const r=getRecords();
   if(!r[currentDate])r[currentDate]={};
   if(!r[currentDate]['q'+num])r[currentDate]['q'+num]='';

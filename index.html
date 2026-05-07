@@ -892,6 +892,8 @@ function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(
 window.onload=function(){
   render();
   loadDay(getTodayStr());
+  // 微信内置浏览器兼容：延迟确保DOM渲染
+  setTimeout(()=>{ render(); loadDay(getTodayStr()); }, 500);
 };
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){

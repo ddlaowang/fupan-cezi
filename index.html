@@ -16,7 +16,7 @@
 
 <meta name="apple-mobile-web-app-title" content="复盘册子">
 
-<title>复盘册子 v3.9.4</title>
+<title>复盘册子 v3.9.7</title>
 
 <style>
 
@@ -245,6 +245,10 @@ body{
   font-family:inherit;
 
 }
+/* contenteditable 占位符 */
+.answer-area:empty:before{content:attr(data-placeholder);color:var(--muted);pointer-events:none}
+.answer-area:focus{outline:none;border-bottom:2px solid var(--accent)}
+
 
 .answer-area::placeholder{color:var(--muted);font-size:13px}
 
@@ -834,9 +838,9 @@ function render(){
 
       '</div>'+
 
-      '<textarea class="answer-area" id="a'+n+
+      '<div class="answer-area" contenteditable="true" id="a'+n+
 
-        '" placeholder="点击🎤录音，或直接输入…" oninput="saveField('+n+')"></textarea>'+
+        '" data-placeholder="点击🎤录音，或直接输入…" oninput="saveField('+n+')"></div>'+
 
       '<div class="ai-bar">'+
 

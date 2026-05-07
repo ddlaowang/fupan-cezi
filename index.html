@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" "black-translucent">
 <meta name="apple-mobile-web-app-title" content="复盘册子">
-<title>复盘册子 v3.9.5</title>
+<title>复盘册子 v3.9.6</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -61,9 +61,9 @@ body{
 }
 
 /* ===== 主内容 ===== */
-.main{max-width:640px;margin:0 auto;padding:12px 14px}/* contenteditable input */
-.answer-area:empty:before{content:attr(data-placeholder);color:#aaa;}
-.answer-area:focus{border-bottom:2px solid(var(--accent));}
+.main{max-width:640px;margin:0 auto;padding:12px 14px;overflow:visible;}/* contenteditable input */
+.answer-area:empty:before{content:attr(data-placeholder);color:#aaa;pointer-events:none;display:block;}
+.answer-area:focus{border-bottom:2px solid var(--accent);}
 
 .q-input{
   width:100%;min-height:80px;padding:12px;
@@ -81,10 +81,12 @@ body{
 
 /* ===== 问题块（极简卡片） ===== */
 .q-block{
+  display:block;
   background:var(--card);border-radius:14px;
   margin-bottom:12px;border:1px solid var(--border);
-  overflow:hidden;box-shadow:var(--shadow);
+  overflow:visible;box-shadow:var(--shadow);
   transition:border-color .2s;
+  min-height:60px;
 }
 .q-block:focus-within{border-color:var(--accent)}
 
@@ -354,7 +356,7 @@ const QUESTIONS=[
   {text:'重新来怎么做？',hint:'改进'},
   {text:'下次具体怎么做？',hint:'行动'}
 ];
-const STORAGE_KEY='fanpan_v3.9.5';
+const STORAGE_KEY='fanpan_v3.9.6';
 const AUDIO_KEY='fanpan_audio_';
 const DEFAULT_AI_KEY='sk-bmpjwdksyuqvqtdullaehtxwnfvclpffkjvlpglkqhuphtig';
 const AI_CH=[
@@ -781,7 +783,7 @@ function exportText(){
     if(v.trim())t+=v+'\n';else t+='（未填写）\n';
     t+='\n';
   });
-  t+=('=').repeat(36)+'\n生成时间：'+new Date().toLocaleString('zh-CN')+'\n复盘册子 v3.9.5';
+  t+=('=').repeat(36)+'\n生成时间：'+new Date().toLocaleString('zh-CN')+'\n复盘册子 v3.9.6';
   document.getElementById('exportTitle').textContent='导出文本';
   document.getElementById('exportPreview').textContent=t;
   document.getElementById('exportConfirmBtn').onclick=()=>{
@@ -850,7 +852,7 @@ function closeExport(){document.getElementById('exportOverlay').classList.remove
 let shareText='';
 function shareQuestion(num){
   const q=QUESTIONS[num-1];const v=document.getElementById('a'+num).value||'';
-  shareText='复盘笔记 · '+formatDateCN(currentDate)+'\n━━ 第'+num+'题 ━━\n❓ '+q.text+'\n\n'+(v||'（未填写）')+'\n\n复盘册子 v3.9.5';
+  shareText='复盘笔记 · '+formatDateCN(currentDate)+'\n━━ 第'+num+'题 ━━\n❓ '+q.text+'\n\n'+(v||'（未填写）')+'\n\n复盘册子 v3.9.6';
   document.getElementById('shareTitle').textContent='第'+num+'题·'+q.hint;
   document.getElementById('sharePreview').textContent=shareText;
   document.getElementById('shareOverlay').classList.add('show');

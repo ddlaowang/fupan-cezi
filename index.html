@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" "black-translucent">
 <meta name="apple-mobile-web-app-title" content="复盘册子">
-<title>复盘册子 v3.9.3</title>
+<title>复盘册子 v3.9.4</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -250,7 +250,7 @@ body{
 
 <!-- 顶栏 -->
 <div class="header">
-  <h1>复盘册子 <span>v3.9.3</span></h1>
+  <h1>复盘册子 <span>v3.9.4</span></h1>
   <div class="header-right">
     <button class="icon-btn" onclick="showHistory()">历史</button>
     <div class="date-badge" id="dateDisplay" onclick="showDatePicker()"></div>
@@ -338,14 +338,14 @@ const QUESTIONS=[
   {text:'重新来怎么做？',hint:'改进'},
   {text:'下次具体怎么做？',hint:'行动'}
 ];
-const STORAGE_KEY='fanpan_v39';
+const STORAGE_KEY='fanpan_v3.9.4';
 const AUDIO_KEY='fanpan_audio_';
 const DEFAULT_AI_KEY='sk-bmpjwdksyuqvqtdullaehtxwnfvclpffkjvlpglkqhuphtig';
 const AI_CH=[
-  {url:'https://api.why19.beer/v1/chat/completions',model:'Qwen/Qwen2.5-7B-Instruct',key:DEFAULT_AI_KEY},
-  {url:'https://api.why19.beer/v1/chat/completions',model:'THUDM/glm-4-flash',key:DEFAULT_AI_KEY},
+  {url:'https://api.siliconflow.cn/v1/chat/completions',model:'Qwen/Qwen2.5-7B-Instruct',key:DEFAULT_AI_KEY},
+  {url:'https://api.siliconflow.cn/v1/chat/completions',model:'THUDM/glm-4-flash',key:DEFAULT_AI_KEY},
 ];
-const WHISPER_URL='https://api.why19.beer/v1/audio/transcriptions';
+const WHISPER_URL='https://api.siliconflow.cn/v1/audio/transcriptions';
 const WHISPER_MODEL='FunAudioLLM/SenseVoiceSmall';
 let chIdx=0;
 
@@ -562,7 +562,8 @@ function startRecog(){
   recognition.onerror=function(ev){
     const fatal=['not-allowed','service-not-allowed','audio-capture','network'];
     if(fatal.indexOf(ev.error)!==-1){
-      const m={'not-allowed':'请允许麦克风权限','service-not-allowed':'请用Chrome浏览器','audio-capture':'未检测到麦克风','network':'网络错误'};
+      const m={not-allowed:'请允许麦克风权限','service-not-allowed:'请用Chrome浏览器',
+        audio-capture:'未检测到麦克风',network:'网络错误'};
       showToast(m[ev.error]||'语音出错','error');stopVoice();return;
     }
     if(ev.error==='no-speech'){if(isRecording&&currentQ)setTimeout(()=>{if(isRecording&&currentQ)startRecog()},1200);return}
@@ -704,7 +705,7 @@ async function runAI(num,action){
   finally{btn.classList.remove('loading');btn.disabled=false}
 }
 
-async function runFix(num){
+async async function runFix(num){
   const text=document.getElementById('a'+num).value.trim();
   if(!text){showToast('请先填写内容','error');return}
   const btn=document.getElementById('fb'+num);
@@ -763,7 +764,7 @@ function exportText(){
     if(v.trim())t+=v+'\n';else t+='（未填写）\n';
     t+='\n';
   });
-  t+=('=').repeat(36)+'\n生成时间：'+new Date().toLocaleString('zh-CN')+'\n复盘册子 v3.9.3';
+  t+=('=').repeat(36)+'\n生成时间：'+new Date().toLocaleString('zh-CN')+'\n复盘册子 v3.9.4';
   document.getElementById('exportTitle').textContent='导出文本';
   document.getElementById('exportPreview').textContent=t;
   document.getElementById('exportConfirmBtn').onclick=()=>{
@@ -797,12 +798,12 @@ function exportImage(){
       '<span style="font-size:14px;font-weight:600;color:#0c2d4a">'+q.text+'</span></div>'+
       '<div style="font-size:14px;line-height:1.85;color:#1a3a5c;white-space:pre-wrap">'+escHtml(v)+'</div></div>';
   });
-  h+='<div style="text-align:center;margin-top:24px;padding-top:16px;border-top:1px solid #b8d8f0"><p style="font-size:11px;color:#6b9ab8;margin:0">复盘册子 v3.9.3 · '+new Date().toLocaleString('zh-CN')+'</p></div>';
+  h+='<div style="text-align:center;margin-top:24px;padding-top:16px;border-top:1px solid #b8d8f0"><p style="font-size:11px;color:#6b9ab8;margin:0">复盘册子 v3.9.4 · '+new Date().toLocaleString('zh-CN')+'</p></div>';
   c.innerHTML=h;document.body.appendChild(c);
   if(typeof html2canvas==='undefined'){
     const s=document.createElement('script');
     s.src='https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
-    s.onload=()=>doImgExport(c);s.onerror=()=>{document.body.removeChild(c);showToast('加载失败','error')};
+    s.onload={()=>doImgExport(c);s.onerror()=>{document.body.removeChild(c);showToast('加载失败','error')}};
     document.head.appendChild(s);
   }else{doImgExport(c)}
 }
@@ -832,7 +833,7 @@ function closeExport(){document.getElementById('exportOverlay').classList.remove
 let shareText='';
 function shareQuestion(num){
   const q=QUESTIONS[num-1];const v=document.getElementById('a'+num).value||'';
-  shareText='复盘笔记 · '+formatDateCN(currentDate)+'\n━━ 第'+num+'题 ━━\n❓ '+q.text+'\n\n'+(v||'（未填写）')+'\n\n复盘册子 v3.9.3';
+  shareText='复盘笔记 · '+formatDateCN(currentDate)+'\n━━ 第'+num+'题 ━━\n❓ '+q.text+'\n\n'+(v||'（未填写）')+'\n\n复盘册子 v3.9.4';
   document.getElementById('shareTitle').textContent='第'+num+'题·'+q.hint;
   document.getElementById('sharePreview').textContent=shareText;
   document.getElementById('shareOverlay').classList.add('show');
@@ -857,12 +858,12 @@ function saveShareImage(){
   c.innerHTML='<div style="text-align:center;margin-bottom:28px"><div style="font-size:12px;color:var(--muted);letter-spacing:2px">复盘册子</div><h1 style="font-size:26px;color:#0c2d4a;margin:0">第'+num+'题</h1><p style="font-size:15px;color:#2b7cbf;margin:6px 0 0">'+q.text+'</p></div>'+
     '<div style="background:rgba(255,255,255,.92);border-radius:14px;padding:22px;border:1px solid #b8d8f0">'+
     '<div style="font-size:14px;line-height:1.9;color:#1a3a5c;white-space:pre-wrap">'+escHtml(v||'（未填写）')+'</div></div>'+
-    '<div style="text-align:center;margin-top:20px;padding-top:14px;border-top:1px solid #b8d8f0"><span style="font-size:11px;color:#6b9ab8">复盘册子 v3.9.3 · '+formatDateCN(currentDate)+'</span></div>';
+    '<div style="text-align:center;margin-top:20px;padding-top:14px;border-top:1px solid #b8d8f0"><span style="font-size:11px;color:#6b9ab8">复盘册子 v3.9.4 · '+formatDateCN(currentDate)+'</span></div>';
   document.body.appendChild(c);
   if(typeof html2canvas==='undefined'){
     const s=document.createElement('script');
     s.src='https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
-    s.onload=()=>doShareImg(c);s.onerror=()=>{document.body.removeChild(c);showToast('加载失败','error')};
+    s.onload()=>doShareImg(c);s.onerror()=>{document.body.removeChild(c);showToast('加载失败','error')};
     document.head.appendChild(s);
   }else{doShareImg(c)}
 }

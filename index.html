@@ -16,7 +16,7 @@
 
 <meta name="apple-mobile-web-app-title" content="复盘册子">
 
-<title>复盘册子 v3.9.7</title>
+<title>复盘册子 v3.9.8</title>
 
 <style>
 
@@ -768,7 +768,8 @@ function saveRecords(r){localStorage.setItem(STORAGE_KEY,JSON.stringify(r))}
 
 function saveField(num){
 
-  const v=document.getElementById('a'+num).value;
+  const _el=document.getElementById('a'+num);
+  const v=_el.tagName==='TEXTAREA'?_el.value:(_el.innerText||_el.textContent||'');
 
   const r=getRecords();
 
@@ -874,7 +875,8 @@ function loadDay(d){
 
   for(let i=1;i<=6;i++){
 
-    document.getElementById('a'+i).value=r['q'+i]||'';
+    const _e=document.getElementById('a'+i);
+    if(_e.tagName==='TEXTAREA'){_e.value=r['q'+i]||'';}else{_e.innerText=r['q'+i]||'';}
 
     updatePlayBtn(i);
 

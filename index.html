@@ -1,1808 +1,923 @@
 <!DOCTYPE html>
-
 <html lang="zh-CN">
-
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
 <meta name="theme-color" content="#4a90d9">
-
 <meta name="apple-mobile-web-app-capable" content="yes">
-
 <meta name="apple-mobile-web-app-status-bar-style" "black-translucent">
-
 <meta name="apple-mobile-web-app-title" content="复盘册子">
-
 <title>复盘册子 v3.9.5</title>
-
 <style>
-
 *{margin:0;padding:0;box-sizing:border-box}
-
 :root{
-
   --bg:#e8f4fd;--card:#fff;--text:#1a3a5c;--text-strong:#0c2d4a;
-
   --muted:#5a8aa8;--accent:#1a6baa;--accent2:#3a8acc;
-
   --border:#b8d8f0;--input-bg:#f0f6fc;--success:#16a34a;
-
   --shadow:0 2px 12px rgba(26,107,170,0.08);
-
 }
-
 body{
-
   font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;
-
   background:var(--bg);color:var(--text);
-
   min-height:100vh;padding-bottom:100px;
-
 }
-
-
 
 /* ===== 极简顶栏 ===== */
-
 .header{
-
   background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);
-
   padding:10px 16px;display:flex;justify-content:space-between;align-items:center;
-
   position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border);
-
 }
-
 .header h1{font-size:17px;font-weight:700;color:var(--text-strong)}
-
 .header h1 span{color:var(--accent);font-size:11px;font-weight:400;margin-left:4px}
-
 .header-right{display:flex;align-items:center;gap:6px}
-
 .icon-btn{
-
   height:30px;padding:0 10px;border-radius:15px;
-
   background:transparent;border:1px solid var(--border);cursor:pointer;
-
   display:flex;align-items:center;gap:3px;
-
   font-size:12px;color:var(--text);transition:all .2s;font-family:inherit;
-
 }
-
 .icon-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
-
 .date-badge{
-
   font-size:11px;color:#fff;font-weight:600;
-
   background:var(--accent);padding:4px 12px;border-radius:12px;
-
 }
-
-
 
 /* ===== 录音状态条 ===== */
-
 .rec-bar{
-
   display:none;position:fixed;top:0;left:0;right:0;
-
   background:linear-gradient(90deg,#e94560,#7c3aed);
-
   padding:8px 16px;z-index:200;
-
   align-items:center;justify-content:space-between;
-
   color:#fff;font-size:13px;font-weight:600;
-
 }
-
 .rec-bar.show{display:flex}
-
 .rec-dot{width:8px;height:8px;border-radius:50%;background:#fff;animation:blink 1s infinite}
-
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-
 .rec-stop{
-
   padding:4px 14px;border-radius:16px;background:rgba(255,255,255,.2);
-
   border:1px solid rgba(255,255,255,.5);color:#fff;font-size:12px;
-
   cursor:pointer;font-family:inherit;
-
 }
-
-
 
 /* ===== 主内容 ===== */
+.main{max-width:640px;margin:0 auto;padding:12px 14px}/* contenteditable input */
+.answer-area:empty:before{content:attr(data-placeholder);color:#aaa;}
+.answer-area:focus{border-bottom:2px solid(var(--accent));}
 
-.main{max-width:640px;margin:0 auto;padding:12px 14px}
+.q-input{
+  width:100%;min-height:80px;padding:12px;
+  border:1px solid var(--border);border-radius:8px;
+  font-size:15px;line-height:1.6;outline:none;
+  background:var(--card);color:var(--text);
+  box-sizing:border-box;word-break:break-all;
+}
+.q-input:empty:before{
+  content:attr(data-placeholder);color:#aaa;
+}
+.q-input:focus{border-color:var(--accent);}
 
 
 
 /* ===== 问题块（极简卡片） ===== */
-
 .q-block{
-
   background:var(--card);border-radius:14px;
-
   margin-bottom:12px;border:1px solid var(--border);
-
   overflow:hidden;box-shadow:var(--shadow);
-
   transition:border-color .2s;
-
 }
-
 .q-block:focus-within{border-color:var(--accent)}
 
-
-
 .q-head{
-
   display:flex;align-items:center;justify-content:space-between;
-
   padding:12px 14px 8px;
-
 }
-
 .q-head-left{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
-
 .q-num{
-
   width:24px;height:24px;border-radius:50%;
-
   background:var(--accent);color:#fff;
-
   font-size:12px;font-weight:700;
-
   display:flex;align-items:center;justify-content:center;flex-shrink:0;
-
 }
-
 .q-label{font-size:14px;font-weight:700;color:var(--text-strong)}
-
 .q-hint{font-size:11px;color:var(--muted);margin-left:2px}
-
 .q-head-right{display:flex;align-items:center;gap:4px;flex-shrink:0}
 
-
-
 /* 大录音按钮 */
-
 .voice-big{
-
   width:40px;height:40px;border-radius:50%;
-
   background:linear-gradient(135deg,var(--accent),var(--accent2));
-
   border:none;cursor:pointer;
-
   display:flex;align-items:center;justify-content:center;
-
   font-size:18px;flex-shrink:0;
-
   transition:all .2s;box-shadow:0 2px 8px rgba(26,106,170,.25);
-
 }
-
 .voice-big:hover{transform:scale(1.08);filter:brightness(1.1)}
-
 .voice-big.recording{
-
   background:linear-gradient(135deg,#e94560,#ff3d5a);
-
   animation:pulse-rec 1s infinite;
-
 }
-
 @keyframes pulse-rec{
-
   0%,100%{box-shadow:0 0 0 0 rgba(233,69,96,.4)}
-
   50%{box-shadow:0 0 0 10px rgba(233,69,96,0)}
-
 }
-
-
 
 .play-small{
-
   width:28px;height:28px;border-radius:50%;
-
   background:var(--success);border:none;cursor:pointer;
-
   display:none;align-items:center;justify-content:center;
-
   font-size:12px;flex-shrink:0;color:#fff;
-
 }
-
 .play-small.show{display:flex}
 
-
-
 /* 文本输入区（无Tab，直接一个textarea） */
-
 .answer-area{
-
   width:100%;min-height:80px;
-
   background:transparent;border:none;
-
   color:var(--text-strong);font-size:15px;line-height:1.85;
-
-  padding:4px 14px 12px;resize:none;outline:none;
-
+  padding:4px 14px 12px;outline:none;
   font-family:inherit;
-
 }
-.answer-area:empty:before{content:attr(data-placeholder);color:var(--text-muted,#999);pointer-events:none;}
-.answer-area:focus{border-bottom:2px solid var(--accent,#4a90d9);}
-
-
 .answer-area::placeholder{color:var(--muted);font-size:13px}
 
-
-
 /* AI工具条（极简，融入底部） */
-
 .ai-bar{
-
   display:flex;align-items:center;justify-content:space-between;
-
   padding:6px 14px 10px;border-top:1px solid var(--border);
-
 }
-
 .ai-btn{
-
   padding:4px 10px;border-radius:12px;
-
   background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.2);
-
   color:#7c3aed;cursor:pointer;font-size:11px;font-weight:600;
-
   font-family:inherit;transition:all .15s;display:flex;align-items:center;gap:3px;
-
 }
-
 .ai-btn:hover{background:rgba(124,58,237,.12);border-color:#7c3aed}
-
 .ai-btn:disabled{opacity:.4;cursor:not-allowed}
-
 .ai-btn .spin{display:inline-block;width:10px;height:10px;
-
   border:2px solid rgba(124,58,237,.3);border-top-color:#7c3aed;
-
   border-radius:50%;animation:spin .7s linear infinite;display:none}
-
 .ai-btn.loading .spin{display:inline-block}
-
 @keyframes spin{to{transform:rotate(360deg)}}
 
-
-
 .fix-btn{
-
   padding:4px 10px;border-radius:12px;
-
   background:rgba(22,163,74,.06);border:1px solid rgba(22,163,74,.2);
-
   color:#16a34a;cursor:pointer;font-size:11px;font-weight:600;
-
   font-family:inherit;transition:all .15s;
-
 }
-
 .fix-btn:hover{background:rgba(22,163,74,.12);border-color:#16a34a}
 
-
-
 .save-dot{
-
   text-align:right;padding:0 14px 4px;
-
   font-size:10px;color:var(--muted);min-height:14px;
-
 }
-
 .save-dot.ok{color:var(--success)}
 
-
-
 /* ===== 底部操作栏（固定） ===== */
-
 .bottom-bar{
-
   position:fixed;bottom:0;left:0;right:0;
-
   background:rgba(255,255,255,.92);backdrop-filter:blur(12px);
-
   border-top:1px solid var(--border);
-
   padding:10px 20px;padding-bottom:max(10px,env(safe-area-inset-bottom));
-
   display:flex;gap:8px;justify-content:center;
-
   max-width:640px;margin:0 auto;z-index:90;
-
 }
-
 .btn-bottom{
-
   flex:1;max-width:140px;padding:10px;border-radius:10px;border:none;
-
   font-size:13px;font-weight:600;cursor:pointer;text-align:center;
-
   transition:all .2s;font-family:inherit;
-
 }
-
 .btn-ghost{background:var(--input-bg);color:var(--text);border:1px solid var(--border)}
-
 .btn-ghost:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
-
 .btn-primary{background:var(--accent);color:#fff}
-
 .btn-primary:hover{filter:brightness(1.1)}
 
-
-
 /* ===== 弹窗 ===== */
-
 .overlay{
-
   display:none;position:fixed;inset:0;
-
   background:rgba(0,0,0,.4);z-index:200;
-
   align-items:flex-end;justify-content:center;
-
 }
-
 .overlay.show{display:flex}
-
 .panel{
-
   width:100%;max-width:640px;
-
   background:var(--card);border-radius:18px 18px 0 0;
-
   padding:20px;padding-bottom:max(20px,env(safe-area-inset-bottom));
-
   animation:slideUp .25s ease;
-
 }
-
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-
 .panel-title{
-
   font-size:15px;font-weight:700;color:var(--text-strong);
-
   margin-bottom:16px;text-align:center;
-
 }
-
 .panel-item{
-
   width:100%;padding:13px 16px;
-
   border:1px solid var(--border);border-radius:12px;
-
   background:transparent;color:var(--text);
-
   font-size:14px;font-weight:600;cursor:pointer;
-
   display:flex;align-items:center;gap:10px;
-
   margin-bottom:6px;font-family:inherit;transition:all .15s;
-
 }
-
 .panel-item:hover{background:rgba(26,106,170,.05);border-color:var(--accent)}
-
 .panel-cancel{
-
   width:100%;padding:11px;border-radius:12px;border:none;
-
   background:var(--input-bg);color:var(--muted);
-
   font-size:14px;font-weight:600;cursor:pointer;
-
   font-family:inherit;margin-top:4px;
-
 }
-
-
 
 /* Toast */
-
 .toast{
-
   position:fixed;top:60px;left:50%;
-
   transform:translateX(-50%) translateY(-20px);
-
   background:var(--card);border:1px solid var(--border);
-
   color:var(--text);padding:7px 16px;
-
   border-radius:20px;font-size:12px;font-weight:500;
-
   z-index:9999;opacity:0;transition:all .3s;
-
   pointer-events:none;white-space:nowrap;
-
   box-shadow:0 4px 16px rgba(0,0,0,.1);
-
 }
-
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
 .toast.success{border-color:var(--success)}
-
 .toast.error{border-color:#ef4444}
 
-
-
 /* 图片查看器 */
-
 .img-viewer{
-
   position:fixed;top:0;left:0;right:0;bottom:0;
-
   background:rgba(0,0,0,.88);z-index:99999;
-
   display:flex;flex-direction:column;
-
   align-items:center;justify-content:center;padding:20px;
-
 }
-
 .img-viewer img{max-width:90%;max-height:70%;border-radius:12px}
-
 .img-viewer .tip{color:#aaa;font-size:13px;margin-top:12px}
-
 </style>
-
 </head>
-
 <body>
 
-
-
 <!-- 录音状态条 -->
-
 <div class="rec-bar" id="recBar">
-
   <div style="display:flex;align-items:center;gap:8px">
-
     <div class="rec-dot"></div>
-
     <span id="recLabel">正在录音</span>
-
     <span id="recTimer">00:00</span>
-
   </div>
-
   <button class="rec-stop" onclick="stopVoice()">停止</button>
-
 </div>
-
-
 
 <!-- 顶栏 -->
-
 <div class="header">
-
-  <h1>复盘册子 <span>v3.9.4</span></h1>
-
+  <h1>复盘册子 <span>v3.9.5</span></h1>
   <div class="header-right">
-
     <button class="icon-btn" onclick="showHistory()">历史</button>
-
     <div class="date-badge" id="dateDisplay" onclick="showDatePicker()"></div>
-
   </div>
-
 </div>
-
-
 
 <!-- 主内容 -->
-
 <div class="main" id="questionsContainer"></div>
 
-
-
 <!-- 底部操作栏 -->
-
 <div class="bottom-bar">
-
   <button class="btn-bottom btn-ghost" onclick="exportText()">导出文本</button>
-
   <button class="btn-bottom btn-primary" onclick="exportImage()">导出图片</button>
-
 </div>
-
-
 
 <!-- 历史弹窗 -->
-
 <div class="overlay" id="historyOverlay" onclick="if(event.target===this)this.classList.remove('show')">
-
   <div class="panel">
-
     <div class="panel-title">复盘历史</div>
-
     <div id="historyList"></div>
-
     <button class="panel-cancel" onclick="document.getElementById('historyOverlay').classList.remove('show')">关闭</button>
-
   </div>
-
 </div>
-
-
 
 <!-- 日期选择器 -->
-
 <div class="overlay" id="dateOverlay" onclick="if(event.target===this)this.classList.remove('show')">
-
   <div class="panel">
-
     <div class="panel-title">选择日期</div>
-
     <input type="date" id="dateInput" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:14px;text-align:center;font-family:inherit;margin-bottom:12px">
-
     <div style="display:flex;gap:8px">
-
       <button class="panel-cancel" style="flex:1" onclick="document.getElementById('dateOverlay').classList.remove('show')">取消</button>
-
       <button class="panel-item" style="flex:1;justify-content:center;border-color:var(--accent);color:var(--accent)" onclick="confirmDate()">确定</button>
-
     </div>
-
   </div>
-
 </div>
-
-
 
 <!-- AI菜单 -->
-
 <div class="overlay" id="aiOverlay" onclick="if(event.target===this)closeAIMenu()">
-
   <div class="panel">
-
     <div class="panel-title">AI润色</div>
-
     <button class="panel-item" onclick="doAI('polish')">润色优化</button>
-
     <button class="panel-item" onclick="doAI('clean')">精简语气词</button>
-
     <button class="panel-item" onclick="doAI('summary')">智能总结</button>
-
     <button class="panel-item" onclick="doAI('golden')">提取金句</button>
-
     <button class="panel-item" onclick="doAI('all')" style="border-color:#7c3aed;color:#7c3aed">全优化（四合一）</button>
-
     <button class="panel-cancel" onclick="closeAIMenu()">取消</button>
-
   </div>
-
 </div>
-
-
 
 <!-- 导出预览弹窗 -->
-
 <div class="overlay" id="exportOverlay" onclick="if(event.target===this)closeExport()">
-
   <div class="panel" style="max-width:480px;border-radius:18px;margin:0 20px;max-height:70vh;overflow-y:auto">
-
     <div class="panel-title" id="exportTitle">导出预览</div>
-
     <div id="exportPreview" style="background:var(--input-bg);border-radius:10px;padding:14px;font-size:13px;line-height:1.8;color:var(--text);white-space:pre-wrap;max-height:40vh;overflow-y:auto"></div>
-
     <div style="display:flex;gap:8px;margin-top:14px">
-
       <button class="panel-cancel" style="flex:1" onclick="closeExport()">取消</button>
-
       <button class="panel-item" style="flex:1;justify-content:center;background:var(--accent);color:#fff;border-color:var(--accent)" id="exportConfirmBtn">下载</button>
-
     </div>
-
   </div>
-
 </div>
-
-
 
 <!-- 分享预览弹窗 -->
-
 <div class="overlay" id="shareOverlay" onclick="if(event.target===this)closeShare()">
-
   <div class="panel" style="max-width:420px;border-radius:18px;margin:0 20px">
-
     <div class="panel-title" id="shareTitle">分享</div>
-
     <div id="sharePreview" style="background:var(--input-bg);border-radius:10px;padding:14px;font-size:13px;line-height:1.8;color:var(--text);white-space:pre-wrap;max-height:30vh;overflow-y:auto"></div>
-
     <div style="display:flex;flex-direction:column;gap:6px;margin-top:12px">
-
       <button class="panel-item" onclick="copyShareText()">复制文字</button>
-
       <button class="panel-item" onclick="saveShareImage()" style="border-color:var(--accent);color:var(--accent)">保存图片</button>
-
     </div>
-
   </div>
-
 </div>
-
-
 
 <div class="toast" id="toast"></div>
 
-
-
 <script>
-
 // ============================================================
-
 // 数据 & 配置
-
 // ============================================================
-
 const QUESTIONS=[
-
   {text:'目标是什么？',hint:'目标'},
-
   {text:'我做对了什么？',hint:'沉淀'},
-
   {text:'我做错了什么？',hint:'问题'},
-
   {text:'当时怎么想的？为什么会这样？',hint:'原因'},
-
   {text:'重新来怎么做？',hint:'改进'},
-
   {text:'下次具体怎么做？',hint:'行动'}
-
 ];
-
-const STORAGE_KEY='fanpan_v3.9.4';
-
+const STORAGE_KEY='fanpan_v3.9.5';
 const AUDIO_KEY='fanpan_audio_';
-
 const DEFAULT_AI_KEY='sk-bmpjwdksyuqvqtdullaehtxwnfvclpffkjvlpglkqhuphtig';
-
 const AI_CH=[
-
   {url:'https://api.siliconflow.cn/v1/chat/completions',model:'Qwen/Qwen2.5-7B-Instruct',key:DEFAULT_AI_KEY},
-
   {url:'https://api.siliconflow.cn/v1/chat/completions',model:'THUDM/glm-4-flash',key:DEFAULT_AI_KEY},
-
 ];
-
 const WHISPER_URL='https://api.siliconflow.cn/v1/audio/transcriptions';
-
 const WHISPER_MODEL='FunAudioLLM/SenseVoiceSmall';
-
 let chIdx=0;
 
-
-
 let currentDate=getTodayStr(),isRecording=false,currentQ=null;
-
 let mediaRecorder=null,audioChunks=[],audioBlobs={};
-
 let recordingTimer=null,recSec=0;
-
 let recognition=null,fullTranscript='',interimText='';
-
 let voiceRestarts=0,lastVoiceStart=0;
-
 let playingAudio=null;
 
-
-
 // ============================================================
-
 // 工具函数
-
 // ============================================================
-
 function getTodayStr(){
-
   const d=new Date();
-
   return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
-
 }
-
 function pad(n){return String(n).padStart(2,'0')}
-
 function formatDateCN(s){
-
   const d=new Date(s+'T00:00:00');
-
   const w=['周日','周一','周二','周三','周四','周五','周六'];
-
   return (d.getMonth()+1)+'月'+d.getDate()+'日 '+w[d.getDay()];
-
 }
-
 function showToast(m,t){
-
   const el=document.getElementById('toast');
-
   el.textContent=m;el.className='toast show '+(t||'');
-
   clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),2200);
-
 }
-
 function fmtTime(s){return pad(Math.floor(s/60))+':'+pad(s%60)}
-
 function isMobile(){return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)}
 
-
-
 function getRecords(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')}catch(e){return{}}}
-
 function saveRecords(r){localStorage.setItem(STORAGE_KEY,JSON.stringify(r))}
 
-
-
 function saveField(num){
-
-  const v=document.getElementById('a'+num)(num.tagName==="TEXTAREA"?num.value:num.innerText);
-
+  const e=document.getElementById('a'+num);
+  if(!e)return;
+  const v=e.tagName==='TEXTAREA'?e.value.trim():e.innerText.trim();
   const r=getRecords();
-
   if(!r[currentDate])r[currentDate]={};
-
   if(!r[currentDate]['q'+num])r[currentDate]['q'+num]='';
-
   r[currentDate]['q'+num]=v;
-
   r[currentDate].savedAt=new Date().toISOString();
-
   saveRecords(r);
-
   showSaveDot(num);
-
 }
-
-
 
 function showSaveDot(num){
-
   const el=document.getElementById('sd'+num);
-
   if(!el)return;
-
   el.textContent='已保存';el.className='save-dot ok';
-
   clearTimeout(el._t);el._t=setTimeout(()=>{el.textContent='';el.className='save-dot'},1800);
-
 }
 
-
-
 // ============================================================
-
 // 渲染问题列表
-
 // ============================================================
-
 function render(){
-
   const c=document.getElementById('questionsContainer');
-
   c.innerHTML=QUESTIONS.map((q,i)=>{
-
     const n=i+1;
-
     return '<div class="q-block" id="qb'+n+'">'+
-
       '<div class="q-head">'+
-
         '<div class="q-head-left">'+
-
           '<div class="q-num">'+n+'</div>'+
-
           '<div><div class="q-label">'+q.text+'</div></div>'+
-
         '</div>'+
-
         '<div class="q-head-right">'+
-
           '<button class="play-small" id="pb'+n+'" onclick="playAudio('+n+')">播放</button>'+
-
           '<button class="voice-big" id="vb'+n+'" onclick="toggleVoice('+n+')">🎤</button>'+
-
         '</div>'+
-
       '</div>'+
-
-      '<div class="answer-area" id="a'+n+'" contenteditable="true" data-placeholder="点击🎤录音，或直接输入…" oninput="saveField('+n+)"></div>'+
-
+      '<div class="answer-area" id="a'+n+'" contenteditable="true" data-placeholder="\u70b9\u51fb\ud83c\udfa4\u5f55\u97f3\uff0c\u6216\u76f4\u63a5\u8f93\u5165\u2026" oninput="saveField('+n+')"></div>'+
       '<div class="ai-bar">'+
-
         '<button class="ai-btn" id="ab'+n+'" onclick="openAI('+n+')"><span class="spin"></span> AI润色</button>'+
-
         '<button class="fix-btn" id="fb'+n+'" onclick="runFix('+n+')">错别字</button>'+
-
       '</div>'+
-
       '<div class="save-dot" id="sd'+n+'"></div>'+
-
     '</div>';
-
   }).join('');
-
 }
 
-
-
 // ============================================================
-
 // 加载 & 切换日期
-
 // ============================================================
-
 function loadDay(d){
-
   currentDate=d;
-
   const r=getRecords()[d]||{};
-
   for(let i=1;i<=6;i++){
-
-    document.getElementById('a'+i).value=r['q'+i]||'';
-
+    {const e=document.getElementById('a'+i);if(e){if(e.tagName==='TEXTAREA'){e.value=r['q'+i]||'';}else{e.innerText=r['q'+i]||'';}}}
     updatePlayBtn(i);
-
   }
-
   document.getElementById('dateDisplay').textContent=formatDateCN(d);
-
 }
-
 function goToday(){loadDay(getTodayStr())}
 
-
-
 function showDatePicker(){
-
   document.getElementById('dateInput').value=currentDate;
-
   document.getElementById('dateInput').max=getTodayStr();
-
   document.getElementById('dateOverlay').classList.add('show');
-
 }
-
 function confirmDate(){
-
   const v=document.getElementById('dateInput').value;
-
   if(v)loadDay(v);
-
   document.getElementById('dateOverlay').classList.remove('show');
-
 }
 
-
-
 // ============================================================
-
 // 录音
-
 // ============================================================
-
 function stopVoice(){
-
   isRecording=false;
-
   if(mediaRecorder&&mediaRecorder.state!=='inactive'){mediaRecorder.stop();return}
-
   if(recognition){try{recognition.stop()}catch(e){}recognition=null}
-
   if(recordingTimer){clearInterval(recordingTimer);recordingTimer=null}
-
   if(currentQ){
-
     document.getElementById('vb'+currentQ).classList.remove('recording');
-
     saveField(currentQ);
-
   }
-
   document.getElementById('recBar').classList.remove('show');
-
   currentQ=null;recSec=0;voiceRestarts=0;
-
 }
-
-
 
 function toggleVoice(n){
-
   if(isRecording&&currentQ===n){stopVoice();return}
-
   if(isRecording){stopVoice();setTimeout(()=>startVoice(n),400);return}
-
   startVoice(n);
-
 }
-
-
 
 function startVoice(n){
-
   if(isMobile()){startMobileRec(n);return}
-
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-
   if(!SR){showToast('请用Chrome浏览器打开','error');return}
-
   if(navigator.userAgent.toLowerCase().indexOf('micromessenger')>-1){
-
     showToast('微信不支持语音，请用浏览器打开','error');return;
-
   }
-
-
 
   isRecording=true;currentQ=n;
-
   fullTranscript=document.getElementById('a'+n).value||'';
-
   interimText='';recSec=0;voiceRestarts=0;
-
   document.getElementById('vb'+n).classList.add('recording');
-
   document.getElementById('recBar').classList.add('show');
-
   document.getElementById('recLabel').textContent='第'+n+'题';
-
   updateRecTimer();
-
   recordingTimer=setInterval(()=>{recSec++;updateRecTimer()},1000);
-
   setTimeout(startRecog,400);
-
 }
-
-
 
 function updateRecTimer(){
-
   const el=document.getElementById('recTimer');
-
   if(el)el.textContent=fmtTime(recSec);
-
 }
-
-
 
 async function startMobileRec(n){
-
   try{
-
     const s=await navigator.mediaDevices.getUserMedia({audio:true});
-
     mediaRecorder=new MediaRecorder(s,{mimeType:'audio/webm'});
-
     audioChunks=[];
-
     mediaRecorder.ondataavailable=e=>{if(e.data.size>0)audioChunks.push(e.data)};
-
     mediaRecorder.onstop=async()=>{
-
       const num=currentRecorderNum;mediaRecorder=null;isRecording=false;
-
       const blob=new Blob(audioChunks,{type:'audio/webm'});
-
       saveAudioBlob(num,blob);
-
       if(recordingTimer){clearInterval(recordingTimer);recordingTimer=null}
-
       document.getElementById('recBar').classList.remove('show');
-
       if(num){document.getElementById('vb'+num).classList.remove('recording')}
-
       try{
-
         const text=await transcribeAudio(blob);
-
         const ta=document.getElementById('a'+num);
-
         ta.value=(ta.value?ta.value+' ':'')+text;
-
         saveField(num);
-
         showToast('转写完成','success');
-
         if(text.trim().length>3)autoPolish(num,text.trim());
-
       }catch(e){showToast('转写失败:'+e.message,'error')}
-
       s.getTracks().forEach(t=>t.stop());
-
       currentQ=num=null;recSec=0;voiceRestarts=0;
-
     };
-
     // 用外部变量保存当前题目编号（因为onstop闭包里currentQ可能被清零）
-
     window.currentRecorderNum=n;
-
     mediaRecorder.start(250);
-
     isRecording=true;currentQ=n;recSec=0;
-
     document.getElementById('vb'+n).classList.add('recording');
-
     document.getElementById('recBar').classList.add('show');
-
     document.getElementById('recLabel').textContent='第'+n+'题 手机录音';
-
     updateRecTimer();
-
     recordingTimer=setInterval(()=>{recSec++;updateRecTimer()},1000);
-
   }catch(e){showToast('录音失败:'+e.message,'error')}
-
 }
-
-
 
 function startRecog(){
-
   const now=Date.now();
-
   if(now-lastVoiceStart<2000){
-
     voiceRestarts++;
-
     if(voiceRestarts>=5){showToast('语音启动失败，请刷新重试','error');stopVoice();return}
-
   }else{voiceRestarts=0}
-
   lastVoiceStart=now;
-
   if(recognition){try{recognition.stop()}catch(e){}recognition=null}
-
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-
   recognition=new SR();
-
   recognition.lang='zh-CN';recognition.continuous=true;
-
   recognition.interimResults=true;recognition.maxAlternatives=1;
-
   recognition.onresult=function(ev){
-
     voiceRestarts=0;let nf='',ci='';
-
     for(let i=ev.resultIndex;i<ev.results.length;i++){
-
       if(ev.results[i].isFinal)nf+=ev.results[i][0].transcript;
-
       else ci+=ev.results[i][0].transcript;
-
     }
-
     if(nf){fullTranscript+=nf;document.getElementById('a'+currentQ).value=fullTranscript;saveField(currentQ)}
-
     interimText=ci;
-
     if(currentQ)document.getElementById('a'+currentQ).value=fullTranscript+(interimText?'|'+interimText:'');
-
   };
-
   recognition.onend=()=>{
-
     if(isRecording&&currentQ)setTimeout(()=>{if(isRecording&&currentQ)startRecog()},700+Math.random()*400);
-
   };
-
   recognition.onerror=function(ev){
-
     const fatal=['not-allowed','service-not-allowed','audio-capture','network'];
-
     if(fatal.indexOf(ev.error)!==-1){
-
       const m={not-allowed:'请允许麦克风权限','service-not-allowed:'请用Chrome浏览器',
-
         audio-capture:'未检测到麦克风',network:'网络错误'};
-
       showToast(m[ev.error]||'语音出错','error');stopVoice();return;
-
     }
-
     if(ev.error==='no-speech'){if(isRecording&&currentQ)setTimeout(()=>{if(isRecording&&currentQ)startRecog()},1200);return}
-
     if(ev.error==='aborted')return;
-
     if(isRecording&&currentQ)setTimeout(()=>{if(isRecording&&currentQ)startRecog()},1500);
-
   };
-
   try{recognition.start()}catch(e){if(isRecording&&currentQ)setTimeout(()=>startRecog(),1500)}
-
 }
 
-
-
 // ============================================================
-
 // 音频保存 & 回放
-
 // ============================================================
-
 function saveAudioBlob(num,blob){
-
   const k=AUDIO_KEY+'q'+num+'_'+currentDate;
-
   audioBlobs[k]=blob;
-
   try{
-
     const r=new FileReader();
-
     r.onload=()=>{try{localStorage.setItem(k+'_meta',JSON.stringify({size:blob.size}))}catch(e){}};
-
     r.readAsArrayBuffer(blob);
-
   }catch(e){}
-
   updatePlayBtn(num);
-
 }
-
 function updatePlayBtn(num){
-
   const k=AUDIO_KEY+'q'+num+'_'+currentDate;
-
   const has=!!audioBlobs[k];
-
   const el=document.getElementById('pb'+num);
-
   if(el)el.classList.toggle('show',has);
-
 }
-
 function playAudio(num){
-
   const k=AUDIO_KEY+'q'+num+'_'+currentDate;
-
   const blob=audioBlobs[k];
-
   if(!blob){showToast('暂无录音','error');return}
-
   if(playingAudio){playingAudio.pause();playingAudio=null}
-
   const url=URL.createObjectURL(blob);
-
   const a=new Audio(url);playingAudio=a;
-
   a.play().catch(e=>showToast('播放失败','error'));
-
   a.onended=()=>{playingAudio=null;URL.revokeObjectURL(url)};
-
 }
 
-
-
 // ============================================================
-
 // 转写
-
 // ============================================================
-
 async function transcribeAudio(blob){
-
   showToast('云端转写中…','default');
-
   const fd=new FormData();
-
   fd.append('file',blob,'rec.webm');
-
   fd.append('model',WHISPER_MODEL);
-
   const resp=await fetch(WHISPER_URL,{
-
     method:'POST',headers:{'Authorization':'Bearer '+DEFAULT_AI_KEY},body:fd
-
   });
-
   if(!resp.ok){const e=await resp.json().catch(()=>{});throw new Error(e.error?.message||'转写失败'+resp.status)}
-
   const data=await resp.json();
-
   return data.text||'';
-
 }
 
-
-
 // ============================================================
-
 // AI 功能
-
 // ============================================================
-
 async function callAI(prompt,customKey){
-
   if(customKey)return await callAISingle(AI_CH[0].url,AI_CH[0].model,customKey,prompt);
-
   let lastErr=null;
-
   for(let i=0;i<AI_CH.length;i++){
-
     const c=AI_CH[(chIdx+i)%AI_CH.length];
-
     try{const r=await callAISingle(c.url,c.model,c.key,prompt);chIdx=(chIdx+i)%AI_CH.length;return r}
-
     catch(e){lastErr=e;continue}
-
   }
-
   throw lastErr||new Error('AI通道均失败');
-
 }
-
 async function callAISingle(url,model,key,prompt){
-
   const r=await fetch(url,{
-
     method:'POST',
-
     headers:{'Authorization':'Bearer '+key,'Content-Type':'application/json'},
-
     body:JSON.stringify({model:model,messages:[{role:'user',content:prompt}],stream:false,max_tokens:2048})
-
   });
-
   if(!r.ok){const e=await r.json().catch(()=>{});throw new Error(e.error?.message||'请求失败'+r.status)}
-
   let content=r.json().choices[0].message.content.trim();
-
   content=content.replace(/<nothink>[\s\S]*?<\/nothink>/gi,'');
-
   content=content.replace(/<\/?think>/gi,'');
-
   return content.trim();
-
 }
-
-
 
 const AI_PROMPTS={
-
   polish:t=>`请润色以下文字，使其更流畅清晰有条理，保持原意不变。
-
 要求：纯中文输出，严禁英文单词/emoji/重复词语，直接输出结果不要解释 /no_think：
-
 """${t}---`,
-
   clean:t=>`请去除以下文字中的语气词和口头禅（嗯、啊、这个、那个、就是、的话、然后等），保持原意不变。
-
 要求：纯中文，严禁英文/emoji/重复，直接输出 /no_think：
-
 """${t}---`,
-
   summary:t=>`请用一句话概括以下文字的核心观点。纯中文，严禁英文/emoji/重复，直接输出不要前缀 /no_think：
-
 """${t}---`,
-
   golden:t=>`请从以下文字中提取1-3句最有价值的金句，每句一行。纯中文，严禁英文/emoji/重复 /no_think：
-
 """${t}---`,
-
   fix:t=>`请修正以下文字的错别字，直接输出修正后的完整文字。纯中文，严禁英文/emoji /no_think：
-
 """${t}---`,
-
   all:t=>`请对以下文字做4种处理，用 |----| 分隔：
-
 ##精简## 去除语气词
-
 ##润色## 润色优化
-
 ##总结## 一句话核心观点
-
 ##金句## 1-3句金句
-
 纯中文，严禁英文/emoji/重复 /no_think：
-
 """${t}---`
-
 };
-
-
 
 function openAI(num){
-
   const menu=document.getElementById('aiOverlay');
-
   menu.classList.add('show');menu.dataset.num=num;
-
 }
-
 function closeAIMenu(){document.getElementById('aiOverlay').classList.remove('show')}
-
 function doAI(action){
-
   const menu=document.getElementById('aiOverlay');
-
   const n=parseInt(menu.dataset.num);closeAIMenu();
-
   runAI(n,action);
-
 }
-
-
 
 async function runAI(num,action){
-
   const text=document.getElementById('a'+num).value.trim();
-
   if(!text){showToast('请先填写内容','error');return}
-
   const btn=document.getElementById('ab'+num);
-
   btn.classList.add('loading');btn.disabled=true;
-
   try{
-
     const prompt=AI_PROMPTS[action](text);
-
     const result=await callAI(prompt);
-
     if(action==='fix'||action==='clean'){
-
       document.getElementById('a'+num).value=result;saveField(num);
-
       showToast('完成','success');
-
     }else if(action==='all'){
-
       const parts=result.split('|----|').map(s=>s.trim()).filter(Boolean);
-
       document.getElementById('a'+num).value=parts.length>=4
-
         ?'【精简】\n'+parts[0]+'\n\n【润色】\n'+parts[1]+'\n\n【总结】\n'+parts[2]+'\n\n【金句】\n'+parts[3]
-
         :result;
-
       saveField(num);showToast('全优化完成','success');
-
     }else{
-
       const l={polish:'【润色】',summary:'【总结】',golden:'【金句】'};
-
       const cur=document.getElementById('a'+num).value;
-
       document.getElementById('a'+num).value=cur?cur+'\n\n'+l[action]+'\n'+result:l[action]+'\n'+result;
-
       saveField(num);showToast('完成','success');
-
     }
-
   }catch(e){showToast('AI失败:'+e.message,'error')}
-
   finally{btn.classList.remove('loading');btn.disabled=false}
-
 }
-
-
 
 async async function runFix(num){
-
   const text=document.getElementById('a'+num).value.trim();
-
   if(!text){showToast('请先填写内容','error');return}
-
   const btn=document.getElementById('fb'+num);
-
   btn.disabled=true;btn.textContent='…';
-
   try{
-
     const r=await callAI(AI_PROMPTS.fix(text));
-
     document.getElementById('a'+num).value=r;saveField(num);
-
     showToast('已修正','success');
-
   }catch(e){showToast('修正失败:'+e.message,'error')}
-
   finally{btn.disabled=false;btn.textContent='错别字'}
-
 }
-
-
 
 async function autoPolish(num,text){
-
   try{
-
     const p=`请润色以下复盘文字，更流畅清晰有条理，保持原意不变。
-
 要求：纯中文，严禁英文单词/emoji/重复词语，直接输出不要解释 /no_think：
-
 """${text}---`;
-
     const r=await callAI(p);
-
     const cur=document.getElementById('a'+num).value;
-
     // 在原文后追加润色结果（用分隔线标记）
-
     if(cur.indexOf('【润色】')===-1){
-
       document.getElementById('a'+num).value=cur+'\n\n─── AI润色 ───\n'+r;
-
     }
-
     saveField(num);
-
   }catch(e){/* 静默失败 */}
-
 }
 
-
-
 // ============================================================
-
 // 历史
-
 // ============================================================
-
 function showHistory(){
-
-  for(let i=1;i<=6;i++){const v=document.getElementById('a'+i).value;if(v){const r=getRecords();if(!r[currentDate])r[currentDate]={};r[currentDate]['q'+i]=v;r[currentDate].savedAt=new Date().toISOString();saveRecords(r)}}
-
+  for(let i=1;i<=6;i++){const v=document((document.getElementById('a'+i).tagName==='TEXTAREA')?document.getElementById('a'+i).value:document.getElementById('a'+i).innerText);if(v){const r=getRecords();if(!r[currentDate])r[currentDate]={};r[currentDate]['q'+i]=v;r[currentDate].savedAt=new Date().toISOString();saveRecords(r)}}
   const r=getRecords();const dates=Object.keys(r).sort().reverse();
-
   const el=document.getElementById('historyList');
-
   if(!dates.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:13px">还没有记录<br>从今天开始吧</div>';return}
-
   el.innerHTML=dates.map(d=>{
-
     const rec=r[d];const pre=QUESTIONS.map((q,i)=>(rec['q'+(i+1)]||'').substring(0,18)).filter(Boolean).join(' / ');
-
     const t=rec.savedAt?new Date(rec.savedAt).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}):'';
-
     return '<div class="panel-item" onclick="loadDay(\''+d+'\');document.getElementById(\'historyOverlay\').classList.remove(\'show\')" style="margin-bottom:4px">'+
-
       '<span>'+formatDateCN(d)+(t?' '+t:'')+'</span>'+
-
       '</div>'+
-
       (pre?'<div style="font-size:11px;color:var(--muted);padding:2px 16px 8px;margin-top:-4px">'+pre||(empty)+'</div>':'');
-
   }).join('');
-
   document.getElementById('historyOverlay').classList.add('show');
-
 }
 
-
-
 // ============================================================
-
 // 导出文本
-
 // ============================================================
-
 function exportText(){
-
   const r=getRecords()[currentDate]||{};
-
   let t='复盘笔记 - '+formatDateCN(currentDate)+'\n'+('=').repeat(36)+'\n\n';
-
   QUESTIONS.forEach((q,i)=>{
-
     const n=i+1;const v=r['q'+n]||'';
-
     t+='【第'+n+'题】'+q.text+'\n'+'-'.repeat(28)+'\n';
-
     if(v.trim())t+=v+'\n';else t+='（未填写）\n';
-
     t+='\n';
-
   });
-
   t+=('=').repeat(36)+'\n生成时间：'+new Date().toLocaleString('zh-CN')+'\n复盘册子 v3.9.5';
-
   document.getElementById('exportTitle').textContent='导出文本';
-
   document.getElementById('exportPreview').textContent=t;
-
   document.getElementById('exportConfirmBtn').onclick=()=>{
-
     downloadTxt(t,'复盘笔记_'+currentDate+'.txt');
-
     closeExport();showToast('已下载','success');
-
   };
-
   document.getElementById('exportOverlay').classList.add('show');
-
 }
-
 function downloadTxt(content,name){
-
   const b=new Blob([content],{type:'text/plain;charset=utf-8'});
-
   const u=URL.createObjectURL(b);
-
   const a=document.createElement('a');a.href=u;a.download=name;
-
   document.body.appendChild(a);a.click();document.body.removeChild(a);
-
   URL.revokeObjectURL(u);
-
 }
 
-
-
 // ============================================================
-
 // 导出图片（通篇）
-
 // ============================================================
-
 function exportImage(){
-
   showToast('生成图片中…');
-
   const r=getRecords()[currentDate]||{};
-
   const c=document.createElement('div');
-
   c.style.cssText='position:fixed;left:-9999px;top:0;width:720px;padding:36px 32px;background:linear-gradient(180deg,#87ceeb 0%,#d6ecfa 50%,#f0f7fd 100%);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#0c2d4a;';
-
   let h='<div style="text-align:center;margin-bottom:28px"><h1 style="font-size:26px;color:#0c2d4a;margin:0;font-weight:700">复盘笔记</h1><p style="font-size:15px;color:#2b7cbf;margin:6px 0 0">'+formatDateCN(currentDate)+'</p></div>';
-
   QUESTIONS.forEach((q,i)=>{
-
     const n=i+1;const v=(r['q'+n]||'').trim()||'（未填写）';
-
     h+='<div style="background:rgba(255,255,255,.92);border-radius:12px;padding:18px;margin-bottom:12px;border:1px solid #b8d8f0">'+
-
       '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">'+
-
       '<span style="width:24px;height:24px;border-radius:50%;background:#4a90d9;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold">'+n+'</span>'+
-
       '<span style="font-size:14px;font-weight:600;color:#0c2d4a">'+q.text+'</span></div>'+
-
       '<div style="font-size:14px;line-height:1.85;color:#1a3a5c;white-space:pre-wrap">'+escHtml(v)+'</div></div>';
-
   });
-
   h+='<div style="text-align:center;margin-top:24px;padding-top:16px;border-top:1px solid #b8d8f0"><p style="font-size:11px;color:#6b9ab8;margin:0">复盘册子 v3.9.5 · '+new Date().toLocaleString('zh-CN')+'</p></div>';
-
   c.innerHTML=h;document.body.appendChild(c);
-
   if(typeof html2canvas==='undefined'){
-
     const s=document.createElement('script');
-
     s.src='https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
-
     s.onload={()=>doImgExport(c);s.onerror()=>{document.body.removeChild(c);showToast('加载失败','error')}};
-
     document.head.appendChild(s);
-
   }else{doImgExport(c)}
-
 }
-
 function doImgExport(c){
-
   html2canvas(c,{backgroundColor:'#d6ecfa',scale:2,useCORS:true,logging:false}).then(canvas=>{
-
     document.body.removeChild(c);
-
     const url=canvas.toDataURL('image/png');
-
     if(isMobile()){
-
       closeExport();
-
       const v=document.createElement('div');v.className='img-viewer';
-
       v.innerHTML='<div class="tip">长按下方图片保存到相册</div><img src="'+url+'"><div class="tip">点击空白处关闭</div>';
-
       v.onclick=e=>{if(e.target===v)v.remove()};
-
       document.body.appendChild(v);
-
       showToast('长按保存图片');
-
     }else{
-
       const a=document.createElement('a');a.href=url;a.download='复盘笔记_'+currentDate+'.png';
-
       document.body.appendChild(a);a.click();document.body.removeChild(a);
-
       showToast('图片已下载','success');
-
     }
-
   }).catch(err=>{document.body.removeChild(c);showToast('生成失败:'+err.message,'error')});
-
 }
-
 function closeExport(){document.getElementById('exportOverlay').classList.remove('show')}
 
-
-
 // ============================================================
-
 // 分享
-
 // ============================================================
-
 let shareText='';
-
 function shareQuestion(num){
-
   const q=QUESTIONS[num-1];const v=document.getElementById('a'+num).value||'';
-
   shareText='复盘笔记 · '+formatDateCN(currentDate)+'\n━━ 第'+num+'题 ━━\n❓ '+q.text+'\n\n'+(v||'（未填写）')+'\n\n复盘册子 v3.9.5';
-
   document.getElementById('shareTitle').textContent='第'+num+'题·'+q.hint;
-
   document.getElementById('sharePreview').textContent=shareText;
-
   document.getElementById('shareOverlay').classList.add('show');
-
 }
-
 function copyShareText(){
-
   navigator.clipboard.writeText(shareText).then(()=>{
-
     closeShare();showToast('已复制','success');
-
   }).catch(()=>{
-
     const ta=document.createElement('textarea');ta.value=shareText;
-
     document.body.appendChild(ta);ta.select();document.execCommand('copy');
-
     document.body.removeChild(ta);closeShare();showToast('已复制','success');
-
   });
-
 }
-
 function saveShareImage(){
-
   const num=parseInt(document.getElementById('aiOverlay').dataset.num||'0');
-
   // 复用导出图片逻辑但只导出单题
-
   const q=num?QUESTIONS[num-1]:null;
-
   const v=num?(document.getElementById('a'+num).value||''):'';
-
   if(!q)return;
-
   const c=document.createElement('div');
-
   c.style.cssText='position:fixed;left:-9999px;top:0;width:540px;padding:36px 28px;background:linear-gradient(180deg,#87ceeb 0%,#d6ecfa 100%);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#0c2d4a;';
-
   c.innerHTML='<div style="text-align:center;margin-bottom:28px"><div style="font-size:12px;color:var(--muted);letter-spacing:2px">复盘册子</div><h1 style="font-size:26px;color:#0c2d4a;margin:0">第'+num+'题</h1><p style="font-size:15px;color:#2b7cbf;margin:6px 0 0">'+q.text+'</p></div>'+
-
     '<div style="background:rgba(255,255,255,.92);border-radius:14px;padding:22px;border:1px solid #b8d8f0">'+
-
     '<div style="font-size:14px;line-height:1.9;color:#1a3a5c;white-space:pre-wrap">'+escHtml(v||'（未填写）')+'</div></div>'+
-
     '<div style="text-align:center;margin-top:20px;padding-top:14px;border-top:1px solid #b8d8f0"><span style="font-size:11px;color:#6b9ab8">复盘册子 v3.9.5 · '+formatDateCN(currentDate)+'</span></div>';
-
   document.body.appendChild(c);
-
   if(typeof html2canvas==='undefined'){
-
     const s=document.createElement('script');
-
     s.src='https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
-
     s.onload()=>doShareImg(c);s.onerror()=>{document.body.removeChild(c);showToast('加载失败','error')};
-
     document.head.appendChild(s);
-
   }else{doShareImg(c)}
-
 }
-
 function doShareImg(c){
-
   html2canvas(c,{backgroundColor:null,scale:2,useCORS:true}).then(canvas=>{
-
     document.body.removeChild(c);
-
     const url=canvas.toDataURL('image/png');
-
     closeShare();
-
     if(isMobile()){
-
       const v=document.createElement('div');v.className='img-viewer';
-
       v.innerHTML='<div class="tip">长按保存</div><img src="'+url+'"><div class="tip">点击关闭</div>';
-
       v.onclick=e=>{if(e.target===v)v.remove()};
-
       document.body.appendChild(v);
-
     }else{
-
       const a=document.createElement('a');a.href=url;a.download='复盘_'+currentDate+'.png';
-
       document.body.appendChild(a);a.click();document.body.removeChild(a);
-
     }
-
   });
-
 }
-
 function closeShare(){document.getElementById('shareOverlay').classList.remove('show')}
-
 function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}
 
-
-
 // ============================================================
-
 // 初始化
-
 // ============================================================
-
 window.onload=function(){
-
   render();
-
   loadDay(getTodayStr());
-
+  // 微信内置浏览器兼容：延迟确保DOM渲染
+  setTimeout(()=>{ render(); loadDay(getTodayStr()); }, 500);
 };
-
 document.addEventListener('keydown',e=>{
-
   if(e.key==='Escape'){
-
     document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('show'));
-
     closeAIMenu();closeShare();closeExport();
-
   }
-
 });
-
 </script>
-
 </body>
-
 </html>

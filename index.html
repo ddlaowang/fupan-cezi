@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" "black-translucent">
 <meta name="apple-mobile-web-app-title" content="复盘册子">
-<title>复盘册子 v3.9.3</title>
+<title>复盘册子 v3.9.5</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -210,6 +210,41 @@ body{
   font-family:inherit;margin-top:4px;
 }
 
+/* ===== 欢迎页 ===== */
+.welcome-screen{
+  position:fixed;inset:0;z-index:1000;
+  background:var(--bg);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;padding:20px;
+  transition:opacity .5s ease,visibility .5s ease;
+}
+.welcome-screen.hide{
+  opacity:0;visibility:hidden;pointer-events:none;
+}
+.welcome-main{
+  font-size:28px;font-weight:800;
+  color:var(--accent);
+  letter-spacing:2px;
+  margin-bottom:16px;
+  animation:welcomeIn .8s ease;
+}
+.welcome-sub{
+  font-size:15px;font-weight:400;
+  color:var(--muted);
+  line-height:1.6;
+  animation:welcomeIn .8s ease .15s both;
+}
+.welcome-tap{
+  position:absolute;bottom:60px;
+  font-size:12px;color:var(--muted);
+  opacity:.6;animation:welcomeIn .8s ease .3s both;
+}
+@keyframes welcomeIn{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
 /* Toast */
 .toast{
   position:fixed;top:60px;left:50%;
@@ -238,6 +273,13 @@ body{
 </head>
 <body>
 
+<!-- 欢迎页 -->
+<div class="welcome-screen" id="welcomeScreen" onclick="enterApp()">
+  <div class="welcome-main">欢迎来到复盘时刻</div>
+  <div class="welcome-sub">嗨，伙计，咱又见面啦，可期待啦</div>
+  <div class="welcome-tap">点击任意处开始</div>
+</div>
+
 <!-- 录音状态条 -->
 <div class="rec-bar" id="recBar">
   <div style="display:flex;align-items:center;gap:8px">
@@ -250,7 +292,7 @@ body{
 
 <!-- 顶栏 -->
 <div class="header">
-  <h1>复盘册子 <span>v3.9</span></h1>
+  <h1>复盘册子 <span>v3.9.5</span></h1>
   <div class="header-right">
     <button class="icon-btn" onclick="showHistory()">历史</button>
     <div class="date-badge" id="dateDisplay" onclick="showDatePicker()"></div>
@@ -892,7 +934,18 @@ function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(
 window.onload=function(){
   render();
   loadDay(getTodayStr());
+  // 欢迎页：首次访问显示，已访问过直接跳过
+  const seen=localStorage.getItem('fanpan_welcome_v395');
+  if(!seen){
+    document.getElementById('welcomeScreen').classList.remove('hide');
+  }else{
+    document.getElementById('welcomeScreen').classList.add('hide');
+  }
 };
+function enterApp(){
+  localStorage.setItem('fanpan_welcome_v395','1');
+  document.getElementById('welcomeScreen').classList.add('hide');
+}
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
     document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('show'));
